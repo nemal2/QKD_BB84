@@ -5,10 +5,8 @@ All visualisation for the BB84 QKD simulator.
 
 Exports
 -------
-plot_comparison()             3-panel bar chart for multi-scenario runs
+plot_comparison()             2-panel bar chart for multi-scenario runs
 plot_qber_vs_intercept_rate() sweep Eve intercept prob 0→100 %, plot QBER
-
-
 """
 
 from __future__ import annotations
@@ -42,7 +40,7 @@ _LEGEND_PATCHES = [
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# PLOT 1 — SCENARIO COMPARISON  (3-panel)
+# PLOT 1 — SCENARIO COMPARISON  (2-panel)
 # ──────────────────────────────────────────────────────────────────────────────
 
 def plot_comparison(
@@ -51,33 +49,29 @@ def plot_comparison(
     save_path: Optional[str] = "qkd_comparison.png",
 ) -> None:
     """
-    Three-panel bar chart:
+    Two-panel bar chart:
       Panel 1  QBER (%) with 95 % CI error bars + security thresholds
-      Panel 2  Final key length (bits)
-      Panel 3  Alice–Bob key agreement rate (%)
+      Panel 2  Alice–Bob key agreement rate (%)
 
     Parameters
     ──────────
     scenarios  : list of (name, config) pairs — names used as axis labels
     results    : corresponding SimulationResult objects (same order)
     save_path  : PNG output path; pass None to skip saving
-
-
     """
-    labels   = [s[0] for s in scenarios]
-    qbers    = [r.qber_result.qber * 100          for r in results]
-    ci_low   = [r.qber_result.confidence_low * 100  for r in results]
-    ci_high  = [r.qber_result.confidence_high * 100 for r in results]
-    key_lens = [r.key_length                        for r in results]
-    agree    = [r.key_agreement_rate * 100          for r in results]
-    colors   = [_status_color(r)                    for r in results]
+    labels = [s[0] for s in scenarios]
+    qbers  = [r.qber_result.qber * 100            for r in results]
+    ci_low = [r.qber_result.confidence_low * 100  for r in results]
+    ci_high= [r.qber_result.confidence_high * 100 for r in results]
+    agree  = [r.key_agreement_rate * 100          for r in results]
+    colors = [_status_color(r)                    for r in results]
 
     yerr_low  = [q - lo for q, lo in zip(qbers, ci_low)]
     yerr_high = [hi - q for q, hi in zip(qbers, ci_high)]
 
     x = np.arange(len(labels))
 
-    fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
     fig.suptitle(
         "BB84 QKD Simulation — Scenario Comparison\n"
         "University of Ruhuna, Dept. of Computer Engineering",
@@ -106,23 +100,9 @@ def plot_comparison(
                 f"{val:.1f} %", ha="center", va="bottom",
                 fontsize=8, fontweight="bold")
 
-    # ── Panel 2: Final Key Length ──────────────────────────────────────────
+    # ── Panel 2: Key Agreement Rate ───────────────────────────────────────
     ax = axes[1]
-    bars2 = ax.bar(x, key_lens, color=colors, alpha=0.85,
-                   edgecolor="black", linewidth=0.8, zorder=3)
-    ax.set_xticks(x)
-    ax.set_xticklabels(labels, rotation=18, ha="right", fontsize=8)
-    ax.set_ylabel("Bits")
-    ax.set_title("Final Key Length", fontweight="bold")
-    ax.grid(axis="y", alpha=0.3, zorder=0)
-    for bar, val in zip(bars2, key_lens):
-        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 1,
-                str(val), ha="center", va="bottom",
-                fontsize=8, fontweight="bold")
-
-    # ── Panel 3: Key Agreement Rate ───────────────────────────────────────
-    ax = axes[2]
-    bars3 = ax.bar(x, agree, color=colors, alpha=0.85,
+    bars2 = ax.bar(x, agree, color=colors, alpha=0.85,
                    edgecolor="black", linewidth=0.8, zorder=3)
     ax.axhline(100, color="#2ecc71", linestyle="--", linewidth=1.2,
                label="Perfect agreement (100 %)")
@@ -134,7 +114,7 @@ def plot_comparison(
     ax.set_ylim(0, 110)
     ax.legend(fontsize=7)
     ax.grid(axis="y", alpha=0.3, zorder=0)
-    for bar, val in zip(bars3, agree):
+    for bar, val in zip(bars2, agree):
         ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.5,
                 f"{val:.1f} %", ha="center", va="bottom",
                 fontsize=8, fontweight="bold")
@@ -163,12 +143,10 @@ def plot_qber_vs_intercept_rate(
 
     Theory predicts QBER = 0.25 × p_intercept for intercept-resend.
     This experiment verifies that relationship empirically.
-
-    Phase 4 extension: overlay curves for PNS and entanglement attacks.
     """
     print("\n  [Experiment] QBER vs Eve Intercept Rate sweep...")
 
-    probs  = np.linspace(0, 1, steps + 1)
+    probs   = np.linspace(0, 1, steps + 1)
     qbers:  List[float] = []
     ci_low: List[float] = []
     ci_hi:  List[float] = []

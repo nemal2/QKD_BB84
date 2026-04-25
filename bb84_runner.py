@@ -8,16 +8,6 @@ Exports
 run_simulation()    single end-to-end BB84 run
 run_comparison()    multi-scenario batch runner
 PRESET_SCENARIOS    five standard research scenarios
-
-Internal
---------
-_print_header()     console header before a run
-_print_summary()    console summary after a run
-
-Phase 5 placeholder
--------------------
-After QBER estimation, a stub for error correction is clearly
-marked below.  Drop Phase 5 code in that one spot.
 """
 
 from __future__ import annotations
@@ -30,8 +20,6 @@ import numpy as np
 
 from bb84_config import SimulationConfig, SimulationResult
 from bb84_core   import Alice, Bob, Eve, QuantumChannel, sift_keys, estimate_qber
-
-
 
 
 PRESET_SCENARIOS: List[Tuple[str, SimulationConfig]] = [
@@ -126,10 +114,8 @@ def run_simulation(
             print(f"        ↳ {i}/{config.n_qubits} qubits sent", end="\r")
 
         qc = alice.prepare_qubit(i)
-
         if eve:
-            qc = eve.intercept(qc, i, channel)      # Phase 4: swap attack here
-
+            qc = eve.intercept(qc, i, channel)
         bob.measure(qc, i, channel)
 
     if verbose:
@@ -173,14 +159,12 @@ def run_simulation(
     # ═══════════════════════════════════════════════════════════════════════
     # STEP 4 — Key Distillation  (Phase 5 stub lives here)
     # ═══════════════════════════════════════════════════════════════════════
-    # Phase 1: simply strip the bits consumed by QBER sampling.
     s           = qber_result.sample_size
     alice_final = alice_sifted[s:]
     bob_final   = bob_sifted[s:]
 
     # ┌─────────────────────────────────────────────────────────────────────┐
     # │  PHASE 5 HOOK — Error Correction + Privacy Amplification           │
-    # │  Uncomment and implement when Phase 5 lands:                        │
     # │                                                                     │
     # │  if config.ecc_scheme != "none":                                    │
     # │      alice_final, bob_final = apply_error_correction(              │
@@ -194,27 +178,35 @@ def run_simulation(
         print(f"\n  [4/4] Key Distillation...")
         print(f"        ↳ Final key : {len(alice_final)} bits")
 
-    # ── Key agreement (ideal = 1.0 with no noise / Eve) ───────────────────
+    # ── Derived metrics ───────────────────────────────────────────────────
+    key_length          = len(alice_final)
+    key_generation_rate = key_length / config.n_qubits
+
     if alice_final:
-        matches   = sum(a == b for a, b in zip(alice_final, bob_final))
-        agreement = matches / len(alice_final)
+        matches            = sum(a == b for a, b in zip(alice_final, bob_final))
+        key_agreement_rate = matches / key_length
     else:
-        agreement = 0.0
+        key_agreement_rate = 0.0
 
-    eve_rate = (eve.intercepted_count / config.n_qubits) if eve else 0.0
-    runtime  = time.time() - start
+    keys_match     = (key_agreement_rate == 1.0)
+    eve_rate       = (eve.intercepted_count / config.n_qubits) if eve else None
+    runtime        = time.time() - start
 
+    # ── Build result ──────────────────────────────────────────────────────
     result = SimulationResult(
-        config=config,
-        n_transmitted=config.n_qubits,
-        n_sifted=len(matching_indices),
-        sifted_key_rate=sift_rate,
-        qber_result=qber_result,
-        alice_final_key=alice_final,
-        bob_final_key=bob_final,
-        key_agreement_rate=agreement,
-        eve_interception_rate=eve_rate,
-        runtime_seconds=runtime,
+        label               = config.label,
+        n_transmitted       = config.n_qubits,
+        n_sifted            = len(matching_indices),
+        key_length          = key_length,
+        sifted_key_rate     = sift_rate,
+        key_generation_rate = key_generation_rate,
+        qber_result         = qber_result,
+        key_agreement_rate  = key_agreement_rate,
+        keys_match          = keys_match,
+        runtime_seconds     = runtime,
+        alice_key           = alice_final,
+        bob_key             = bob_final,
+        eve_intercept_rate  = eve_rate,
     )
 
     if verbose:
@@ -233,14 +225,6 @@ def run_comparison(
     """
     Run a list of (name, config) pairs and return all SimulationResults.
     Delegates plotting to bb84_plots.py so this module stays plot-free.
-
-    Usage in notebook
-    ─────────────────
-    from bb84_runner import run_comparison, PRESET_SCENARIOS
-    from bb84_plots  import plot_comparison
-
-    results = run_comparison(PRESET_SCENARIOS)
-    plot_comparison(PRESET_SCENARIOS, results)
     """
     if scenarios is None:
         scenarios = PRESET_SCENARIOS
@@ -264,7 +248,7 @@ def run_comparison(
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# PRETTY PRINT HELPERS  (internal)
+# PRETTY PRINT HELPERS
 # ──────────────────────────────────────────────────────────────────────────────
 
 def _print_header(config: SimulationConfig) -> None:
@@ -299,11 +283,11 @@ def _print_summary(r: SimulationResult) -> None:
           f"{r.qber_result.confidence_high * 100:.1f} %]")
     print(f"  Security status      : {r.qber_result.security_status}")
     print(f"  Key agreement        : {r.key_agreement_rate * 100:.2f} %")
-    if r.config.eve_present:
-        print(f"  Eve intercept rate   : {r.eve_interception_rate * 100:.1f} %")
+    if r.eve_intercept_rate is not None:
+        print(f"  Eve intercept rate   : {r.eve_intercept_rate * 100:.1f} %")
     print(f"  Runtime              : {r.runtime_seconds:.2f}s")
     print(line)
-    print(f"\n  Alice key (first 30) : {r.alice_final_key[:30]}")
-    print(f"  Bob   key (first 30) : {r.bob_final_key[:30]}")
+    print(f"\n  Alice key (first 30) : {r.alice_key[:30]}")
+    print(f"  Bob   key (first 30) : {r.bob_key[:30]}")
     print(f"  Keys fully match     : {r.keys_match}")
     print()
