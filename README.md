@@ -8,7 +8,7 @@ A comprehensive BB84 QKD implementation built with Qiskit, designed for teaching
 
 ## What This Is
 
-This isn't a toy implementation. It simulates the BB84 protocol realistically—including Eve's intercept-resend attacks, real quantum noise (depolarizing, amplitude damping, phase damping), photon number splitting (PNS) vulnerabilities, and the full post-processing pipeline (error correction, privacy amplification). The notebook and modular structure let you run quick experiments or dig into the weeds of quantum information theory.
+It simulates the BB84 protocol realistically—including Eve's intercept-resend attacks, real quantum noise (depolarizing, amplitude damping, phase damping), and the full post-processing pipeline (error correction, privacy amplification). The notebook and modular structure let you run quick experiments or dig into quantum information theory.
 
 ---
 
