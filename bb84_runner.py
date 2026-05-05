@@ -1,13 +1,17 @@
 """
-bb84_runner.py
-==============
-Simulation orchestrator and preset scenario definitions.
+bb84_runner.py  (Phase 3 update)
+=================================
+Orchestration layer.  Now accepts noise_model so the notebook can
+drive amplitude-damping, phase-damping, and fiber-loss channels from
+bb84_noise.py without touching any other module.
 
-Exports
--------
-run_simulation()    single end-to-end BB84 run
-run_comparison()    multi-scenario batch runner
-PRESET_SCENARIOS    five standard research scenarios
+Changes vs Phase 1
+──────────────────
+* run_simulation() gains  noise_model='depolarizing'  (default keeps
+  Phase-1 behaviour identical)
+* _build_channel() picks between bb84_core.QuantumChannel (depolar)
+  and bb84_noise.QuantumChannel (all other models)
+* PRESET_SCENARIOS unchanged — still works exactly as before
 """
 
 from __future__ import annotations
@@ -19,8 +23,20 @@ from typing import List, Optional, Tuple
 import numpy as np
 
 from bb84_config import SimulationConfig, SimulationResult
-from bb84_core   import Alice, Bob, Eve, QuantumChannel, sift_keys, estimate_qber
+from bb84_core   import Alice, Bob, Eve, sift_keys, estimate_qber
+from bb84_core   import QuantumChannel as _CoreChannel
 
+# Noise module (Phase 3) — imported lazily so Phase 1 still works if missing
+try:
+    from bb84_noise import QuantumChannel as _NoiseChannel
+    _HAS_NOISE = True
+except ImportError:                          # pragma: no cover
+    _HAS_NOISE = False
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# PRESET SCENARIOS  (unchanged from Phase 1)
+# ──────────────────────────────────────────────────────────────────────────────
 
 PRESET_SCENARIOS: List[Tuple[str, SimulationConfig]] = [
     (
@@ -66,49 +82,94 @@ PRESET_SCENARIOS: List[Tuple[str, SimulationConfig]] = [
 
 
 # ──────────────────────────────────────────────────────────────────────────────
+# CHANNEL FACTORY
+# ──────────────────────────────────────────────────────────────────────────────
+
+def _build_channel(config: SimulationConfig, noise_model: str):
+    """
+    Return the right QuantumChannel for this run.
+
+    noise_model values
+    ──────────────────
+    'depolarizing'   → bb84_core.QuantumChannel  (Phase 1, default)
+    'amplitude_damp' → bb84_noise.QuantumChannel with T1 params
+    'phase_damp'     → bb84_noise.QuantumChannel with T2 params
+    'fiber_loss'     → bb84_noise.QuantumChannel with distance param
+    'combined'       → bb84_noise.QuantumChannel combined model
+    'ideal'          → bb84_core.QuantumChannel  (no noise)
+    """
+    if noise_model == "depolarizing":
+        return _CoreChannel(config.noise_enabled, config.depolar_prob)
+
+    if noise_model == "ideal":
+        return _CoreChannel(noise_enabled=False, depolar_prob=0.0)
+
+    # Phase-3 models
+    if not _HAS_NOISE:
+        raise ImportError(
+            "bb84_noise.py not found. "
+            "Place it in the same directory to use Phase-3 noise models."
+        )
+
+    return _NoiseChannel(
+        noise_model      = noise_model,
+        depolar_prob     = getattr(config, "depolar_prob",      0.0),
+        t1_ns            = getattr(config, "t1_ns",             100_000.0),
+        t2_ns            = getattr(config, "t2_ns",              50_000.0),
+        gate_time_ns     = getattr(config, "gate_time_ns",           50.0),
+        channel_length_km= getattr(config, "channel_length_km",       0.0),
+    )
+
+
+# ──────────────────────────────────────────────────────────────────────────────
 # SINGLE SIMULATION
 # ──────────────────────────────────────────────────────────────────────────────
 
 def run_simulation(
-    config:  SimulationConfig,
-    verbose: bool = True,
+    config:      SimulationConfig,
+    verbose:     bool = True,
+    noise_model: str  = "depolarizing",   # ← NEW param (default = Phase-1 behaviour)
 ) -> SimulationResult:
     """
-    Full BB84 pipeline for one SimulationConfig.
+    Full BB84 pipeline.
 
-    Steps
-    ─────
-    1. Quantum transmission  (Alice → [Eve] → Bob)
-    2. Key sifting           (basis reconciliation)
-    3. QBER estimation       (random sample comparison)
-    4. Key distillation      (remove sampled bits)
-       └── Phase 5 stub:     error correction + privacy amplification
+    Parameters
+    ──────────
+    config      : SimulationConfig
+    verbose     : print progress + summary
+    noise_model : which channel to use
+                  'depolarizing' (default) | 'amplitude_damp' |
+                  'phase_damp' | 'fiber_loss' | 'combined' | 'ideal'
 
-    Returns a SimulationResult with all metrics.
+    For Phase-3 noise models the config must carry the extra fields
+    (t1_ns, t2_ns, gate_time_ns, channel_length_km).  The easiest way
+    is to attach them directly:
+
+        cfg = SimulationConfig(n_qubits=500, noise_enabled=False)
+        cfg.t1_ns        = 40_000   # 40 µs T1
+        cfg.gate_time_ns = 50
+        result = run_simulation(cfg, noise_model='amplitude_damp')
     """
     if verbose:
         _print_header(config)
 
     start = time.time()
 
-    # ── Seed global RNGs for reproducibility ──────────────────────────────
     if config.seed is not None:
         random.seed(config.seed)
         np.random.seed(config.seed)
 
-    # ── Instantiate parties ───────────────────────────────────────────────
     alice   = Alice(config.n_qubits, seed=config.seed)
     bob     = Bob(config.n_qubits,   seed=config.seed)
-    channel = QuantumChannel(config.noise_enabled, config.depolar_prob)
+    channel = _build_channel(config, noise_model)
     eve     = Eve(config.eve_intercept_prob, seed=config.seed) \
               if config.eve_present else None
 
-    # ═══════════════════════════════════════════════════════════════════════
-    # STEP 1 — Quantum Transmission
-    # ═══════════════════════════════════════════════════════════════════════
+    # ── Step 1: Quantum Transmission ──────────────────────────────────────
     if verbose:
         print(f"\n  [1/4] Quantum Transmission  ({config.n_qubits} qubits)...")
 
+    lost = 0   # photons lost in fiber model
     for i in range(config.n_qubits):
         if verbose and i % 250 == 0:
             print(f"        ↳ {i}/{config.n_qubits} qubits sent", end="\r")
@@ -116,32 +177,40 @@ def run_simulation(
         qc = alice.prepare_qubit(i)
         if eve:
             qc = eve.intercept(qc, i, channel)
-        bob.measure(qc, i, channel)
+
+        # fiber_loss model may return None for lost photons
+        result_bit = channel.run_circuit(qc)
+        if result_bit is None:
+            bob.measured_bits[i] = None   # mark as lost
+            lost += 1
+        else:
+            bob.measured_bits[i] = result_bit
 
     if verbose:
-        print(f"        ↳ {config.n_qubits}/{config.n_qubits} qubits sent ✓")
+        print(f"        ↳ {config.n_qubits}/{config.n_qubits} qubits sent ✓"
+              + (f"  ({lost} lost to fiber)" if lost else ""))
 
-    # ═══════════════════════════════════════════════════════════════════════
-    # STEP 2 — Key Sifting
-    # ═══════════════════════════════════════════════════════════════════════
+    # ── Step 2: Key Sifting ───────────────────────────────────────────────
+    # Exclude positions where Bob's photon was lost
+    valid = [i for i in range(config.n_qubits) if bob.measured_bits[i] is not None]
+    alice_bases_valid = [alice.bases[i] for i in valid]
+    bob_bases_valid   = [bob.bases[i]   for i in valid]
+
+    matching_rel = sift_keys(alice_bases_valid, bob_bases_valid)
+    matching_indices = [valid[j] for j in matching_rel]   # back to absolute idx
+
+    alice_sifted = [alice.bits[i]         for i in matching_indices]
+    bob_sifted   = [bob.measured_bits[i]  for i in matching_indices]
+
+    sift_rate = len(matching_indices) / config.n_qubits
+
     if verbose:
-        print(f"\n  [2/4] Key Sifting (basis reconciliation)...")
+        print(f"\n  [2/4] Key Sifting...")
+        print(f"        ↳ {len(matching_indices)} bits retained ({sift_rate:.1%})")
 
-    matching_indices = sift_keys(alice.bases, bob.bases)
-    alice_sifted     = alice.sift_key(matching_indices)
-    bob_sifted       = bob.sift_key(matching_indices)
-    sift_rate        = len(matching_indices) / config.n_qubits
-
+    # ── Step 3: QBER Estimation ───────────────────────────────────────────
     if verbose:
-        print(f"        ↳ {len(matching_indices)} bits retained "
-              f"({sift_rate:.1%} — expected ~50 %)")
-
-    # ═══════════════════════════════════════════════════════════════════════
-    # STEP 3 — QBER Estimation
-    # ═══════════════════════════════════════════════════════════════════════
-    if verbose:
-        print(f"\n  [3/4] QBER Estimation "
-              f"(sample fraction = {config.sample_fraction:.0%})...")
+        print(f"\n  [3/4] QBER Estimation (sample = {config.sample_fraction:.0%})...")
 
     qber_result = estimate_qber(
         alice_sifted, bob_sifted,
@@ -156,29 +225,15 @@ def run_simulation(
         print(f"        ↳ Errors : {qber_result.errors} / {qber_result.sample_size}")
         print(f"        ↳ Status : {qber_result.security_status}")
 
-    # ═══════════════════════════════════════════════════════════════════════
-    # STEP 4 — Key Distillation  (Phase 5 stub lives here)
-    # ═══════════════════════════════════════════════════════════════════════
+    # ── Step 4: Key Distillation ──────────────────────────────────────────
     s           = qber_result.sample_size
     alice_final = alice_sifted[s:]
     bob_final   = bob_sifted[s:]
-
-    # ┌─────────────────────────────────────────────────────────────────────┐
-    # │  PHASE 5 HOOK — Error Correction + Privacy Amplification           │
-    # │                                                                     │
-    # │  if config.ecc_scheme != "none":                                    │
-    # │      alice_final, bob_final = apply_error_correction(              │
-    # │          alice_final, bob_final, scheme=config.ecc_scheme)         │
-    # │  if config.privacy_amp:                                             │
-    # │      alice_final = privacy_amplify(alice_final, qber_result.qber)  │
-    # │      bob_final   = privacy_amplify(bob_final,   qber_result.qber)  │
-    # └─────────────────────────────────────────────────────────────────────┘
 
     if verbose:
         print(f"\n  [4/4] Key Distillation...")
         print(f"        ↳ Final key : {len(alice_final)} bits")
 
-    # ── Derived metrics ───────────────────────────────────────────────────
     key_length          = len(alice_final)
     key_generation_rate = key_length / config.n_qubits
 
@@ -192,7 +247,6 @@ def run_simulation(
     eve_rate       = (eve.intercepted_count / config.n_qubits) if eve else None
     runtime        = time.time() - start
 
-    # ── Build result ──────────────────────────────────────────────────────
     result = SimulationResult(
         label               = config.label,
         n_transmitted       = config.n_qubits,
@@ -216,16 +270,12 @@ def run_simulation(
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# MULTI-SCENARIO COMPARISON
+# MULTI-SCENARIO COMPARISON  (unchanged)
 # ──────────────────────────────────────────────────────────────────────────────
 
 def run_comparison(
     scenarios: Optional[List[Tuple[str, SimulationConfig]]] = None,
 ) -> List[SimulationResult]:
-    """
-    Run a list of (name, config) pairs and return all SimulationResults.
-    Delegates plotting to bb84_plots.py so this module stays plot-free.
-    """
     if scenarios is None:
         scenarios = PRESET_SCENARIOS
 
@@ -248,12 +298,12 @@ def run_comparison(
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# PRETTY PRINT HELPERS
+# PRETTY PRINT HELPERS  (unchanged)
 # ──────────────────────────────────────────────────────────────────────────────
 
 def _print_header(config: SimulationConfig) -> None:
     print("\n" + "═" * 60)
-    print("  BB84 QKD SIMULATOR — Phase 1 Baseline")
+    print("  BB84 QKD SIMULATOR — Phase 1 / 3")
     print("  University of Ruhuna, Dept. of Computer Engineering")
     print("═" * 60)
     print(f"  Label        : {config.label}")
