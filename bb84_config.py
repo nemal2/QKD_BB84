@@ -1,104 +1,157 @@
 """
 bb84_config.py
-==============
-Configuration and result data models for the BB84 Phase 1 simulator.
+══════════════════════════════════════════════════════════════
+University of Ruhuna — Dept. of Computer Engineering
+
+Single source of truth for all simulation parameters.
+All future phases add fields here with safe defaults so that
+existing Phase 1 code continues to run without changes.
+
+Phase history
+─────────────
+Phase 1  :  n_qubits, eve_*, noise_enabled, depolar_prob,
+            sample_fraction, seed, label
+Phase 3  :  noise_model, t1_ns, t2_ns, gate_time_ns,
+            channel_length_km          ← added this phase
+Phase 4  :  (planned) attack_type, mean_photon_number, decoy_*
+Phase 5  :  (planned) ecc_enabled, privacy_amp_enabled
+══════════════════════════════════════════════════════════════
 """
 
 from __future__ import annotations
+from dataclasses import dataclass
+from typing import List, Optional
 
-from dataclasses import asdict, dataclass, field
-from typing import Any, Dict, List, Optional
 
+# ══════════════════════════════════════════════════════════════════════
+# SIMULATION CONFIGURATION
+# ══════════════════════════════════════════════════════════════════════
 
 @dataclass
 class SimulationConfig:
-    """Runtime configuration for one BB84 simulation run."""
+    """One complete BB84 simulation configuration."""
 
-    n_qubits: int = 500
-    eve_present: bool = False
-    eve_intercept_prob: float = 0.0
-    noise_enabled: bool = False
-    depolar_prob: float = 0.0
-    sample_fraction: float = 0.10
-    seed: Optional[int] = None
-    label: str = "Custom"
+    # ── PHASE 1 ───────────────────────────────────────────────────────
+    n_qubits:           int   = 1000
+    """Total qubits Alice transmits."""
 
-    def __post_init__(self) -> None:
-        if self.n_qubits <= 0:
-            raise ValueError("n_qubits must be > 0")
-        if not 0.0 <= self.eve_intercept_prob <= 1.0:
-            raise ValueError("eve_intercept_prob must be between 0 and 1")
-        if not 0.0 <= self.depolar_prob <= 1.0:
-            raise ValueError("depolar_prob must be between 0 and 1")
-        if not 0.0 < self.sample_fraction <= 1.0:
-            raise ValueError("sample_fraction must be in (0, 1]")
-        if not self.eve_present and self.eve_intercept_prob != 0.0:
-            self.eve_intercept_prob = 0.0
-        if not self.noise_enabled and self.depolar_prob != 0.0:
-            self.depolar_prob = 0.0
+    eve_present:        bool  = False
+    """True → Eve performs intercept-resend."""
+
+    eve_intercept_prob: float = 1.0
+    """Fraction of qubits Eve intercepts [0.0 – 1.0]."""
+
+    noise_enabled:      bool  = False
+    """True → apply channel noise (model chosen by noise_model)."""
+
+    depolar_prob:       float = 0.01
+    """Depolarizing error probability per gate. Used when noise_model='depolarizing'."""
+
+    sample_fraction:    float = 0.10
+    """Fraction of sifted key consumed for QBER estimation."""
+
+    seed:     Optional[int]   = 42
+    """RNG seed. None = random run, int = reproducible."""
+
+    label:              str   = "Simulation"
+    """Human-readable name used in plots and console output."""
+
+    # ── PHASE 3 — Noise models ─────────────────────────────────────────
+    noise_model:        str   = "depolarizing"
+    """
+    Which noise model to apply when noise_enabled=True.
+
+    Choices
+    ───────
+    'depolarizing'   — uniform Pauli noise (Phase 1 default)
+    'amplitude_damp' — T1 energy relaxation  (qubit decays |1⟩→|0⟩)
+    'phase_damp'     — T2 pure dephasing     (phase coherence lost)
+    'combined'       — T1 + T2 together      (most physically realistic)
+    'fiber_loss'     — distance-based photon loss in fibre
+    """
+
+    t1_ns:              float = 100_000.0
+    """
+    T1 relaxation time in nanoseconds.
+    Used by noise_model='amplitude_damp' and 'combined'.
+    Typical superconducting qubit: 10 000 – 500 000 ns (10–500 µs).
+    """
+
+    t2_ns:              float = 50_000.0
+    """
+    T2 dephasing time in nanoseconds.
+    Used by noise_model='phase_damp' and 'combined'.
+    Constraint: T2 ≤ 2·T1 always (Bloch sphere).
+    Typical superconducting qubit: 5 000 – 200 000 ns.
+    """
+
+    gate_time_ns:       float = 50.0
+    """
+    Single-qubit gate operation time in nanoseconds.
+    Used to compute γ = 1 − exp(−gate_time_ns / T1_ns)  and
+                    λ = 1 − exp(−gate_time_ns / T2_ns).
+    Typical superconducting qubit: 20 – 100 ns.
+    """
+
+    channel_length_km:  float = 0.0
+    """
+    Fibre channel length in kilometres.
+    Used only when noise_model='fiber_loss'.
+    Standard SMF-28 fibre: 0.2 dB/km attenuation at 1550 nm.
+    Photon survival: P = 10^(−0.2 × L / 10).
+    """
 
 
-# ──────────────────────────────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════
+# QBER RESULT
+# ══════════════════════════════════════════════════════════════════════
 
 @dataclass
 class QBERResult:
-    """
-    Quantum Bit Error Rate summary with Wilson confidence interval.
-
-    Field names match what bb84_core.estimate_qber() produces and
-    what bb84_runner / bb84_plots consume.
-    """
-
-    qber: float
-    errors: int           # was n_errors  — renamed to match core + runner
-    sample_size: int      # was n_sampled — renamed to match core + runner
-    confidence_low: float # was ci_low    — renamed to match core + runner
-    confidence_high: float# was ci_high   — renamed to match core + runner
-    security_status: str  # set by bb84_core.estimate_qber(), plain field
-    qber_threshold: float = 0.11
-
-    def __post_init__(self) -> None:
-        if not 0.0 <= self.qber <= 1.0:
-            raise ValueError("qber must be between 0 and 1")
-        if self.errors < 0 or self.sample_size < 0:
-            raise ValueError("errors and sample_size must be >= 0")
-        if self.errors > self.sample_size:
-            raise ValueError("errors cannot exceed sample_size")
+    """Output from estimate_qber()."""
+    qber:            float   # Quantum Bit Error Rate  (0.0 – 1.0)
+    errors:          int     # disagreements in the sample
+    sample_size:     int     # bits consumed for estimation
+    security_status: str     # 'SECURE ✓' | 'WARNING ⚠' | 'ABORT ✗'
+    confidence_low:  float   # 95 % Wilson CI lower bound
+    confidence_high: float   # 95 % Wilson CI upper bound
 
 
-# ──────────────────────────────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════
+# SIMULATION RESULT
+# ══════════════════════════════════════════════════════════════════════
 
 @dataclass
 class SimulationResult:
-    """
-    Complete output summary for one BB84 simulation run.
+    """Complete output of one run_simulation() call."""
 
-    Field names match what bb84_runner.run_simulation() produces and
-    what bb84_plots consumes.
-    """
+    config:                SimulationConfig
+    n_transmitted:         int
+    n_sifted:              int
+    sifted_key_rate:       float
+    qber_result:           QBERResult
+    alice_final_key:       List[int]
+    bob_final_key:         List[int]
+    key_agreement_rate:    float
+    eve_interception_rate: float
+    runtime_seconds:       float
 
-    label: str                          # config.label
-    n_transmitted: int                  # qubits sent by Alice
-    n_sifted: int                       # bits after basis sifting
-    key_length: int                     # bits after QBER sample removed
-    sifted_key_rate: float              # n_sifted / n_transmitted
-    key_generation_rate: float          # key_length / n_transmitted
-    qber_result: QBERResult
-    key_agreement_rate: float           # fraction of final key bits that match
-    keys_match: bool                    # True when agreement == 1.0
-    runtime_seconds: float
-    alice_key: List[int] = field(default_factory=list)
-    bob_key: List[int]   = field(default_factory=list)
-    eve_intercept_rate: Optional[float] = None   # None when Eve absent
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    # Phase 4 fields (default 0.0 so Phase 1/3 results still construct fine)
+    pns_multi_photon_rate: float = 0.0
+    pns_detection_rate:    float = 0.0
 
-    def as_dict(self) -> Dict[str, Any]:
-        """Return a fully serialisable dict representation."""
-        return asdict(self)
+    # Phase 5 fields
+    post_processing:       Optional[object] = None
+    security_analysis:     Optional[object] = None
 
+    @property
+    def key_length(self) -> int:
+        return len(self.alice_final_key)
 
-__all__ = [
-    "SimulationConfig",
-    "QBERResult",
-    "SimulationResult",
-]
+    @property
+    def keys_match(self) -> bool:
+        return self.alice_final_key == self.bob_final_key
+
+    @property
+    def key_generation_rate(self) -> float:
+        return self.key_length / self.n_transmitted if self.n_transmitted else 0.0
