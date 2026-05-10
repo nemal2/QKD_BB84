@@ -19,7 +19,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
-from bb84_config import SimulationConfig, SimulationResult
+from bb84config import SimulationConfig, SimulationResult
 from bb84_runner import run_simulation
 
 

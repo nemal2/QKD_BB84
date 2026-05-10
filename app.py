@@ -18,6 +18,37 @@ from bb84_plots import plot_comparison, plot_qber_vs_intercept_rate
 import matplotlib.pyplot as plt
 
 # ══════════════════════════════════════════════════════════════════════════════
+# CACHING & OPTIMIZATION
+# ══════════════════════════════════════════════════════════════════════════════
+
+@st.cache_resource
+def get_cached_simulation(config_dict: str, seed: int) -> SimulationResult:
+    """Cache simulation results by configuration."""
+    import json
+    config_data = json.loads(config_dict)
+    config = SimulationConfig(**config_data)
+    return run_simulation(config, verbose=False)
+
+def run_cached_simulation(config: SimulationConfig) -> SimulationResult:
+    """Run simulation with caching based on config parameters."""
+    import json
+    config_dict = json.dumps({
+        'n_qubits': config.n_qubits,
+        'eve_present': config.eve_present,
+        'eve_intercept_prob': config.eve_intercept_prob,
+        'noise_enabled': config.noise_enabled,
+        'noise_model': config.noise_model,
+        'depolar_prob': config.depolar_prob,
+        'phase_damp_prob': config.phase_damp_prob,
+        'amplitude_damp_prob': config.amplitude_damp_prob,
+        'sample_fraction': config.sample_fraction,
+        'seed': config.seed if config.seed is not None else 42,
+        'label': config.label,
+        'attack_model': config.attack_model,
+    })
+    return get_cached_simulation(config_dict, config.seed if config.seed is not None else 42)
+
+# ══════════════════════════════════════════════════════════════════════════════
 # PAGE CONFIG
 # ══════════════════════════════════════════════════════════════════════════════
 
@@ -328,7 +359,7 @@ elif page == "Single Simulation":
             seed = None
     
     # Run Simulation
-    if st.button("Run Simulation", key="single_run", use_container_width=True):
+    if st.button("Run Simulation", key="single_run", width="stretch"):
         config = SimulationConfig(
             n_qubits=n_qubits,
             eve_present=eve_present,
@@ -341,8 +372,19 @@ elif page == "Single Simulation":
             label=f"Custom ({n_qubits} qubits)"
         )
         
+        # Progress tracking
+        progress_bar = st.progress(0)
+        status_text = st.empty()
+        
+        status_text.text("⏳ Initializing simulation...")
+        progress_bar.progress(10)
+        
         with st.spinner("🔄 Running simulation..."):
-            result = run_simulation(config)
+            progress_bar.progress(20)
+            status_text.text("📡 Quantum transmission in progress...")
+            result = run_cached_simulation(config)
+            progress_bar.progress(100)
+            status_text.text("✅ Simulation complete!")
         
         st.success("Simulation Complete!")
         
@@ -398,12 +440,12 @@ elif page == "Single Simulation":
         
         with col3:
             st.subheader("Key Statistics")
-            st.write(f"**Secret Key Length:** {result.secret_key_length} bits")
-            st.write(f"**Secret Key Rate:** {result.secret_key_rate:.3f} bits/qubit")
+            st.write(f"**Secret Key Length:** {result.key_length} bits")
+            st.write(f"**Secret Key Rate:** {result.key_generation_rate:.3f} bits/qubit")
             
             # Key rate explanation
             expected_rate = 0.25 * (1 - sample_fraction)  # Rough estimate
-            actual_rate = result.secret_key_rate
+            actual_rate = result.key_generation_rate
             if actual_rate > 0.15:
                 st.success("Good key generation rate")
             elif actual_rate > 0.05:
@@ -436,7 +478,7 @@ elif page == "Single Simulation":
             }
         ))
         
-        st.plotly_chart(fig_qber, use_container_width=True)
+        st.plotly_chart(fig_qber, width="stretch")
 
 # ══════════════════════════════════════════════════════════════════════════════
 # SCENARIO COMPARISON
@@ -464,7 +506,7 @@ elif page == "Scenario Comparison":
             if name in selected_scenarios
         ]
         
-        if st.button("Run Comparison", use_container_width=True):
+        if st.button("Run Comparison", width="stretch"):
             with st.spinner("🔄 Running comparisons..."):
                 results = run_comparison(selected_configs)
             
@@ -480,18 +522,18 @@ elif page == "Scenario Comparison":
                     "Key Rate": f"{result.sifted_key_rate:.1%}",
                     "QBER": f"{result.qber_result.qber:.2%}",
                     "Status": result.qber_result.security_status,
-                    "Secret Key": result.secret_key_length,
+                    "Secret Key": result.key_length,
                 })
             
             df = pd.DataFrame(comparison_data)
-            st.dataframe(df, use_container_width=True)
+            st.dataframe(df, width="stretch")
             
             # Plot comparison
             with st.spinner("📊 Generating plots..."):
                 fig = plt.figure(figsize=(14, 5))
                 plot_comparison(selected_configs, results)
             
-            st.pyplot(fig, use_container_width=True)
+            st.pyplot(fig, width="stretch")
 
 # ══════════════════════════════════════════════════════════════════════════════
 # EVE ANALYSIS
@@ -528,7 +570,7 @@ elif page == "Eve Analysis":
                 depolar_prob = 0.0
                 st.success("Clean channel for pure Eve attack analysis")
     
-    if st.button("Run Eve Analysis", use_container_width=True):
+    if st.button("Run Eve Analysis", width="stretch"):
         with st.spinner("🔄 Sweeping Eve's intercept probability..."):
             intercept_probs = np.linspace(0, 1, n_points)
             qbers = []
@@ -572,7 +614,7 @@ elif page == "Eve Analysis":
             template="plotly_white"
         )
         
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         
         # Summary with interactive explanations
         col1, col2, col3 = st.columns(3)
@@ -670,7 +712,7 @@ elif page == "About":
         ]
     }
     
-    st.dataframe(pd.DataFrame(threshold_data), use_container_width=True)
+    st.dataframe(pd.DataFrame(threshold_data), width="stretch")
     
     st.markdown("---")
     

@@ -27,9 +27,10 @@ import time
 from typing import List, Optional, Tuple
 
 import numpy as np
+from qiskit import QuantumCircuit
 
-from bb84_config import SimulationConfig, SimulationResult
-from bb84_core   import Alice, Bob, Eve, QuantumChannel, sift_keys, estimate_qber
+from bb84config import SimulationConfig, SimulationResult
+from bb84_core  import Alice, Bob, Eve, QuantumChannel, sift_keys, estimate_qber
 
 
 
@@ -111,29 +112,108 @@ def run_simulation(
     # ── Instantiate parties ───────────────────────────────────────────────
     alice   = Alice(config.n_qubits, seed=config.seed)
     bob     = Bob(config.n_qubits,   seed=config.seed)
-    channel = QuantumChannel(config.noise_enabled, config.depolar_prob)
-    eve     = Eve(config.eve_intercept_prob, seed=config.seed) \
-              if config.eve_present else None
+    channel = QuantumChannel(
+        noise_enabled=config.noise_enabled,
+        noise_model=config.noise_model,
+        depolar_prob=config.depolar_prob,
+        phase_damp_prob=config.phase_damp_prob,
+        amplitude_damp_prob=config.amplitude_damp_prob,
+    )
+    eve     = Eve(
+        intercept_prob=config.eve_intercept_prob,
+        seed=config.seed,
+        attack_model=config.attack_model,
+    ) if config.eve_present else None
 
     # ═══════════════════════════════════════════════════════════════════════
-    # STEP 1 — Quantum Transmission
+    # STEP 1 — Quantum Transmission (ULTRA-OPTIMIZED BATCH PROCESSING)
     # ═══════════════════════════════════════════════════════════════════════
     if verbose:
         print(f"\n  [1/4] Quantum Transmission  ({config.n_qubits} qubits)...")
-
+    
+    # Batch size - larger batches = fewer simulator calls but more memory
+    batch_size = min(200, max(50, config.n_qubits // 5))  # Adaptive batch sizing
+    
+    # Pre-determine which qubits Eve intercepts (avoid per-qubit RNG calls)
+    eve_intercepts = set()
+    if eve:
+        eve_intercepts = set(
+            i for i in range(config.n_qubits)
+            if random.random() < config.eve_intercept_prob
+        )
+    
+    # Prepare all circuits upfront
+    measurement_circuits = []
+    eve_measurement_circuits = []
+    eve_bases_dict = {}
+    eve_bits_dict = {}
+    
     for i in range(config.n_qubits):
-        if verbose and i % 250 == 0:
-            print(f"        ↳ {i}/{config.n_qubits} qubits sent", end="\r")
-
+        # Alice's qubit
         qc = alice.prepare_qubit(i)
-
+        
+        # Eve intercepts if needed
+        if i in eve_intercepts and eve:
+            eve_base = int(np.random.randint(0, 2))
+            eve_bases_dict[i] = eve_base
+            
+            # Circuit for Eve to measure
+            eve_meas_qc = qc.copy()
+            if eve_base == 1:
+                eve_meas_qc.h(0)
+            eve_meas_qc.measure(0, 0)
+            eve_measurement_circuits.append((i, eve_meas_qc, eve_base))
+            qc = None  # Mark for later re-preparation
+        
+        # Bob's measurement circuit
+        if qc is None:
+            # Eve intercepted - will use Eve's prepared qubit
+            qc = QuantumCircuit(1, 1, name=f"bob{i}")
+        else:
+            qc = qc.copy()
+        
+        if bob.bases[i] == 1:
+            qc.h(0)
+        qc.measure(0, 0)
+        measurement_circuits.append((i, qc))
+    
+    # Run Eve's measurements in batches
+    if eve_measurement_circuits:
+        for batch_start in range(0, len(eve_measurement_circuits), batch_size):
+            batch_end = min(batch_start + batch_size, len(eve_measurement_circuits))
+            batch = eve_measurement_circuits[batch_start:batch_end]
+            
+            eve_qcs = [qc for _, qc, _ in batch]
+            eve_results = channel.run_batch_circuits(eve_qcs)
+            
+            for (i, _, eve_base), bit in zip(batch, eve_results):
+                eve_bits_dict[i] = bit
+        
         if eve:
-            qc = eve.intercept(qc, i, channel)      # Phase 4: swap attack here
-
-        bob.measure(qc, i, channel)
+            eve._eve_bases = eve_bases_dict
+            eve._eve_bits = eve_bits_dict
+            eve._intercepted_count = len(eve_intercepts)
+    
+    # Run Bob's measurements in batches
+    for batch_start in range(0, config.n_qubits, batch_size):
+        batch_end = min(batch_start + batch_size, config.n_qubits)
+        batch = measurement_circuits[batch_start:batch_end]
+        
+        if verbose and batch_start % 250 == 0:
+            print(f"        > {batch_end}/{config.n_qubits} qubits measured", end="\r")
+        
+        batch_qcs = [qc for _, qc in batch]
+        batch_results = channel.run_batch_circuits(batch_qcs)
+        
+        for (idx, _), bit in zip(batch, batch_results):
+            if idx not in eve_intercepts or not eve:
+                bob.measured_bits[idx] = bit
+            else:
+                # For intercepted qubits, Bob measures Eve's prepared state
+                bob.measured_bits[idx] = bit
 
     if verbose:
-        print(f"        ↳ {config.n_qubits}/{config.n_qubits} qubits sent ✓")
+        print(f"        > {config.n_qubits}/{config.n_qubits} qubits measured [OK]")
 
     # ═══════════════════════════════════════════════════════════════════════
     # STEP 2 — Key Sifting
@@ -147,8 +227,8 @@ def run_simulation(
     sift_rate        = len(matching_indices) / config.n_qubits
 
     if verbose:
-        print(f"        ↳ {len(matching_indices)} bits retained "
-              f"({sift_rate:.1%} — expected ~50 %)")
+        print(f"        > {len(matching_indices)} bits retained "
+              f"({sift_rate:.1%} - expected ~50 %)")
 
     # ═══════════════════════════════════════════════════════════════════════
     # STEP 3 — QBER Estimation
@@ -164,11 +244,11 @@ def run_simulation(
     )
 
     if verbose:
-        print(f"        ↳ QBER   : {qber_result.qber * 100:.2f} %  "
+        print(f"        > QBER   : {qber_result.qber * 100:.2f} %  "
               f"(95 % CI [{qber_result.confidence_low * 100:.1f} %, "
               f"{qber_result.confidence_high * 100:.1f} %])")
-        print(f"        ↳ Errors : {qber_result.errors} / {qber_result.sample_size}")
-        print(f"        ↳ Status : {qber_result.security_status}")
+        print(f"        > Errors : {qber_result.errors} / {qber_result.sample_size}")
+        print(f"        > Status : {qber_result.security_status}")
 
     # ═══════════════════════════════════════════════════════════════════════
     # STEP 4 — Key Distillation  (Phase 5 stub lives here)
@@ -245,21 +325,21 @@ def run_comparison(
     if scenarios is None:
         scenarios = PRESET_SCENARIOS
 
-    print("\n" + "═" * 60)
+    print("\n" + "=" * 60)
     print("  MULTI-SCENARIO COMPARISON")
-    print("═" * 60)
+    print("=" * 60)
 
     results: List[SimulationResult] = []
     for name, cfg in scenarios:
-        print(f"\n  ▶  {name}")
+        print(f"\n  > {name}")
         r = run_simulation(cfg, verbose=False)
         results.append(r)
-        print(f"     QBER = {r.qber_result.qber * 100:.1f} %  │  "
-              f"Key = {r.key_length} bits  │  "
-              f"Status = {r.qber_result.security_status}  │  "
+        print(f"     QBER = {r.qber_result.qber * 100:.1f} %  |  "
+              f"Key = {r.key_length} bits  |  "
+              f"Status = {r.qber_result.security_status}  |  "
               f"{r.runtime_seconds:.1f}s")
 
-    print("\n" + "═" * 60)
+    print("\n" + "=" * 60)
     return results
 
 
@@ -268,10 +348,10 @@ def run_comparison(
 # ──────────────────────────────────────────────────────────────────────────────
 
 def _print_header(config: SimulationConfig) -> None:
-    print("\n" + "═" * 60)
-    print("  BB84 QKD SIMULATOR — Phase 1 Baseline")
+    print("\n" + "=" * 60)
+    print("  BB84 QKD SIMULATOR - Phase 1 Baseline")
     print("  University of Ruhuna, Dept. of Computer Engineering")
-    print("═" * 60)
+    print("=" * 60)
     print(f"  Label        : {config.label}")
     print(f"  Qubits       : {config.n_qubits}")
     eve_str = (f"  (intercept p = {config.eve_intercept_prob})"
@@ -282,11 +362,11 @@ def _print_header(config: SimulationConfig) -> None:
     print(f"  Noise        : {config.noise_enabled}{noise_str}")
     print(f"  QBER Sample  : {config.sample_fraction:.0%} of sifted key")
     print(f"  Seed         : {config.seed}")
-    print("═" * 60)
+    print("=" * 60)
 
 
 def _print_summary(r: SimulationResult) -> None:
-    line = "─" * 60
+    line = "-" * 60
     print(f"\n{line}")
     print("  RESULT SUMMARY")
     print(line)
