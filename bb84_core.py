@@ -23,61 +23,11 @@ from qiskit_aer import AerSimulator
 from qiskit_aer.noise import NoiseModel, depolarizing_error
 
 from bb84_config import QBERResult
+from bb84_noise import QuantumChannel   # Phase 3: use the real noise-aware channel
 
 
 
-# QUANTUM CHANNEL
-# ===============
-
-class QuantumChannel:
-    """
-    Models the physical quantum channel between Alice and Bob.
-
-    Phase 1  : ideal channel  OR  depolarizing noise
-
-    Phase 3 (planned — do NOT implement here yet):
-        • Phase damping          (T2 dephasing)
-        • Amplitude damping      (T1 energy relaxation)
-        • Distance-based photon loss  (Beer-Lambert / fibre loss)
-          → will require new constructor param: channel_length_km
-  
-    Adding Phase 3 noise: subclass QuantumChannel or extend
-    _build_simulator() with a noise_model
-    """
-
-    def __init__(
-        self,
-        noise_enabled: bool  = False,
-        depolar_prob:  float = 0.0,
-    ):
-        self.noise_enabled = noise_enabled
-        self.depolar_prob  = depolar_prob
-        self._simulator    = self._build_simulator()
-
-    #  Private helpers ====================
-
-    def _build_simulator(self) -> AerSimulator:
-        if self.noise_enabled and self.depolar_prob > 0:
-            noise_model = NoiseModel()
-            # Depolarizing channel: E(ρ) = (1-p)ρ + (p/3)(XρX + YρY + ZρZ)
-            error = depolarizing_error(self.depolar_prob, 1)
-            noise_model.add_all_qubit_quantum_error(error, ["x", "h", "id"])
-            print(f"  [Channel] Depolarizing noise  p = {self.depolar_prob}")
-            return AerSimulator(noise_model=noise_model)
-        return AerSimulator()
-
-    #  Public interface ====================
-
-    def run_circuit(self, qc: QuantumCircuit) -> int:
-        """
-        Simulate a single-qubit measurement circuit.
-        Returns the measured bit (0 or 1).
-
-        Phase 3 note: photon-loss model will need a 'lost' return value
-        """
-        job    = self._simulator.run(transpile(qc, self._simulator), shots=1)
-        counts = job.result().get_counts()
-        return int(list(counts.keys())[0])
+# QuantumChannel imported from bb84_noise (Phase 3) — see import above
 
 
 # ALICE — Quantum State Preparation ===============================
@@ -138,6 +88,9 @@ class Bob:
         rng = np.random.default_rng(None if seed is None else seed + 99)
         self.bases: List[int]           = rng.integers(0, 2, n_qubits).tolist()
         self.measured_bits: List[Optional[int]] = [None] * n_qubits
+        # Per-shot seed base: unique prime multiple so Bob's shots don't
+        # collide with Eve's shot seeds even at the same qubit index.
+        self._shot_seed_base = (seed * 7919) if seed is not None else None
 
     def measure(
         self,
@@ -153,7 +106,8 @@ class Bob:
         if self.bases[index] == 1:
             meas_qc.h(0)          # rotate to diagonal basis before measuring
         meas_qc.measure(0, 0)
-        bit = channel.run_circuit(meas_qc)
+        shot_seed = (self._shot_seed_base + index) if self._shot_seed_base is not None else None
+        bit = channel.run_circuit(meas_qc, shot_seed=shot_seed)
         self.measured_bits[index] = bit
         return bit
 
@@ -190,10 +144,12 @@ class Eve:
         seed:           Optional[int] = None,
     ):
         self.intercept_prob    = intercept_prob
-        self._rng              = np.random.default_rng(seed)
+        self._rng = np.random.default_rng(None if seed is None else seed + 200)
         self.intercepted_count = 0
         self._eve_bases:  Dict[int, int] = {}
         self._eve_bits:   Dict[int, int] = {}
+        # Different prime from Bob's so Eve's shot seeds never collide.
+        self._shot_seed_base = (seed * 6271) if seed is not None else None
 
     # ── Public interface ==========================================
 
@@ -224,7 +180,8 @@ class Eve:
         if eve_base == 1:
             meas_qc.h(0)
         meas_qc.measure(0, 0)
-        measured_bit = channel.run_circuit(meas_qc)
+        shot_seed = (self._shot_seed_base + index) if self._shot_seed_base is not None else None
+        measured_bit = channel.run_circuit(meas_qc, shot_seed=shot_seed)
         self._eve_bits[index] = measured_bit
 
         # ── Step 3: Re-prepare qubit from Eve's result ─────────────────
