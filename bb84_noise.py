@@ -149,7 +149,7 @@ class QuantumChannel:
 
     # ── Public interface ──────────────────────────────────────────────
 
-    def run_circuit(self, qc: QuantumCircuit) -> Optional[int]:
+    def run_circuit(self, qc: QuantumCircuit, shot_seed: Optional[int] = None) -> Optional[int]:
         """
         Simulate a single-qubit measurement circuit through this channel.
 
@@ -158,7 +158,9 @@ class QuantumChannel:
         int   (0 or 1)  — measured bit value
         None            — photon lost (fiber_loss model only)
 
-        The caller (Bob.measure or Eve.intercept) must handle None.
+        shot_seed : per-measurement seed derived from global seed + qubit
+                    index.  Gives reproducible results without the global
+                    seed_simulator=12345 bug that collapsed all outcomes.
         """
         # Fiber loss: probabilistic photon survival BEFORE gate noise
         if (self.noise_enabled
@@ -167,7 +169,10 @@ class QuantumChannel:
                 return None        # photon absorbed / scattered in fibre
 
         # All other models: Qiskit simulation with noise
-        job    = self._simulator.run(transpile(qc, self._simulator), shots=1)
+        run_kwargs = {"shots": 1}
+        if shot_seed is not None:
+            run_kwargs["seed_simulator"] = int(shot_seed) % (2**31)
+        job    = self._simulator.run(transpile(qc, self._simulator), **run_kwargs)
         counts = job.result().get_counts()
         return int(list(counts.keys())[0])
 
@@ -290,5 +295,4 @@ class QuantumChannel:
                   f"using ideal channel.")
             return AerSimulator()
 
-        print(f"  [Channel] {self.description}")
         return AerSimulator(noise_model=nm)
