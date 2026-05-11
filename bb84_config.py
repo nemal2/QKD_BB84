@@ -19,7 +19,7 @@ Phase 5  :  (planned) ecc_enabled, privacy_amp_enabled
 """
 
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Optional
 
 
@@ -68,6 +68,14 @@ class SimulationConfig:
     'phase_damp'     — T2 pure dephasing     (phase coherence lost)
     'combined'       — T1 + T2 together      (most physically realistic)
     'fiber_loss'     — distance-based photon loss in fibre
+    """
+
+    noise_models:       List[str] = field(default_factory=list)
+    """
+    Multiple noise models applied sequentially per gate.
+    If non-empty, overrides noise_model. fiber_loss is always
+    applied at the channel level regardless of order.
+    Example: ['depolarizing', 'amplitude_damp', 'fiber_loss']
     """
 
     t1_ns:              float = 100_000.0

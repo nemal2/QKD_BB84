@@ -497,7 +497,12 @@ elif page == "sim":
         # Main parameters
         mp1, mp2, mp3, mp4 = st.columns([2, 1, 1, 1])
         with mp1:
-            n_qubits = st.slider("Number of qubits", 100, 2000, 600, 50, key="s_n")
+            n_qubits = st.number_input(
+                "Number of qubits", min_value=10, max_value=50_000,
+                value=600, step=50, key="s_n",
+                help="Type any value or use ▲/▼. Range: 10 – 50,000.",
+            )
+            n_qubits = int(n_qubits)
         with mp2:
             sample_pct = st.slider("QBER sample (%)", 5, 30, 10, 1, key="s_sp")
             sample_fraction = sample_pct / 100.0
@@ -550,6 +555,7 @@ elif page == "sim":
                 unsafe_allow_html=True,
             )
             noise_enabled = st.checkbox("Enable noise model", key="s_noise")
+            noise_models_selected: list = []
             noise_model = "depolarizing"
             depolar_prob = 0.01
             t1_ns = 100_000.0
@@ -557,63 +563,54 @@ elif page == "sim":
             gate_time_ns = 50.0
             channel_length_km = 0.0
 
+            _NM_LABELS = {
+                "depolarizing": "Depolarizing (Pauli)",
+                "amplitude_damp": "Amplitude Damping (T1)",
+                "phase_damp": "Phase Damping (T2)",
+                "combined": "Combined T1+T2",
+                "fiber_loss": "Fiber Loss",
+            }
+
             if noise_enabled:
-                noise_model = st.selectbox(
-                    "Model",
-                    [
-                        "depolarizing",
-                        "amplitude_damp",
-                        "phase_damp",
-                        "combined",
-                        "fiber_loss",
-                    ],
-                    key="s_nm",
-                    format_func=lambda x: {
-                        "depolarizing": "Depolarizing (Pauli)",
-                        "amplitude_damp": "Amplitude Damping (T1)",
-                        "phase_damp": "Phase Damping (T2)",
-                        "combined": "Combined T1 + T2",
-                        "fiber_loss": "Fiber Loss",
-                    }[x],
+                noise_models_selected = st.multiselect(
+                    "Noise models — select multiple to combine",
+                    list(_NM_LABELS.keys()),
+                    default=["depolarizing"],
+                    format_func=lambda x: _NM_LABELS[x],
+                    key="s_nm_multi",
                 )
-                if noise_model == "depolarizing":
+                noise_model = noise_models_selected[0] if noise_models_selected else "depolarizing"
+
+                if "depolarizing" in noise_models_selected:
                     depolar_prob = st.slider(
-                        "Gate error prob",
-                        0.001,
-                        0.20,
-                        0.05,
-                        0.001,
-                        format="%.3f",
-                        key="s_dp",
+                        "Gate error prob (depolarizing)",
+                        0.001, 0.20, 0.05, 0.001,
+                        format="%.3f", key="s_dp",
                     )
                     st.caption(f"p/3 = {depolar_prob / 3:.5f} per Pauli")
-                elif noise_model == "amplitude_damp":
-                    t1_us = st.slider("T1 (µs)", 1.0, 500.0, 10.0, 1.0, key="s_t1")
-                    gate_time_ns = st.slider(
-                        "Gate time (ns)", 10, 200, 50, 5, key="s_gtad"
-                    )
+
+                _needs_t1   = any(m in noise_models_selected for m in ["amplitude_damp", "combined"])
+                _needs_t2   = any(m in noise_models_selected for m in ["phase_damp", "combined"])
+                _needs_gate = any(m in noise_models_selected for m in ["amplitude_damp", "phase_damp", "combined"])
+
+                if _needs_t1:
+                    t1_us = st.slider("T1 relaxation (µs)", 1.0, 500.0, 10.0, 1.0, key="s_t1m")
                     t1_ns = t1_us * 1000
-                    st.caption(f"γ = {1.0 - math.exp(-gate_time_ns / t1_ns):.6f}")
-                elif noise_model == "phase_damp":
-                    t2_us = st.slider("T2 (µs)", 0.5, 200.0, 5.0, 0.5, key="s_t2p")
-                    gate_time_ns = st.slider(
-                        "Gate time (ns)", 10, 200, 50, 5, key="s_gtpd"
-                    )
-                    t2_ns = t2_us * 1000
-                    st.caption(f"λ = {1.0 - math.exp(-gate_time_ns / t2_ns):.6f}")
-                elif noise_model == "combined":
-                    t1_us = st.slider("T1 (µs)", 1.0, 500.0, 10.0, 1.0, key="s_t1c")
-                    t2_us = st.slider("T2 (µs)", 0.5, 200.0, 8.0, 0.5, key="s_t2c")
-                    gate_time_ns = st.slider(
-                        "Gate time (ns)", 10, 200, 50, 5, key="s_gtc"
-                    )
-                    t1_ns = t1_us * 1000
+                if _needs_t2:
+                    t2_us = st.slider("T2 dephasing (µs)", 0.5, 200.0, 5.0, 0.5, key="s_t2m")
                     t2_ns = min(t2_us * 1000, 2.0 * t1_ns - 1.0)
                     if t2_us * 1000 > 2 * t1_ns:
                         st.warning("T2 clamped to 2·T1")
-                elif noise_model == "fiber_loss":
+                if _needs_gate:
+                    gate_time_ns = st.slider("Gate time (ns)", 10, 200, 50, 5, key="s_gtm")
+                    if _needs_t1:
+                        st.caption(f"γ(T1) = {1.0 - math.exp(-gate_time_ns / t1_ns):.6f}")
+                    if _needs_t2:
+                        st.caption(f"λ(T2) = {1.0 - math.exp(-gate_time_ns / t2_ns):.6f}")
+
+                if "fiber_loss" in noise_models_selected:
                     channel_length_km = st.slider(
-                        "Channel length (km)", 0.0, 200.0, 50.0, 5.0, key="s_km"
+                        "Channel length (km)", 0.0, 200.0, 50.0, 5.0, key="s_kmm"
                     )
                     if channel_length_km > 0:
                         survive = 10 ** (-0.2 * channel_length_km / 10)
@@ -644,6 +641,7 @@ elif page == "sim":
 
     # ── Run logic ─────────────────────────────────────────────────────────
     if run_clicked or preset_clicked is not None:
+        _active_noise_models = noise_models_selected  # from UI multiselect
         if preset_clicked is not None:
             pc_cfg = preset_map[preset_clicked]
             n_qubits = pc_cfg.n_qubits
@@ -657,6 +655,7 @@ elif page == "sim":
             gate_time_ns = pc_cfg.gate_time_ns
             channel_length_km = pc_cfg.channel_length_km
             sim_label = pc_cfg.label
+            _active_noise_models = []  # presets use single noise_model
 
         cfg = SimulationConfig(
             n_qubits=n_qubits,
@@ -664,6 +663,7 @@ elif page == "sim":
             eve_intercept_prob=eve_intercept_prob,
             noise_enabled=noise_enabled,
             noise_model=noise_model,
+            noise_models=_active_noise_models,
             depolar_prob=depolar_prob,
             t1_ns=t1_ns,
             t2_ns=t2_ns,
@@ -834,15 +834,17 @@ elif page == "sim":
         with col_r:
             st.markdown("**Run configuration**")
             cfg_r = r.config
+            _nm_desc = {
+                "depolarizing": f"Depolar p={cfg_r.depolar_prob:.3f}",
+                "amplitude_damp": f"AmpDamp T1={cfg_r.t1_ns / 1000:.0f}µs",
+                "phase_damp": f"PhaseDamp T2={cfg_r.t2_ns / 1000:.0f}µs",
+                "combined": "T1+T2",
+                "fiber_loss": f"Fiber {cfg_r.channel_length_km:.0f}km",
+            }
             ch = "Ideal"
             if cfg_r.noise_enabled:
-                ch = {
-                    "depolarizing": f"Depolarizing  p={cfg_r.depolar_prob:.3f}",
-                    "amplitude_damp": f"Amp. damp  T1={cfg_r.t1_ns / 1000:.0f} µs",
-                    "phase_damp": f"Phase damp  T2={cfg_r.t2_ns / 1000:.0f} µs",
-                    "combined": "T1+T2",
-                    "fiber_loss": f"Fiber {cfg_r.channel_length_km:.0f} km",
-                }.get(cfg_r.noise_model, cfg_r.noise_model)
+                _mlist = cfg_r.noise_models if cfg_r.noise_models else [cfg_r.noise_model]
+                ch = " + ".join(_nm_desc.get(m, m) for m in _mlist)
             st.dataframe(
                 pd.DataFrame(
                     {
@@ -1085,6 +1087,165 @@ elif page == "analysis":
                 **{**_PL, "height": 230, "margin": dict(t=10, b=10, l=10, r=10)}
             )
             st.plotly_chart(fig_e, use_container_width=True)
+
+        st.divider()
+
+        # ── Key quality metrics ───────────────────────────────────────
+        st.markdown("**Key quality & quantum measurement**")
+        key = r.alice_final_key
+        n_key = len(key)
+        p1 = sum(key) / n_key if n_key else 0.5
+        p0 = 1 - p1
+        entropy = (
+            -(p0 * math.log2(p0) if p0 > 0 else 0)
+            - (p1 * math.log2(p1) if p1 > 0 else 0)
+        )
+        # Lag-1 autocorrelation
+        arr = np.array(key, dtype=float)
+        ac1 = 0.0
+        if n_key > 2 and arr.var() > 0:
+            m = arr.mean()
+            ac1 = float(np.mean((arr[:-1] - m) * (arr[1:] - m)) / arr.var())
+
+        qm1, qm2, qm3, qm4 = st.columns(4)
+        qm1.metric(
+            "Shannon entropy",
+            f"{entropy:.4f} bits/bit",
+            f"{'ideal' if abs(entropy - 1.0) < 0.05 else f'{(1 - entropy) * 100:.1f}% below max'}",
+        )
+        qm2.metric(
+            "Bit balance  (0s / 1s)",
+            f"{p0 * 100:.1f}% / {p1 * 100:.1f}%",
+            "ideal ≈ 50/50",
+        )
+        qm3.metric(
+            "Lag-1 autocorrelation",
+            f"{ac1:.4f}",
+            "ideal = 0  (independent bits)",
+        )
+        qm4.metric(
+            "Shots per qubit",
+            "1  (single-shot)",
+            "No-cloning theorem",
+        )
+
+        st.write("")
+
+        # ── Entropy + autocorrelation charts ─────────────────────────
+        ea1, ea2 = st.columns(2, gap="large")
+
+        with ea1:
+            st.markdown("**Shannon entropy vs ideal**")
+            fig_ent = go.Figure()
+            fig_ent.add_trace(go.Bar(
+                x=["This key", "Ideal (random)", "Worst case (constant)"],
+                y=[entropy, 1.0, 0.0],
+                marker_color=[status_color, C_GREEN, C_RED],
+                text=[f"{entropy:.4f}", "1.0000", "0.0000"],
+                textposition="outside",
+                textfont_size=11,
+            ))
+            fig_ent.update_layout(
+                **{**_PL, "height": 240,
+                   "margin": dict(t=10, b=10, l=10, r=10),
+                   "yaxis": {**_PL.get("yaxis", {}), "range": [0, 1.15]}},
+            )
+            st.plotly_chart(fig_ent, use_container_width=True)
+            st.caption(
+                "H = 1.0 bit/bit → perfect randomness. "
+                "Low entropy means bits are predictable."
+            )
+
+        with ea2:
+            st.markdown("**Autocorrelation (lags 1–10)**")
+            max_lag = min(10, n_key - 2)
+            lags, acs = [], []
+            for lag in range(1, max_lag + 1):
+                if arr.var() > 0:
+                    c = float(np.mean((arr[:-lag] - arr.mean()) * (arr[lag:] - arr.mean())) / arr.var())
+                else:
+                    c = 0.0
+                lags.append(lag)
+                acs.append(c)
+            fig_ac = go.Figure()
+            fig_ac.add_trace(go.Bar(
+                x=lags, y=acs,
+                marker_color=[C_RED if abs(v) > 0.05 else C_GREEN for v in acs],
+                showlegend=False,
+            ))
+            fig_ac.add_hline(y=0.05,  line_dash="dot", line_color=C_AMBER,
+                             annotation_text="+0.05", annotation_font_size=8)
+            fig_ac.add_hline(y=-0.05, line_dash="dot", line_color=C_AMBER)
+            fig_ac.update_layout(
+                **{**_PL, "height": 240,
+                   "margin": dict(t=10, b=10, l=10, r=10),
+                   "xaxis": {**_PL.get("xaxis", {}), "title": "Lag",
+                              "tickmode": "linear", "dtick": 1},
+                   "yaxis": {**_PL.get("yaxis", {}), "title": "Autocorr."}},
+            )
+            st.plotly_chart(fig_ac, use_container_width=True)
+            st.caption(
+                "Values near 0 = bits are independent across positions. "
+                "Green = safe (|r| < 0.05), Red = correlated."
+            )
+
+        # ── Security margin chart ─────────────────────────────────────
+        st.write("")
+        st.markdown("**Security margin — distance from thresholds**")
+        qber_pct = qr.qber * 100
+        sm_labels = ["QBER", "→ Warning (5%)", "→ Abort (11%)"]
+        sm_values = [qber_pct, max(0, 5 - qber_pct), max(0, 11 - qber_pct)]
+        sm_colors = [status_color, C_AMBER, C_RED]
+        fig_sm = go.Figure()
+        fig_sm.add_trace(go.Bar(
+            name="QBER", x=["Security margin"],
+            y=[qber_pct], marker_color=status_color,
+            text=[f"QBER: {qber_pct:.2f}%"], textposition="inside",
+        ))
+        fig_sm.add_trace(go.Bar(
+            name="Margin to Warning", x=["Security margin"],
+            y=[max(0, 5 - qber_pct)], marker_color="#FDE68A",
+            text=[f"+{max(0, 5 - qber_pct):.2f}% to warning"],
+            textposition="inside", textfont_color="#92400E",
+        ))
+        fig_sm.add_trace(go.Bar(
+            name="Margin to Abort", x=["Security margin"],
+            y=[max(0, 11 - qber_pct)], marker_color="#FECACA",
+            text=[f"+{max(0, 11 - qber_pct):.2f}% to abort"],
+            textposition="inside", textfont_color="#991B1B",
+        ))
+        fig_sm.update_layout(
+            **{**_PL, "barmode": "stack", "height": 140,
+               "margin": dict(t=4, b=4, l=4, r=4),
+               "showlegend": True,
+               "legend": dict(orientation="h", y=1.2, font_size=10),
+               "xaxis": {**_PL.get("xaxis", {}), "showticklabels": False},
+               "yaxis": {**_PL.get("yaxis", {}), "range": [0, 15],
+                         "title": "QBER %"}},
+        )
+        st.plotly_chart(fig_sm, use_container_width=True)
+
+        # ── Shots info card ───────────────────────────────────────────
+        st.write("")
+        st.markdown(
+            "<div style='background:#F0F9FF;border:1px solid #BAE6FD;"
+            "border-left:4px solid #0891B2;border-radius:10px;padding:14px 20px;"
+            "display:flex;gap:20px;align-items:flex-start;'>"
+            "<div>"
+            "<div style='font-size:12px;font-weight:700;letter-spacing:.08em;"
+            "text-transform:uppercase;color:#0891B2;margin-bottom:6px;'>"
+            "Quantum measurement — shots = 1</div>"
+            "<div style='font-size:13px;color:#0C4A6E;line-height:1.7;'>"
+            "Each qubit is measured <strong>exactly once</strong> (shots = 1). "
+            "This is a fundamental constraint of quantum mechanics: "
+            "measuring a quantum state collapses it irreversibly. "
+            "You cannot re-run the measurement to gather statistics — "
+            "the single outcome is all you get. "
+            "This is what makes BB84 eavesdropping-detectable: "
+            "Eve cannot clone and re-measure qubits without introducing errors."
+            "</div></div></div>",
+            unsafe_allow_html=True,
+        )
 
 
 # ═════════════════════════════════════════════════════════════════════════════

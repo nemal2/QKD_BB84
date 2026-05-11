@@ -135,18 +135,26 @@ def fast_run_simulation(config: SimulationConfig) -> SimulationResult:
     gamma = 1.0 - math.exp(-tg / t1)
     lam   = 1.0 - math.exp(-tg / t2)
 
+    # Active gate-level models: multi-select list overrides single noise_model.
+    # fiber_loss is always channel-level (photon loss), never gate-level.
+    _model_list  = config.noise_models if config.noise_models else [nm]
+    _active_gate = [m for m in _model_list if m != "fiber_loss"]
+    _use_fiber   = noise and "fiber_loss" in _model_list
+
     def _noise(rhos_in: np.ndarray) -> np.ndarray:
-        if not noise or nm == "fiber_loss":
+        if not noise:
             return rhos_in
-        if nm == "depolarizing":
-            return _depolarizing(rhos_in, config.depolar_prob)
-        if nm == "amplitude_damp":
-            return _amplitude_damp(rhos_in, gamma)
-        if nm == "phase_damp":
-            return _phase_damp(rhos_in, lam)
-        if nm == "combined":
-            return _thermal_relax(rhos_in, t1, t2, tg)
-        return rhos_in
+        result = rhos_in
+        for _m in _active_gate:
+            if _m == "depolarizing":
+                result = _depolarizing(result, config.depolar_prob)
+            elif _m == "amplitude_damp":
+                result = _amplitude_damp(result, gamma)
+            elif _m == "phase_damp":
+                result = _phase_damp(result, lam)
+            elif _m == "combined":
+                result = _thermal_relax(result, t1, t2, tg)
+        return result
 
     def gate_noise(rhos_in: np.ndarray, U: np.ndarray, mask: np.ndarray) -> np.ndarray:
         """Apply gate U with per-gate noise, only on masked qubits."""
@@ -167,7 +175,7 @@ def fast_run_simulation(config: SimulationConfig) -> SimulationResult:
 
     # ── Fiber loss ────────────────────────────────────────────────────
     lost_mask = np.zeros(n, dtype=bool)
-    if noise and nm == "fiber_loss" and config.channel_length_km > 0:
+    if _use_fiber and config.channel_length_km > 0:
         survive = 10 ** (-0.2 * config.channel_length_km / 10)
         lost_mask = eve_rng.random(n) > survive
 
