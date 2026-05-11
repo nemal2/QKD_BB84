@@ -707,19 +707,24 @@ def run_comparison(
 # ══════════════════════════════════════════════════════════════════════
 
 def _print_header(config: SimulationConfig) -> None:
-    print("\n" + "═" * 62)
-    print("  BB84 QKD RESEARCH PLATFORM — University of Ruhuna")
+    w = 62
+    print("\n" + "═" * w)
+    print("  BB84 QKD SIMULATOR — University of Ruhuna")
     print("  Dept. of Computer Engineering")
-    print("═" * 62)
+    print("═" * w)
     print(f"  Label        : {config.label}")
     print(f"  Qubits       : {config.n_qubits}")
-    print(f"  Attack       : "
-          + ("none" if not config.eve_present else
-             f"{config.attack_type}  p={config.eve_intercept_prob}"))
-    print(f"  Noise model  : "
-          + (config.noise_model if config.noise_enabled else "ideal"))
+    if config.eve_present:
+        print(f"  Eve Present  : True  (intercept p = {config.eve_intercept_prob})")
+    else:
+        print(f"  Eve Present  : False")
+    if config.noise_enabled:
+        print(f"  Noise model  : {config.noise_model}  (depolar p = {config.depolar_prob})")
+    else:
+        print(f"  Noise model  : ideal")
+    print(f"  QBER Sample  : {config.sample_fraction:.0%} of sifted key")
     print(f"  Seed         : {config.seed}")
-    print("═" * 62)
+    print("═" * w)
 
 
 def _print_summary(r: SimulationResult) -> None:

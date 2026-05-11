@@ -82,8 +82,7 @@ Open **BB84_Phase1.ipynb** and run cells sequentially:
 4. **Cell 5** — Multi-scenario comparison (runs 5 presets)
 5. **Cell 5b** — Plot the results
 6. **Cell 6** — Research experiment: sweep Eve's intercept rate (0–100%) and plot QBER
-7. **Cell 7** — Inspect individual result fields
-8. **Cell 8** — Custom experiment template (copy and modify)
+
 
 ### Parameters You'll Want to Tweak
 
