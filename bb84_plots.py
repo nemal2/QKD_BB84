@@ -240,6 +240,7 @@ def plot_comparison(
 def plot_qber_vs_intercept_rate(
     n_qubits:  int           = 600,
     steps:     int           = 10,
+    sample_fraction: float         = 0.15,
     save_path: Optional[str] = "qkd_qber_vs_eve.png",
     subtitle:  Optional[str] = None,
 ) -> None:
@@ -264,6 +265,7 @@ def plot_qber_vs_intercept_rate(
             n_qubits=n_qubits,
             eve_present=(p > 0),
             eve_intercept_prob=float(p),
+            sample_fraction=sample_fraction,
             noise_enabled=False,
             seed=42,
         )
