@@ -47,7 +47,7 @@ class SimulationConfig:
     depolar_prob:       float = 0.01
     """Depolarizing error probability per gate. Used when noise_model='depolarizing'."""
 
-    sample_fraction:    float = 0.10
+    sample_fraction:    float = 0.45
     """Fraction of sifted key consumed for QBER estimation."""
 
     seed:     Optional[int]   = 42
