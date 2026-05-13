@@ -720,12 +720,12 @@ def plot_sample_fraction_effect(
 
         ax1.errorbar(frac_pct, qbers, yerr=[ci_lo, ci_hi],
                      color=col, marker=_MARKERS[idx],
-                     linestyle=_LINESTYLE[idx % 4],
+                     linestyle="-",
                      capsize=3, capthick=0.8, elinewidth=0.8,
                      label=labels.get(p, f"Eve {p*100:.0f}%"), zorder=3)
         ax2.plot(frac_pct, ci_w,
                  color=col, marker=_MARKERS[idx],
-                 linestyle=_LINESTYLE[idx % 4],
+                 linestyle="-",
                  label=labels.get(p, f"Eve {p*100:.0f}%"), zorder=3)
 
     for ax in (ax1, ax2):
@@ -735,8 +735,19 @@ def plot_sample_fraction_effect(
         ax.legend(fontsize=6.5, loc="best",
                   framealpha=0.90, edgecolor="#888888").get_frame().set_linewidth(0.5)
 
-    ax1.axhline(11, color=_C["abort"],   linestyle=":", linewidth=0.8, zorder=2)
-    ax1.axhline(5,  color=_C["warning"], linestyle=":", linewidth=0.8, zorder=2)
+    # ── Threshold lines — small dotted, labelled, with pointer ───────────────
+    ax1.axhline(11, color=_C["abort"],   linestyle=(0, (2, 2)), linewidth=0.9, zorder=2)
+    ax1.annotate("Abort", xy=(25, 11), xytext=(25, 14),
+                 color=_C["abort"], fontsize=5, ha="center",
+                 arrowprops=dict(arrowstyle="-|>", color=_C["abort"],
+                                 lw=0.7, mutation_scale=5))
+
+    ax1.axhline(5,  color=_C["warning"], linestyle=(0, (2, 2)), linewidth=0.9, zorder=2)
+    ax1.annotate("Warn", xy=(25, 5), xytext=(25, 8),
+                 color=_C["warning"], fontsize=5, ha="center",
+                 arrowprops=dict(arrowstyle="-|>", color=_C["warning"],
+                                 lw=0.7, mutation_scale=5))
+
     ax1.set_ylabel("Estimated QBER (%)")
     ax1.set_ylim(0, 38)
     ax1.set_title("(a) QBER vs. Sample Fraction", fontsize=8, pad=4)
@@ -746,7 +757,6 @@ def plot_sample_fraction_effect(
 
     _save(fig, save_path)
     plt.show()
-
 
 # ──────────────────────────────────────────────────────────────────────────────
 # PLOT D — DEPOLARIZATION × EVE HEATMAP
