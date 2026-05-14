@@ -21,6 +21,7 @@ from bb84_config import SimulationConfig, SimulationResult
 from bb84_fast import fast_run_simulation as _fast_sim
 from bb84_runner import PRESET_SCENARIOS
 from bb84_runner import run_simulation as _qiskit_sim
+from prep_page import render_prep_page
 
 
 def _run(cfg: SimulationConfig) -> SimulationResult:
@@ -167,9 +168,10 @@ _pages = [
     ("Analysis", "analysis"),
     ("Research", "research"),
     ("Compare", "compare"),
+    ("Preparation", "prep"),
 ]
 
-nh, *_nav_cols, n_end = st.columns([2.8] + [1] * 5 + [1.4])
+nh, *_nav_cols, n_end = st.columns([2.8] + [1] * 6 + [1.4])
 
 with nh:
     st.markdown(
@@ -1466,3 +1468,10 @@ elif page == "compare":
         fig_cmp.update_yaxes(range=[0, max(35, max(qbers) + 10)], row=1, col=1)
         fig_cmp.update_yaxes(range=[0, 115], row=1, col=3)
         st.plotly_chart(fig_cmp, use_container_width=True)
+
+# ═════════════════════════════════════════════════════════════════════════════
+# PAGE: PREPARATION PHASE — Educational Module
+# ═════════════════════════════════════════════════════════════════════════════
+
+elif page == "prep":
+    render_prep_page()
