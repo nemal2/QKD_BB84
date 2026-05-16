@@ -27,8 +27,8 @@ from __future__ import annotations
 import numpy as np
 from typing import Dict, Any, List
 
-from prep_hilbert import QubitState
-from prep_density  import DensityMatrix
+from prep.hilbert import QubitState
+from prep.density  import DensityMatrix
 
 
 # ── Helper ────────────────────────────────────────────────────────────────────

@@ -17,11 +17,11 @@ import plotly.graph_objects as go
 import streamlit as st
 from plotly.subplots import make_subplots
 
-from bb84_config import SimulationConfig, SimulationResult
-from bb84_fast import fast_run_simulation as _fast_sim
-from bb84_runner import PRESET_SCENARIOS
-from bb84_runner import run_simulation as _qiskit_sim
-from prep_page import render_prep_page
+from bb84.config import SimulationConfig, SimulationResult
+from bb84.fast import fast_run_simulation as _fast_sim
+from bb84.runner import PRESET_SCENARIOS
+from bb84.runner import run_simulation as _qiskit_sim
+from prep.page import render_prep_page
 
 
 def _run(cfg: SimulationConfig) -> SimulationResult:

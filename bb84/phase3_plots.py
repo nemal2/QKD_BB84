@@ -26,9 +26,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
-from bb84_config import SimulationConfig, SimulationResult
-from bb84_runner import run_simulation
-from bb84_noise  import NoiseModelType
+from bb84.config import SimulationConfig, SimulationResult
+from bb84.runner import run_simulation
+from bb84.noise  import NoiseModelType
 
 
 # ──────────────────────────────────────────────────────────────────────

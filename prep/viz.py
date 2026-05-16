@@ -23,8 +23,8 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from typing import List, Optional, Tuple, Union
 
-from prep_hilbert import QubitState
-from prep_density  import DensityMatrix
+from prep.hilbert import QubitState
+from prep.density  import DensityMatrix
 
 # ── Colour palette (matches qkd_app.py) ──────────────────────────────────────
 _C = {

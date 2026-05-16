@@ -1,10 +1,10 @@
 """
-prep_page.py
-============
+prep.page
+=========
 Streamlit educational module — QKD Preparation Phase.
 
 Run standalone:
-    streamlit run prep_page.py
+    streamlit run -m prep.page          # via package (requires Streamlit ≥ 1.30)
 
 Or call render_prep_page() from qkd_app.py to embed it as a tab.
 
@@ -22,9 +22,9 @@ from __future__ import annotations
 import numpy as np
 import streamlit as st
 
-from prep_hilbert     import QubitState, CARDINAL_STATES
-from prep_density     import DensityMatrix
-from prep_uncertainty import (
+from prep.hilbert     import QubitState, CARDINAL_STATES
+from prep.density     import DensityMatrix
+from prep.uncertainty import (
     classical_ignorance_half,
     quantum_uncertainty_plus,
     compare_uncertainty_types,
@@ -33,8 +33,8 @@ from prep_uncertainty import (
     trace_distance,
     fidelity,
 )
-from prep_examples import get_all_examples
-from prep_viz import (
+from prep.examples import get_all_examples
+from prep.viz import (
     plot_bloch_sphere,
     plot_density_matrix,
     plot_measurement_probs,

@@ -71,7 +71,7 @@ from qiskit_aer.noise import (
     thermal_relaxation_error,
 )
 
-from bb84_config import SimulationConfig
+from bb84.config import SimulationConfig
 
 
 # ──────────────────────────────────────────────────────────────────────

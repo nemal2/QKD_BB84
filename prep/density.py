@@ -18,7 +18,7 @@ from __future__ import annotations
 import numpy as np
 from typing import List, Tuple, Dict, Any
 
-from prep_hilbert import QubitState, PAULI_X, PAULI_Y, PAULI_Z, IDENTITY
+from prep.hilbert import QubitState, PAULI_X, PAULI_Y, PAULI_Z, IDENTITY
 
 
 class DensityMatrix:

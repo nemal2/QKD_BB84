@@ -17,8 +17,8 @@ from typing import List, Optional
 
 import numpy as np
 
-from bb84_config import SimulationConfig, SimulationResult
-from bb84_core import estimate_qber
+from bb84.config import SimulationConfig, SimulationResult
+from bb84.core import estimate_qber
 
 # ── Gate matrices ──────────────────────────────────────────────────────────
 _X = np.array([[0, 1], [1, 0]], dtype=complex)

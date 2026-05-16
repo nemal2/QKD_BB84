@@ -1,8 +1,8 @@
 from __future__ import annotations
 import time
 from typing import List, Optional, Tuple
-from bb84_config import SimulationConfig, SimulationResult
-from bb84_runner import run_simulation
+from bb84.config import SimulationConfig, SimulationResult
+from bb84.runner import run_simulation
 
 PHASE1_NOTEBOOK_SCENARIOS = [
     ("Ideal (no noise, no Eve)",
