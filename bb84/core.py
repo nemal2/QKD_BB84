@@ -22,8 +22,8 @@ from qiskit import QuantumCircuit, transpile
 from qiskit_aer import AerSimulator
 from qiskit_aer.noise import NoiseModel, depolarizing_error
 
-from bb84_config import QBERResult
-from bb84_noise import QuantumChannel   # Phase 3: use the real noise-aware channel
+from bb84.config import QBERResult
+from bb84.noise import QuantumChannel   # Phase 3: use the real noise-aware channel
 
 
 

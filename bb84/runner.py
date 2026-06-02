@@ -33,13 +33,13 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 
-from bb84_config import SimulationConfig, SimulationResult
-from bb84_noise  import QuantumChannel                      # Phase 3 ✓
-from bb84_core   import Alice, Bob, sift_keys, estimate_qber
+from bb84.config import SimulationConfig, SimulationResult
+from bb84.noise  import QuantumChannel                      # Phase 3 ✓
+from bb84.core   import Alice, Bob, sift_keys, estimate_qber
 
 # ── Phase 4 — optional until bb84_attacks.py is created ──────────────
 try:
-    from bb84_attacks import (
+    from bb84.attacks import (
         build_attacker, InterceptResendEve,
         PNSAttack, EntanglementAttack,
     )
@@ -70,14 +70,14 @@ except ImportError:
         eve._rng           = np.random.default_rng(config.seed)
         # Use the Phase 1 Eve from bb84_core if available
         try:
-            from bb84_core import Eve
+            from bb84.core import Eve
             return Eve(config.eve_intercept_prob, seed=config.seed)
         except ImportError:
             return None
 
 # ── Phase 5 — optional until bb84_postprocessing.py is created ───────
 try:
-    from bb84_postprocessing import run_post_processing
+    from bb84.postprocessing import run_post_processing
     _PHASE5_PP_AVAILABLE = True
 except ImportError:
     _PHASE5_PP_AVAILABLE = False
@@ -85,7 +85,7 @@ except ImportError:
         raise RuntimeError("bb84_postprocessing.py not yet implemented (Phase 5).")
 
 try:
-    from bb84_analysis import compute_security_analysis
+    from bb84.analysis import compute_security_analysis
     _PHASE5_SA_AVAILABLE = True
 except ImportError:
     _PHASE5_SA_AVAILABLE = False
