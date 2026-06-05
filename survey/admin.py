@@ -5,7 +5,7 @@ University of Ruhuna — Dept. of Computer Engineering
 
 Password-gated researcher dashboard. Reach it at:
 
-    https://<your-app>/?admin=1
+    https://<your-app>/?survey=1     (or /?admin=1, or /survey via nginx)
 
 Set the password via the SURVEY_ADMIN_PASSWORD environment variable
 (or the same key in .streamlit/secrets.toml). Without it the dashboard
@@ -16,12 +16,14 @@ What it shows
   • completion funnel across the four stages
   • pre vs post knowledge scores and the learning gain (delta)
   • a per-participant table linking scores to recorded app activity
-  • CSV export: participants (wide), responses (long), activity (long)
+  • Excel (.xlsx) workbook export + CSV: participants, responses
+    (long + wide), activity
 ══════════════════════════════════════════════════════════════
 """
 
 from __future__ import annotations
 
+import io
 import json
 import os
 from typing import Optional
@@ -82,6 +84,28 @@ def _activities_long() -> pd.DataFrame:
     return pd.DataFrame(acts)
 
 
+def _responses_wide(resp: pd.DataFrame) -> pd.DataFrame:
+    """Analysis-ready pivot: one row per participant, one column per question."""
+    if resp.empty:
+        return pd.DataFrame()
+    wide = resp.pivot_table(
+        index="participant_id", columns="question_id",
+        values="answer", aggfunc="first",
+    )
+    return wide.reset_index()
+
+
+def _excel_bytes(sheets_map: dict) -> bytes:
+    """Build a single .xlsx workbook with one tab per DataFrame."""
+    buf = io.BytesIO()
+    with pd.ExcelWriter(buf, engine="openpyxl") as xl:
+        for name, frame in sheets_map.items():
+            out = frame if (frame is not None and not frame.empty) \
+                else pd.DataFrame({"info": ["no data"]})
+            out.to_excel(xl, sheet_name=name[:31], index=False)
+    return buf.getvalue()
+
+
 # ══════════════════════════════════════════════════════════════════════
 # AUTH
 # ══════════════════════════════════════════════════════════════════════
@@ -129,9 +153,10 @@ def render_admin() -> None:
     with top_l:
         st.caption(f"Storage backend: **{db.backend_name()}**")
     with top_r:
-        if st.button("← Exit admin", use_container_width=True):
-            if "admin" in st.query_params:
-                del st.query_params["admin"]
+        if st.button("← Exit dashboard", use_container_width=True):
+            for _k in ("admin", "survey"):
+                if _k in st.query_params:
+                    del st.query_params[_k]
             st.rerun()
 
     df = _participants_wide()
@@ -213,20 +238,43 @@ def render_admin() -> None:
     st.dataframe(df, use_container_width=True, hide_index=True)
 
     # ── Exports ────────────────────────────────────────────────────────
-    st.markdown("#### Export (CSV)")
+    st.markdown("#### Export")
+    resp = _responses_long()
+    act = _activities_long()
+    resp_wide = _responses_wide(resp)
+
+    x1, x2 = st.columns([1.5, 3])
+    with x1:
+        st.download_button(
+            "⬇  Excel workbook (.xlsx)",
+            _excel_bytes({
+                "participants": df,
+                "responses": resp,
+                "responses_wide": resp_wide,
+                "activity": act,
+            }),
+            "qkd_survey_data.xlsx",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            type="primary", use_container_width=True,
+        )
+    with x2:
+        st.caption(
+            "One workbook, four tabs — **participants**, **responses** (long), "
+            "**responses_wide** (one row per participant, ready for analysis), and "
+            "**activity**. Prefer plain CSVs? Use the buttons below."
+        )
+
     e1, e2, e3 = st.columns(3)
     e1.download_button(
         "participants.csv", df.to_csv(index=False),
         "participants_wide.csv", "text/csv", use_container_width=True,
     )
-    resp = _responses_long()
     e2.download_button(
         "responses.csv",
         resp.to_csv(index=False) if not resp.empty else "no data",
         "responses_long.csv", "text/csv", use_container_width=True,
         disabled=resp.empty,
     )
-    act = _activities_long()
     e3.download_button(
         "activity.csv",
         act.to_csv(index=False) if not act.empty else "no data",

@@ -100,7 +100,13 @@ def _remember_pid(pid: str) -> None:
 
 
 def _is_admin_request() -> bool:
-    return str(st.query_params.get("admin", "")).strip().lower() in ("1", "true", "yes")
+    # Reachable at /?admin=1 or the friendlier /?survey=1 (and /survey via an
+    # nginx redirect). Both open the same password-gated researcher dashboard.
+    qp = st.query_params
+    for key in ("admin", "survey"):
+        if str(qp.get(key, "")).strip().lower() in ("1", "true", "yes"):
+            return True
+    return False
 
 
 # ══════════════════════════════════════════════════════════════════════
