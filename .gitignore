@@ -50,7 +50,17 @@ desktop.ini
 # ── Streamlit ───────────────────────────────────────────────────────────────
 .streamlit/secrets.toml
 
+# ── Survey data (local SQLite — never commit participant data) ───────────────
+survey_data/
+*.db
+*.sqlite3
+
+# ── Local deploy notes / credentials (passwords, server IPs) ─────────────────
+tx.txt
+
 # ── Agent / assistant artefacts ─────────────────────────────────────────────
 .claude/
 notes.md
 *.html
+
+tx.txt
