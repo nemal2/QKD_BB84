@@ -26,6 +26,7 @@ from __future__ import annotations
 import io
 import json
 import os
+from collections import Counter
 from typing import Optional
 
 import pandas as pd
@@ -33,7 +34,8 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from . import db
-from .models import Stage
+from .models import QType, Stage
+from .questions import DEMOGRAPHICS, FEEDBACK, POST_SURVEY, PRE_SURVEY
 
 BLUE, GREEN, AMBER, GRAY, RED = "#2563EB", "#059669", "#D97706", "#6B7280", "#DC2626"
 _PL = dict(
@@ -104,6 +106,64 @@ def _excel_bytes(sheets_map: dict) -> bytes:
                 else pd.DataFrame({"info": ["no data"]})
             out.to_excel(xl, sheet_name=name[:31], index=False)
     return buf.getvalue()
+
+
+# ── Human-readable response helpers ────────────────────────────────────
+
+# stage key → (title, question list)
+_STAGE_DEFS = [
+    ("pre", "Pre-Survey", PRE_SURVEY),
+    ("post", "Post-Survey", POST_SURVEY),
+    ("feedback", "Feedback", FEEDBACK),
+]
+
+
+def _qindex() -> dict:
+    """{question_id: Question} across every stage incl. demographics."""
+    return {q.id: q for q in (DEMOGRAPHICS + PRE_SURVEY + POST_SURVEY + FEEDBACK)}
+
+
+def _answer_label(q, raw) -> str:
+    """Turn a stored answer (option key / text) into human-readable form."""
+    if raw is None or str(raw) == "":
+        return "—"
+    if q is None:
+        return str(raw)
+    if q.type in (QType.SINGLE, QType.LIKERT):
+        lab = {o.key: o.label for o in q.options}.get(str(raw))
+        if lab is None:
+            return str(raw)
+        return f"{raw} — {lab}" if q.type == QType.LIKERT else lab
+    if q.type == QType.MULTI:
+        labs = {o.key: o.label for o in q.options}
+        return ", ".join(labs.get(k, k) for k in str(raw).split("|") if k)
+    return str(raw)
+
+
+def _stage_summary_df(questions, resp_stage) -> pd.DataFrame:
+    """One row per choice/likert question: prompt, N, mean (likert), distribution."""
+    rows = []
+    for q in questions:
+        if q.type not in (QType.SINGLE, QType.LIKERT, QType.MULTI):
+            continue
+        ans = [str(a) for a in resp_stage[resp_stage.question_id == q.id]["answer"].tolist()]
+        labs = {o.key: o.label for o in q.options}
+        counter: Counter = Counter()
+        for a in ans:
+            for k in (a.split("|") if q.type == QType.MULTI else [a]):
+                if k:
+                    counter[labs.get(k, k)] += 1
+        mean = ""  # keep this column all-strings so st.dataframe (pyarrow) is happy
+        if q.type == QType.LIKERT:
+            nums = [int(a) for a in ans if a.isdigit()]
+            mean = f"{sum(nums) / len(nums):.2f}" if nums else ""
+        rows.append({
+            "Question": q.prompt,
+            "N": len(ans),
+            "Mean (1–5)": mean,
+            "Responses": " · ".join(f"{lbl}: {cnt}" for lbl, cnt in counter.most_common()),
+        })
+    return pd.DataFrame(rows)
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -236,6 +296,55 @@ def render_admin() -> None:
     # ── Per-participant table ──────────────────────────────────────────
     st.markdown("#### Participants")
     st.dataframe(df, use_container_width=True, hide_index=True)
+
+    # ── Responses (readable) ───────────────────────────────────────────
+    st.markdown("#### Responses")
+    resp_view = _responses_long()
+    if resp_view.empty:
+        st.caption("No survey responses submitted yet.")
+    else:
+        qidx = _qindex()
+        mode = st.radio(
+            "View responses", ["By question (summary)", "By participant"],
+            horizontal=True, label_visibility="collapsed",
+        )
+        if mode.startswith("By question"):
+            for key, title, qs in _STAGE_DEFS:
+                rs = resp_view[resp_view.stage == key]
+                if rs.empty:
+                    continue
+                st.markdown(f"**{title}**  ·  {rs['participant_id'].nunique()} respondents")
+                summary = _stage_summary_df(qs, rs)
+                if not summary.empty:
+                    st.dataframe(summary, use_container_width=True, hide_index=True)
+                for q in qs:
+                    if q.type in (QType.OPEN, QType.SHORT):
+                        texts = [str(a) for a in rs[rs.question_id == q.id]["answer"].tolist()
+                                 if str(a).strip()]
+                        if texts:
+                            with st.expander(f"✍  {q.prompt}   ({len(texts)})"):
+                                for t in texts:
+                                    st.markdown(f"- {t}")
+        else:
+            pids = sorted(resp_view["participant_id"].unique())
+            sel = st.selectbox("Participant", pids)
+            prow = next((p for p in db.all_participants() if p["id"] == sel), None)
+            demo = (prow or {}).get("demographics") or {}
+            if demo:
+                st.markdown("**Background**")
+                for qid, val in demo.items():
+                    q = qidx.get(qid)
+                    st.markdown(f"- {q.prompt if q else qid} → **{_answer_label(q, val)}**")
+            for key, title, qs in _STAGE_DEFS:
+                rs = resp_view[(resp_view.stage == key)
+                               & (resp_view.participant_id == sel)]
+                if rs.empty:
+                    continue
+                st.markdown(f"**{title}**")
+                amap = dict(zip(rs["question_id"], rs["answer"]))
+                for q in qs:
+                    if q.id in amap:
+                        st.markdown(f"- {q.prompt} → **{_answer_label(q, amap[q.id])}**")
 
     # ── Exports ────────────────────────────────────────────────────────
     st.markdown("#### Export")
