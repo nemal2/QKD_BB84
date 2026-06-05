@@ -22,6 +22,7 @@ from bb84.fast import fast_run_simulation as _fast_sim
 from bb84.runner import PRESET_SCENARIOS
 from bb84.runner import run_simulation as _qiskit_sim
 from prep.page import render_prep_page
+from survey.flow import log_sim_activity, survey_gate
 
 
 def _run(cfg: SimulationConfig) -> SimulationResult:
@@ -113,7 +114,42 @@ div[data-testid="stDownloadButton"] button:hover { border-color: #2563EB !import
 .bc1 { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
 .bce { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
 
-/* Nav button active indicator via primary */
+/* ── Progressive journey rail ─────────────────────────────────────────── */
+.journey { display: flex; align-items: center; gap: 0; padding: 3px 0; }
+.jnode {
+    display: flex; align-items: center; gap: 7px;
+    padding: 5px 13px; border-radius: 999px; white-space: nowrap;
+    border: 1px solid #E5E7EB; background: #fff; transition: all .25s ease;
+}
+.jnode .jnum {
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
+    font-weight: 600; color: #9CA3AF;
+}
+.jnode .jlabel {
+    font-size: 11px; font-weight: 600; letter-spacing: .07em;
+    text-transform: uppercase; color: #9CA3AF;
+}
+.jnode.active {
+    border-color: #2563EB; background: #EFF6FF;
+    box-shadow: 0 1px 8px rgba(37, 99, 235, .14);
+}
+.jnode.active .jnum, .jnode.active .jlabel { color: #2563EB; }
+.jnode.done { border-color: #BBF7D0; background: #F0FDF4; }
+.jnode.done .jnum, .jnode.done .jlabel { color: #059669; }
+.jline {
+    flex: 1; height: 2px; min-width: 12px; margin: 0 7px;
+    background: #E5E7EB; border-radius: 2px;
+}
+.jline.done { background: #86EFAC; }
+.nsep { width: 1px; height: 26px; background: #E5E7EB; margin: 6px auto 0; }
+
+/* Nav button polish — subtle lift on hover, smooth transitions */
+div[data-testid="stButton"] button { transition: all .15s ease !important; }
+div[data-testid="stButton"] button[kind="secondary"]:hover { transform: translateY(-1px); }
+
+/* Journey footer hint */
+.jfoot-hint { text-align: center; font-size: 12px; color: #9CA3AF; padding-top: 8px; }
+.jfoot-hint b { color: #6B7280; font-weight: 600; }
 </style>
 """,
     unsafe_allow_html=True,
@@ -132,6 +168,21 @@ _defaults = {
 for k, v in _defaults.items():
     if k not in st.session_state:
         st.session_state[k] = v
+
+
+# ── Survey gate ───────────────────────────────────────────────────────────────
+# Runs the integrated pre-survey → activity → post-survey → feedback flow and
+# the /?admin=1 dashboard (see the survey/ package). When a survey or admin
+# screen is showing we st.stop() so the simulator stays hidden until the
+# participant reaches the activity stage. Wrapped defensively: a survey/DB
+# misconfiguration must never take the simulator itself offline.
+try:
+    _gate = survey_gate()
+except Exception as _survey_err:  # noqa: BLE001
+    st.warning(f"Survey system unavailable — running simulator only. ({_survey_err})")
+    _gate = None
+if _gate is not None and _gate.stop:
+    st.stop()
 
 
 # ── Plotly theme ──────────────────────────────────────────────────────────────
@@ -159,42 +210,90 @@ def _sec(r: SimulationResult):
     return "ABORT", C_RED, "#FEF2F2", "#FECACA"
 
 
-# ── Top navigation ────────────────────────────────────────────────────────────
-st.markdown("<div style='height:18px'></div>", unsafe_allow_html=True)
+# ── Top navigation — progressive learning journey ─────────────────────────────
+# Pedagogical order: Learn (theory) → Experiment → Research. A journey rail shows
+# the three phases; the nav buttons sit beneath, grouped by phase. The page
+# footer (_journey_footer) lets users step forward/back through the same path.
+st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
 
-_pages = [
-    ("Guide", "guide"),
-    ("Simulator", "sim"),
-    ("Analysis", "analysis"),
-    ("Research", "research"),
-    ("Compare", "compare"),
-    ("Preparation", "prep"),
+_NAV = [
+    ("guide",    "Guide",     "Learn"),
+    ("prep",     "Theory",    "Learn"),
+    ("sim",      "Simulator", "Experiment"),
+    ("analysis", "Analysis",  "Experiment"),
+    ("research", "Research",  "Research"),
+    ("compare",  "Compare",   "Research"),
 ]
+_PHASES = ["Learn", "Experiment", "Research"]
+_NAV_KEYS = [k for k, _, _ in _NAV]
+_NAV_LABEL = {k: lbl for k, lbl, _ in _NAV}
+_PHASE_OF = {k: ph for k, _, ph in _NAV}
 
-nh, *_nav_cols, n_end = st.columns([2.8] + [1] * 6 + [1.4])
+page = st.session_state["page"]
+_cur_phase = _PHASE_OF.get(page, "Learn")
 
-with nh:
+
+def _journey_rail(cur_phase: str) -> str:
+    cur = _PHASES.index(cur_phase)
+    parts = []
+    for i, ph in enumerate(_PHASES):
+        state = "done" if i < cur else ("active" if i == cur else "")
+        parts.append(
+            f"<div class='jnode {state}'><span class='jnum'>{i + 1:02d}</span>"
+            f"<span class='jlabel'>{ph}</span></div>"
+        )
+        if i < len(_PHASES) - 1:
+            parts.append(f"<div class='jline {'done' if i < cur else ''}'></div>")
+    return "<div class='journey'>" + "".join(parts) + "</div>"
+
+
+def _journey_footer(current_key: str) -> None:
+    """Progressive prev/next navigation shown at the foot of each page."""
+    if current_key not in _NAV_KEYS:
+        return
+    idx = _NAV_KEYS.index(current_key)
+    prev_key = _NAV_KEYS[idx - 1] if idx > 0 else None
+    next_key = _NAV_KEYS[idx + 1] if idx < len(_NAV_KEYS) - 1 else None
     st.markdown(
-        "<div style='font-family:Outfit,sans-serif;font-size:17px;font-weight:700;"
-        "color:#111827;line-height:1.2;padding:6px 0;'>BB84 QKD Simulator<br>"
-        "<span style='font-size:11px;font-weight:400;color:#9CA3AF;'>"
-        "University of Ruhuna</span></div>",
+        "<div style='border-top:1px solid #E5E7EB;margin:44px 0 14px;'></div>",
         unsafe_allow_html=True,
     )
-
-for col, (label, key) in zip(_nav_cols, _pages):
-    with col:
-        active = st.session_state["page"] == key
-        if st.button(
-            label,
-            key=f"nav_{key}",
+    lc, mc, rc = st.columns([1.2, 2, 1.2])
+    with lc:
+        if prev_key and st.button(
+            f"←  {_NAV_LABEL[prev_key]}", key=f"foot_prev_{current_key}",
             use_container_width=True,
-            type="primary" if active else "secondary",
         ):
-            st.session_state["page"] = key
+            st.session_state["page"] = prev_key
+            st.rerun()
+    with mc:
+        st.markdown(
+            f"<div class='jfoot-hint'>Step <b>{idx + 1}</b> of {len(_NAV_KEYS)} "
+            f"· <b>{_PHASE_OF[current_key]}</b> phase</div>",
+            unsafe_allow_html=True,
+        )
+    with rc:
+        if next_key and st.button(
+            f"{_NAV_LABEL[next_key]}  →", key=f"foot_next_{current_key}",
+            type="primary", use_container_width=True,
+        ):
+            st.session_state["page"] = next_key
             st.rerun()
 
-with n_end:
+
+# Header row: brand · journey rail · fast-mode toggle
+brand_c, rail_c, fast_c = st.columns([2.5, 6.1, 1.5])
+with brand_c:
+    st.markdown(
+        "<div style='font-family:Outfit,sans-serif;font-size:17px;font-weight:700;"
+        "color:#111827;line-height:1.18;padding:4px 0;'>BB84 QKD Simulator<br>"
+        "<span style='font-size:11px;font-weight:400;color:#9CA3AF;'>"
+        "University of Ruhuna · Dept. of Computer Engineering</span></div>",
+        unsafe_allow_html=True,
+    )
+with rail_c:
+    st.markdown(_journey_rail(_cur_phase), unsafe_allow_html=True)
+with fast_c:
     use_fast = st.toggle(
         "⚡ Fast mode",
         value=st.session_state.use_fast,
@@ -202,12 +301,25 @@ with n_end:
     )
     st.session_state["use_fast"] = use_fast
 
+# Nav buttons — grouped by phase with thin separators, indented under the rail.
+_nc = st.columns([2.5, 1, 1, 0.16, 1, 1, 0.16, 1, 1, 1.5])
+for _sep_i in (3, 6):
+    _nc[_sep_i].markdown("<div class='nsep'></div>", unsafe_allow_html=True)
+for _slot, (key, label, phase) in zip((1, 2, 4, 5, 7, 8), _NAV):
+    with _nc[_slot]:
+        active = page == key
+        if st.button(
+            label, key=f"nav_{key}", use_container_width=True,
+            type="primary" if active else "secondary",
+        ):
+            st.session_state["page"] = key
+            st.rerun()
+
 st.markdown(
-    "<div style='border-top:1px solid #E5E7EB;margin:10px 0 28px;'></div>",
+    "<div style='border-top:1px solid #E5E7EB;margin:14px 0 28px;'></div>",
     unsafe_allow_html=True,
 )
 
-page = st.session_state["page"]
 r: Optional[SimulationResult] = st.session_state.result
 
 
@@ -233,9 +345,16 @@ if page == "guide":
         unsafe_allow_html=True,
     )
 
-    if st.button("Open Simulator  →", type="primary"):
-        st.session_state["page"] = "sim"
-        st.rerun()
+    gc1, gc2, _ = st.columns([1.1, 1.1, 2])
+    with gc1:
+        if st.button("Begin with the theory  →", type="primary",
+                     use_container_width=True):
+            st.session_state["page"] = "prep"
+            st.rerun()
+    with gc2:
+        if st.button("Skip to simulator", use_container_width=True):
+            st.session_state["page"] = "sim"
+            st.rerun()
 
     st.markdown("<div style='height:36px'></div>", unsafe_allow_html=True)
 
@@ -696,6 +815,7 @@ elif page == "sim":
             st.session_state.result = result
             st.session_state.last_runtime = elapsed
             r = result
+            log_sim_activity(result)  # record this run against the survey participant
         except Exception as e:
             st.error(f"Simulation error: {e}")
 
@@ -1475,3 +1595,7 @@ elif page == "compare":
 
 elif page == "prep":
     render_prep_page()
+
+
+# ── Progressive footer — step backward / forward through the journey ──────────
+_journey_footer(page)

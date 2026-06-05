@@ -1,0 +1,274 @@
+"""
+survey.admin
+══════════════════════════════════════════════════════════════
+University of Ruhuna — Dept. of Computer Engineering
+
+Password-gated researcher dashboard. Reach it at:
+
+    https://<your-app>/?admin=1
+
+Set the password via the SURVEY_ADMIN_PASSWORD environment variable
+(or the same key in .streamlit/secrets.toml). Without it the dashboard
+stays locked.
+
+What it shows
+─────────────
+  • completion funnel across the four stages
+  • pre vs post knowledge scores and the learning gain (delta)
+  • a per-participant table linking scores to recorded app activity
+  • CSV export: participants (wide), responses (long), activity (long)
+══════════════════════════════════════════════════════════════
+"""
+
+from __future__ import annotations
+
+import json
+import os
+from typing import Optional
+
+import pandas as pd
+import plotly.graph_objects as go
+import streamlit as st
+
+from . import db
+from .models import Stage
+
+BLUE, GREEN, AMBER, GRAY, RED = "#2563EB", "#059669", "#D97706", "#6B7280", "#DC2626"
+_PL = dict(
+    paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF",
+    font=dict(color="#6B7280", family="Outfit, sans-serif", size=11),
+    margin=dict(t=40, b=36, l=10, r=10),
+)
+
+
+# ══════════════════════════════════════════════════════════════════════
+# DATA FRAMES
+# ══════════════════════════════════════════════════════════════════════
+
+def _participants_wide() -> pd.DataFrame:
+    parts = db.all_participants()
+    acts = db.activity_counts_by_participant()
+    rows = []
+    for p in parts:
+        demo = p.get("demographics") or {}
+        pre, post = p.get("pre_score"), p.get("post_score")
+        delta = (post - pre) if (pre is not None and post is not None) else None
+        row = {
+            "participant_id": p["id"],
+            "created_at": p["created_at"],
+            "current_stage": p["current_stage"],
+            "consent": p["consent"],
+            "pre_score": pre,
+            "post_score": post,
+            "delta": delta,
+            "n_sim_runs": acts.get(p["id"], 0),
+            "pre_completed_at": p.get("pre_completed_at"),
+            "post_completed_at": p.get("post_completed_at"),
+            "feedback_completed_at": p.get("feedback_completed_at"),
+        }
+        row.update(demo)  # demographic keys (demo_year, demo_prior, …)
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def _responses_long() -> pd.DataFrame:
+    return pd.DataFrame(db.all_responses())
+
+
+def _activities_long() -> pd.DataFrame:
+    acts = db.all_activities()
+    for a in acts:
+        a["payload"] = json.dumps(a.get("payload") or {})
+    return pd.DataFrame(acts)
+
+
+# ══════════════════════════════════════════════════════════════════════
+# AUTH
+# ══════════════════════════════════════════════════════════════════════
+
+def _check_password() -> bool:
+    configured: Optional[str] = os.environ.get("SURVEY_ADMIN_PASSWORD")
+    if not configured:
+        st.error(
+            "Admin dashboard is locked. Set the **SURVEY_ADMIN_PASSWORD** "
+            "environment variable (or add it to `.streamlit/secrets.toml`) to enable it."
+        )
+        return False
+
+    if st.session_state.get("survey_admin_ok"):
+        return True
+
+    st.markdown("### 🔒 Researcher login")
+    with st.form("admin_login"):
+        pw = st.text_input("Admin password", type="password")
+        ok = st.form_submit_button("Enter", type="primary")
+    if ok:
+        if pw == configured:
+            st.session_state["survey_admin_ok"] = True
+            st.rerun()
+        else:
+            st.error("Incorrect password.")
+    return False
+
+
+# ══════════════════════════════════════════════════════════════════════
+# DASHBOARD
+# ══════════════════════════════════════════════════════════════════════
+
+def render_admin() -> None:
+    st.markdown(
+        "<h2 style='font-size:22px;font-weight:700;color:#111827;margin:0 0 4px;'>"
+        "Survey Admin · Researcher Dashboard</h2>",
+        unsafe_allow_html=True,
+    )
+
+    if not _check_password():
+        return
+
+    top_l, top_r = st.columns([4, 1])
+    with top_l:
+        st.caption(f"Storage backend: **{db.backend_name()}**")
+    with top_r:
+        if st.button("← Exit admin", use_container_width=True):
+            if "admin" in st.query_params:
+                del st.query_params["admin"]
+            st.rerun()
+
+    df = _participants_wide()
+    total = len(df)
+    if total == 0:
+        st.info("No participants yet. Share the app link to start collecting data.")
+        return
+
+    # ── Funnel / completion ────────────────────────────────────────────
+    counts = db.stage_counts()
+
+    def _reached(stage: Stage) -> int:
+        return sum(n for s, n in counts.items() if Stage(s).order >= stage.order)
+
+    m1, m2, m3, m4, m5 = st.columns(5)
+    m1.metric("Participants", total)
+    m2.metric("Completed pre", _reached(Stage.ACTIVITY))
+    m3.metric("Completed post", _reached(Stage.FEEDBACK))
+    m4.metric("Finished study", counts.get("done", 0))
+    completion = counts.get("done", 0) / total * 100 if total else 0
+    m5.metric("Completion rate", f"{completion:.0f}%")
+
+    st.divider()
+
+    # ── Pre vs Post ────────────────────────────────────────────────────
+    from .questions import POST_SURVEY, PRE_SURVEY
+    _has_scored = (any(q.scored for q in PRE_SURVEY)
+                   and any(q.scored for q in POST_SURVEY))
+    paired = df.dropna(subset=["pre_score", "post_score"])
+    st.markdown("#### Knowledge: pre vs post")
+    if not _has_scored:
+        st.info(
+            "This study uses self-report (Likert) items only — there is no scored "
+            "knowledge test, so there is no pre/post score to compare. Analyse the "
+            "rated and written responses via the CSV / Google Sheets export below."
+        )
+    elif paired.empty:
+        st.info("No participant has completed both the pre- and post-survey yet.")
+    else:
+        mean_pre = paired["pre_score"].mean()
+        mean_post = paired["post_score"].mean()
+        mean_delta = paired["delta"].mean()
+
+        a, b, c, d = st.columns(4)
+        a.metric("Mean pre-score", f"{mean_pre:.1f}%")
+        b.metric("Mean post-score", f"{mean_post:.1f}%", f"{mean_delta:+.1f} pts")
+        c.metric("Mean learning gain", f"{mean_delta:+.1f} pts")
+        improved = int((paired["delta"] > 0).sum())
+        d.metric("Improved", f"{improved}/{len(paired)}")
+
+        cl, cr = st.columns(2)
+        with cl:
+            fig = go.Figure()
+            fig.add_trace(go.Bar(
+                x=["Pre", "Post"], y=[mean_pre, mean_post],
+                marker_color=[GRAY, GREEN],
+                text=[f"{mean_pre:.1f}%", f"{mean_post:.1f}%"], textposition="outside",
+            ))
+            fig.update_layout(**{**_PL, "height": 300, "title": "Mean score"})
+            fig.update_yaxes(range=[0, 105], title="Score (%)")
+            st.plotly_chart(fig, use_container_width=True)
+        with cr:
+            fig2 = go.Figure()
+            for _, row in paired.iterrows():
+                fig2.add_trace(go.Scatter(
+                    x=["Pre", "Post"], y=[row["pre_score"], row["post_score"]],
+                    mode="lines+markers", line=dict(color="rgba(37,99,235,.35)", width=1),
+                    marker=dict(size=6, color=BLUE), showlegend=False,
+                    hovertext=row["participant_id"],
+                ))
+            fig2.update_layout(**{**_PL, "height": 300, "title": "Per-participant change"})
+            fig2.update_yaxes(range=[0, 105], title="Score (%)")
+            st.plotly_chart(fig2, use_container_width=True)
+
+    st.divider()
+
+    # ── Per-participant table ──────────────────────────────────────────
+    st.markdown("#### Participants")
+    st.dataframe(df, use_container_width=True, hide_index=True)
+
+    # ── Exports ────────────────────────────────────────────────────────
+    st.markdown("#### Export (CSV)")
+    e1, e2, e3 = st.columns(3)
+    e1.download_button(
+        "participants.csv", df.to_csv(index=False),
+        "participants_wide.csv", "text/csv", use_container_width=True,
+    )
+    resp = _responses_long()
+    e2.download_button(
+        "responses.csv",
+        resp.to_csv(index=False) if not resp.empty else "no data",
+        "responses_long.csv", "text/csv", use_container_width=True,
+        disabled=resp.empty,
+    )
+    act = _activities_long()
+    e3.download_button(
+        "activity.csv",
+        act.to_csv(index=False) if not act.empty else "no data",
+        "activity_long.csv", "text/csv", use_container_width=True,
+        disabled=act.empty,
+    )
+
+    # ── Secondary store · Google Sheets ────────────────────────────────
+    st.divider()
+    st.markdown("#### Secondary store · Google Sheets")
+    from . import sheets
+    if not sheets.is_configured():
+        st.caption(
+            "Not configured — data is stored only in the primary database. Add a "
+            "Google service account + sheet id (see DEPLOYMENT.md) to enable a live "
+            "secondary mirror you can open in a browser."
+        )
+    else:
+        sc1, sc2 = st.columns([1.3, 3])
+        with sc1:
+            if st.button("⟳ Sync all to Google Sheets", type="primary",
+                         use_container_width=True):
+                try:
+                    with st.spinner("Pushing to Google Sheets…"):
+                        counts = sheets.sync_all()
+                    st.success(
+                        f"Synced — participants: {counts['participants']}, "
+                        f"responses: {counts['responses']}, activity: {counts['activity']}."
+                    )
+                except Exception as e:  # noqa: BLE001
+                    st.error(f"Sync failed: {e}")
+        with sc2:
+            st.caption(
+                "Live mirror is **on**: responses & activity append automatically and "
+                "participant rows update on each stage change. Use Sync for a full, "
+                "authoritative rebuild from the database."
+            )
+            url = sheets.sheet_url()
+            if url:
+                st.markdown(f"[Open the Google Sheet ↗]({url})")
+
+    with st.expander("Raw responses (long format)"):
+        st.dataframe(resp, use_container_width=True, hide_index=True)
+    with st.expander("Raw activity log"):
+        st.dataframe(act, use_container_width=True, hide_index=True)

@@ -246,7 +246,20 @@ def estimate_qber(
     sample_size = max(1, int(n * sample_fraction))
 
     rng     = random.Random(seed)
-    indices = rng.sample(range(n), min(sample_size, n))
+    indices = rng.sample(range(n), min(sample_size, n)) if n > 0 else []
+
+    # No sifted bits survived (e.g. extreme fibre loss / heavy noise) → there is
+    # no key to test, so QBER is undefined. Return a safe "no key" result instead
+    # of dividing by zero.
+    if not indices:
+        return QBERResult(
+            qber=0.0,
+            errors=0,
+            sample_size=0,
+            security_status="ABORT x",
+            confidence_low=0.0,
+            confidence_high=0.0,
+        )
 
     errors = sum(1 for i in indices if alice_key[i] != bob_key[i])
     qber   = errors / len(indices)
