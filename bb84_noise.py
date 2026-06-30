@@ -1,58 +1,42 @@
 """
-bb84_noise.py  ·  Phase 3 — Quantum Channel Noise Models
-══════════════════════════════════════════════════════════════════════
-University of Ruhuna — Dept. of Computer Engineering
+bb84_noise.py
+=============
+Phase 3: physically-motivated quantum channel noise models for the BB84
+QKD simulator, derived from the Lindblad master equation governing open
+quantum systems (see report Sec. 2.2-2.4).
 
-PURPOSE
-───────
-Provides QuantumChannel, the physical model of the fibre between Alice
-and Bob.  Phase 3 extends Phase 1's single depolarizing model with
-physically motivated noise channels derived from the Lindblad master
-equation.
+Five channel models
+--------------------
+IDEAL               - no noise (Phase 1 default)
+DEPOLARIZING        - symmetric Pauli noise (Phase 1 baseline, kept for
+                       backward compatibility)
+AMPLITUDE_DAMPING   - T1 energy relaxation  (gamma = 1 - exp(-t_gate/T1))
+PHASE_DAMPING       - T2 dephasing          (lambda = 1 - exp(-t_gate/T2))
+COMBINED            - full T1+T2 thermal relaxation (most physical model
+                       for superconducting hardware; T2 <= 2*T1 enforced)
+FIBRE_LOSS          - distance-based photon loss, Beer-Lambert attenuation
+                       P_survive = 10^(-alpha*L/10). NOT a Kraus channel:
+                       it removes photons, it does not corrupt surviving
+                       ones, so it degrades key RATE but not security.
 
-LINDBLAD MASTER EQUATION  (the physics behind every noise model here)
-──────────────────────────────────────────────────────────────────────
-Open quantum systems — those coupled to an environment — evolve under:
+Modelling note on Eve + fibre loss
+-----------------------------------
+Gate-level noise (depolarizing / amplitude / phase / combined) is baked
+into the Aer noise model and therefore applies naturally on *every* hop
+a qubit takes through the channel (Alice->Eve and Eve->Bob), since both
+Eve.intercept() and Bob.measure() route through the same noisy simulator.
 
-    dρ/dt = −i/ℏ [H, ρ] + Σ_k γ_k ( L_k ρ L_k† − ½{L_k†L_k, ρ} )
+Fibre loss is different: it is evaluated explicitly inside run_circuit()
+via a Bernoulli draw, not through Aer. To avoid double-attenuating a
+single physical channel length when Eve is present, the loss draw is
+only applied on the *final* hop into Bob's detector (apply_loss=True,
+the default). Eve's own intercept measurement always calls
+run_circuit(..., apply_loss=False), so the full channel length L is
+attributed once, to the Alice/Eve -> Bob leg. This is a deliberate
+simplification documented for future Phase 4 multi-hop work.
 
-where ρ is the qubit's density matrix and L_k are "jump operators"
-describing each noise channel.  Each model below corresponds to a
-specific choice of jump operators:
-
-    Noise model       Jump operator(s)       Physical meaning
-    ────────────────  ─────────────────────  ─────────────────────────────
-    depolarizing      X, Y, Z  (equal γ)     Random Pauli errors
-    amplitude_damp    |0⟩⟨1|  (γ = f(T1))   Energy relaxation (T1 decay)
-    phase_damp        |1⟩⟨1|  (λ = f(T2))   Dephasing, coherence loss (T2)
-    combined          both above             Realistic qubit decoherence
-    fiber_loss        —                      Photon absorption / scattering
-
-QISKIT MAPPING
-──────────────
-Qiskit Aer implements Lindblad noise via Kraus operators which are
-mathematically equivalent to the master equation approach.
-
-    depolarizing_error(p)          → p/4 · (I + X + Y + Z) Kraus map
-    amplitude_damping_error(γ)     → Kraus K0=[[1,0],[0,√(1−γ)]], K1=[[0,√γ],[0,0]]
-    phase_damping_error(λ)         → Kraus K0=[[1,0],[0,√(1−λ)]], K1=[[0,0],[0,√λ]]
-    thermal_relaxation_error(T1,T2,t)  → full T1+T2 combined Kraus map
-
-FIBER LOSS
-──────────
-Not a Lindblad channel but equally important for QKD.  Modelled as a
-Bernoulli trial: each photon survives with probability
-    P_survive = 10^(−α·L / 10)
-where α = 0.2 dB/km (standard SMF-28 fibre at 1550 nm).
-Lost photons return None from run_circuit(); the runner excludes those
-indices from sifting.  Key rate drops but QBER is unaffected by loss
-alone — this is the key educational insight.
-
-EXPORTS
-───────
-QuantumChannel  — build one with QuantumChannel.from_config(cfg)
-NoiseModelType  — string constants for the noise_model config field
-══════════════════════════════════════════════════════════════════════
+University of Ruhuna - Dept. of Computer Engineering
+MIT Licence - see LICENSE
 """
 
 from __future__ import annotations
@@ -75,15 +59,33 @@ from bb84_config import SimulationConfig
 
 
 # ──────────────────────────────────────────────────────────────────────
-# Noise model name constants  (avoid magic strings in notebooks)
+# NOISE MODEL TYPE CONSTANTS
 # ──────────────────────────────────────────────────────────────────────
 
 class NoiseModelType:
-    DEPOLARIZING    = "depolarizing"     # Phase 1 baseline
-    AMPLITUDE_DAMP  = "amplitude_damp"   # T1 energy relaxation  (Phase 3)
-    PHASE_DAMP      = "phase_damp"       # T2 pure dephasing     (Phase 3)
-    COMBINED        = "combined"         # T1 + T2 together      (Phase 3)
-    FIBER_LOSS      = "fiber_loss"       # distance-based loss   (Phase 3)
+    """String constants identifying each Phase 3 channel model."""
+    IDEAL             = "ideal"
+    DEPOLARIZING      = "depolarizing"
+    AMPLITUDE_DAMPING = "amplitude_damping"
+    PHASE_DAMPING     = "phase_damping"
+    COMBINED          = "combined"
+    FIBRE_LOSS        = "fibre_loss"
+
+    ALL = (IDEAL, DEPOLARIZING, AMPLITUDE_DAMPING, PHASE_DAMPING, COMBINED, FIBRE_LOSS)
+
+    LABELS = {
+        IDEAL:             "Ideal (no noise)",
+        DEPOLARIZING:      "Depolarising",
+        AMPLITUDE_DAMPING: "Amplitude Damping (T1)",
+        PHASE_DAMPING:     "Phase Damping (T2)",
+        COMBINED:          "Combined T1+T2",
+        FIBRE_LOSS:        "Fibre Loss",
+    }
+
+
+# Gates that ever appear in an Alice/Bob/Eve single-qubit circuit.
+# Noise is attached to these so it is incurred once per gate actually used.
+_GATE_NOISE_TARGETS = ["x", "h"]
 
 
 # ──────────────────────────────────────────────────────────────────────
@@ -92,203 +94,201 @@ class NoiseModelType:
 
 class QuantumChannel:
     """
-    Physical quantum channel between Alice and Bob.
+    Quantum channel backed by Qiskit Aer, supporting five physically
+    motivated noise models built from Lindblad jump operators (Table 2
+    of the Phase 3 report).
 
-    Build with the factory:
-        channel = QuantumChannel.from_config(cfg)
+    Parameters
+    ----------
+    noise_model : str
+        One of ``NoiseModelType.ALL``.  Unknown values fall back to the
+        ideal simulator with a console warning (Sec. 3.3 design
+        principle: unknown-model fallback, never a hard crash).
+    depolar_prob : float
+        Depolarising error probability per gate (DEPOLARIZING only).
+    t1_ns, t2_ns : float
+        T1 / T2 coherence times in nanoseconds (AMPLITUDE_DAMPING /
+        PHASE_DAMPING / COMBINED).  T2 is clamped to <= 2*T1.
+    gate_time_ns : float
+        Single-qubit gate duration in nanoseconds.
+    channel_length_km : float
+        Fibre length for FIBRE_LOSS.
+    fibre_attenuation_db_km : float
+        Attenuation coefficient, default 0.2 dB/km (SMF-28 @ 1550 nm).
+    loss_rng : random.Random, optional
+        RNG used for the photon-survival Bernoulli draw when no
+        per-shot seed is supplied to run_circuit().
 
-    Or directly for custom experiments:
-        channel = QuantumChannel(noise_model="phase_damp", t2_ns=5000)
-
-    run_circuit(qc) returns int (0 or 1) for all models except
-    fiber_loss, which may return None (photon lost).
-    Callers must handle None when using fiber_loss.
+    Example
+    -------
+    >>> ch = QuantumChannel(noise_model=NoiseModelType.AMPLITUDE_DAMPING,
+    ...                      t1_ns=10_000, gate_time_ns=50)
+    >>> bit = ch.run_circuit(qc)            # 0, 1
+    >>> ch2 = QuantumChannel(noise_model=NoiseModelType.FIBRE_LOSS,
+    ...                      channel_length_km=80)
+    >>> bit2 = ch2.run_circuit(qc)          # 0, 1, or None (photon lost)
     """
-
-    # SMF-28 standard fibre attenuation at 1550 nm  (dB/km)
-    FIBER_ATTENUATION_DB_PER_KM: float = 0.2
 
     def __init__(
         self,
-        noise_enabled:     bool  = False,
-        noise_model:       str   = NoiseModelType.DEPOLARIZING,
-        depolar_prob:      float = 0.01,
-        t1_ns:             float = 100_000.0,
-        t2_ns:             float =  50_000.0,
-        gate_time_ns:      float =      50.0,
-        channel_length_km: float =       0.0,
+        noise_model: str = NoiseModelType.IDEAL,
+        depolar_prob: float = 0.01,
+        t1_ns: float = 10_000.0,
+        t2_ns: float = 8_000.0,
+        gate_time_ns: float = 50.0,
+        channel_length_km: float = 0.0,
+        fibre_attenuation_db_km: float = 0.2,
+        loss_rng: Optional[random.Random] = None,
     ):
-        self.noise_enabled     = noise_enabled
-        self.noise_model       = noise_model
-        self.depolar_prob      = depolar_prob
-        self.t1_ns             = t1_ns
-        self.t2_ns             = t2_ns
-        self.gate_time_ns      = gate_time_ns
-        self.channel_length_km = channel_length_km
+        if noise_model not in NoiseModelType.ALL:
+            print(f"[bb84_noise] WARNING: unknown noise_model={noise_model!r}; "
+                  f"falling back to ideal simulator.")
+            noise_model = NoiseModelType.IDEAL
 
-        # Derived loss probability for fiber_loss model
-        self._photon_survival_prob = self._calc_survival_prob()
+        self.noise_model = noise_model
+        self.depolar_prob = depolar_prob
 
-        # Build Qiskit simulator (or None for fiber_loss — no gate noise)
+        # Bloch-sphere constraint: T2 <= 2*T1, always.
+        self.t1_ns = float(t1_ns)
+        self.t2_ns = float(min(t2_ns, 2 * t1_ns - 1e-6))
+        self.gate_time_ns = float(gate_time_ns)
+
+        self.channel_length_km = float(channel_length_km)
+        self.alpha_db_km = float(fibre_attenuation_db_km)
+
+        self._loss_rng = loss_rng if loss_rng is not None else random.Random()
         self._simulator = self._build_simulator()
 
-    # ── Factory ───────────────────────────────────────────────────────
-
+    # ------------------------------------------------------------------
     @classmethod
-    def from_config(cls, cfg: SimulationConfig) -> "QuantumChannel":
-        """Construct QuantumChannel directly from a SimulationConfig."""
+    def from_config(
+        cls,
+        config: SimulationConfig,
+        loss_rng: Optional[random.Random] = None,
+    ) -> "QuantumChannel":
+        """
+        Factory routing a SimulationConfig to the correct noise builder.
+
+        Backward compatible: if ``config.noise_model`` is unset (None),
+        legacy Phase 1 fields (``noise_enabled``, ``depolar_prob``)
+        reproduce Phase 1 behaviour exactly.
+        """
+        model = config.noise_model
+        if model is None:
+            model = NoiseModelType.DEPOLARIZING if config.noise_enabled else NoiseModelType.IDEAL
         return cls(
-            noise_enabled     = cfg.noise_enabled,
-            noise_model       = cfg.noise_model,
-            depolar_prob      = cfg.depolar_prob,
-            t1_ns             = cfg.t1_ns,
-            t2_ns             = cfg.t2_ns,
-            gate_time_ns      = cfg.gate_time_ns,
-            channel_length_km = cfg.channel_length_km,
+            noise_model=model,
+            depolar_prob=config.depolar_prob,
+            t1_ns=config.t1_ns,
+            t2_ns=config.t2_ns,
+            gate_time_ns=config.gate_time_ns,
+            channel_length_km=config.channel_length_km,
+            loss_rng=loss_rng,
         )
 
-    # ── Public interface ──────────────────────────────────────────────
+    # ------------------------------------------------------------------
+    # Derived physical quantities
+    # ------------------------------------------------------------------
+    @property
+    def survival_probability(self) -> float:
+        """Beer-Lambert photon survival probability, P = 10^(-alpha*L/10)."""
+        return 10 ** (-self.alpha_db_km * self.channel_length_km / 10.0)
 
-    def run_circuit(self, qc: QuantumCircuit) -> Optional[int]:
-        """
-        Simulate a single-qubit measurement circuit through this channel.
+    @property
+    def gamma(self) -> float:
+        """Amplitude-damping parameter, gamma = 1 - exp(-t_gate / T1)."""
+        return 1.0 - math.exp(-self.gate_time_ns / self.t1_ns)
 
-        Returns
-        ───────
-        int   (0 or 1)  — measured bit value
-        None            — photon lost (fiber_loss model only)
-
-        The caller (Bob.measure or Eve.intercept) must handle None.
-        """
-        # Fiber loss: probabilistic photon survival BEFORE gate noise
-        if (self.noise_enabled
-                and self.noise_model == NoiseModelType.FIBER_LOSS):
-            if random.random() > self._photon_survival_prob:
-                return None        # photon absorbed / scattered in fibre
-
-        # All other models: Qiskit simulation with noise
-        job    = self._simulator.run(transpile(qc, self._simulator), shots=1)
-        counts = job.result().get_counts()
-        return int(list(counts.keys())[0])
+    @property
+    def lam(self) -> float:
+        """Phase-damping parameter, lambda = 1 - exp(-t_gate / T2)."""
+        return 1.0 - math.exp(-self.gate_time_ns / self.t2_ns)
 
     @property
     def description(self) -> str:
-        """Human-readable summary for printing / notebook display."""
-        if not self.noise_enabled:
+        """Short human-readable summary."""
+        if self.noise_model == NoiseModelType.IDEAL:
             return "Ideal channel (no noise)"
         if self.noise_model == NoiseModelType.DEPOLARIZING:
-            return f"Depolarizing  p = {self.depolar_prob}"
-        if self.noise_model == NoiseModelType.AMPLITUDE_DAMP:
-            γ = self._amplitude_damping_gamma()
-            return f"Amplitude damping  T1 = {self.t1_ns/1000:.0f} µs  γ = {γ:.4f}"
-        if self.noise_model == NoiseModelType.PHASE_DAMP:
-            λ = self._phase_damping_lambda()
-            return f"Phase damping  T2 = {self.t2_ns/1000:.0f} µs  λ = {λ:.4f}"
+            return f"Depolarising  p = {self.depolar_prob}"
+        if self.noise_model == NoiseModelType.AMPLITUDE_DAMPING:
+            return f"Amplitude damping  T1={self.t1_ns/1000:.3f} us  (gamma={self.gamma:.5f})"
+        if self.noise_model == NoiseModelType.PHASE_DAMPING:
+            return f"Phase damping  T2={self.t2_ns/1000:.3f} us  (lambda={self.lam:.5f})"
         if self.noise_model == NoiseModelType.COMBINED:
-            return (f"Combined T1/T2  T1 = {self.t1_ns/1000:.0f} µs  "
-                    f"T2 = {self.t2_ns/1000:.0f} µs")
-        if self.noise_model == NoiseModelType.FIBER_LOSS:
-            return (f"Fiber loss  L = {self.channel_length_km} km  "
-                    f"P_survive = {self._photon_survival_prob:.3f}")
-        return f"Unknown noise model: {self.noise_model}"
+            return (f"Combined T1+T2  T1={self.t1_ns/1000:.3f} us  "
+                    f"T2={self.t2_ns/1000:.3f} us  t_gate={self.gate_time_ns:.0f} ns")
+        if self.noise_model == NoiseModelType.FIBRE_LOSS:
+            return (f"Fibre loss  L={self.channel_length_km:.1f} km  "
+                    f"(P_survive={self.survival_probability:.4f})")
+        return "Unknown channel"
 
-    # ── Private: parameter calculations ──────────────────────────────
-
-    def _amplitude_damping_gamma(self) -> float:
+    # ------------------------------------------------------------------
+    def run_circuit(
+        self,
+        qc: QuantumCircuit,
+        shot_seed: Optional[int] = None,
+        apply_loss: bool = True,
+    ) -> Optional[int]:
         """
-        Amplitude damping parameter γ from T1 and gate time.
+        Simulate *qc* through this channel and return the measured bit.
 
-        Physical meaning: probability that |1⟩ decays to |0⟩ per gate.
-        Derived from Lindblad jump operator L = √(γ) |0⟩⟨1|.
+        Parameters
+        ----------
+        qc         : single-qubit circuit with one measurement.
+        shot_seed  : per-shot seed for reproducibility.
+        apply_loss : whether the FIBRE_LOSS Bernoulli draw applies on
+                     this call.  Bob.measure() always uses the default
+                     (True); Eve.intercept() passes False so a single
+                     channel length is not attenuated twice (see module
+                     docstring).
 
-            γ = 1 − exp(−t_gate / T1)
-
-        Small t_gate/T1 → γ ≈ t_gate/T1  (linear regime, typical for superconducting qubits)
+        Returns
+        -------
+        int or None
+            0 or 1 for a successfully measured qubit; None if the
+            photon was lost in transit (FIBRE_LOSS model, apply_loss=True
+            calls only).
         """
-        return 1.0 - math.exp(-self.gate_time_ns / self.t1_ns)
+        if self.noise_model == NoiseModelType.FIBRE_LOSS and apply_loss:
+            draw = (random.Random(shot_seed).random()
+                    if shot_seed is not None else self._loss_rng.random())
+            if draw > self.survival_probability:
+                return None  # photon lost - Bob detects nothing
 
-    def _phase_damping_lambda(self) -> float:
-        """
-        Phase damping parameter λ from T2 and gate time.
+        kwargs = {"shots": 1}
+        if shot_seed is not None:
+            kwargs["seed_simulator"] = int(shot_seed) % (2 ** 31)
+        # NOTE: no transpile() here. x / h / measure / id are already
+        # native AerSimulator basis gates, so transpiling is a no-op that
+        # costs ~90 ms per call (measured) for zero benefit - it dominated
+        # total runtime and made N >= 2000 sweeps impractical. Skipping it
+        # gives an ~180x speedup with byte-identical results.
+        job = self._simulator.run(qc, **kwargs)
+        counts = job.result().get_counts()
+        return int(list(counts.keys())[0])
 
-        Physical meaning: probability that phase coherence is lost per gate.
-        Derived from Lindblad jump operator L = √(λ) |1⟩⟨1|.
-
-            λ = 1 − exp(−t_gate / T2)
-
-        Note: T2 ≤ 2·T1 always (Bloch sphere constraint).
-        Phase damping alone does NOT change qubit populations (no |0⟩↔|1⟩ transitions).
-        """
-        return 1.0 - math.exp(-self.gate_time_ns / self.t2_ns)
-
-    def _calc_survival_prob(self) -> float:
-        """
-        Photon survival probability for fiber_loss model.
-
-            P_survive = 10^(−α · L / 10)
-
-        α = 0.2 dB/km (SMF-28 at 1550 nm)
-        L = channel_length_km
-        """
-        if self.channel_length_km <= 0:
-            return 1.0
-        db_loss = self.FIBER_ATTENUATION_DB_PER_KM * self.channel_length_km
-        return 10 ** (-db_loss / 10)
-
-    # ── Private: Qiskit simulator construction ────────────────────────
-
+    # ------------------------------------------------------------------
     def _build_simulator(self) -> AerSimulator:
-        """
-        Build an AerSimulator with the appropriate noise model.
-
-        Gate targets: ['x', 'h', 'id'] — the only gates in Phase 1/3 circuits.
-        Phase 4 will add 'cx' if multi-qubit circuits are introduced.
-        """
-        if not self.noise_enabled:
-            return AerSimulator()
-
-        if self.noise_model == NoiseModelType.FIBER_LOSS:
-            # Fiber loss is handled probabilistically in run_circuit().
-            # No gate-level noise model needed.
+        if self.noise_model in (NoiseModelType.IDEAL, NoiseModelType.FIBRE_LOSS):
             return AerSimulator()
 
         nm = NoiseModel()
-        gates = ["x", "h", "id"]
 
-        # ── Depolarizing  (Phase 1 baseline) ──────────────────────────
         if self.noise_model == NoiseModelType.DEPOLARIZING:
             err = depolarizing_error(self.depolar_prob, 1)
-            nm.add_all_qubit_quantum_error(err, gates)
+            nm.add_all_qubit_quantum_error(err, ["x", "h", "id"])
 
-        # ── Amplitude damping  (T1 energy relaxation) ─────────────────
-        elif self.noise_model == NoiseModelType.AMPLITUDE_DAMP:
-            γ = self._amplitude_damping_gamma()
-            err = amplitude_damping_error(γ)
-            nm.add_all_qubit_quantum_error(err, gates)
+        elif self.noise_model == NoiseModelType.AMPLITUDE_DAMPING:
+            err = amplitude_damping_error(self.gamma)
+            nm.add_all_qubit_quantum_error(err, _GATE_NOISE_TARGETS)
 
-        # ── Phase damping  (T2 pure dephasing) ────────────────────────
-        elif self.noise_model == NoiseModelType.PHASE_DAMP:
-            λ = self._phase_damping_lambda()
-            err = phase_damping_error(λ)
-            nm.add_all_qubit_quantum_error(err, gates)
+        elif self.noise_model == NoiseModelType.PHASE_DAMPING:
+            err = phase_damping_error(self.lam)
+            nm.add_all_qubit_quantum_error(err, _GATE_NOISE_TARGETS)
 
-        # ── Combined T1 + T2  (most physically realistic) ─────────────
         elif self.noise_model == NoiseModelType.COMBINED:
-            # thermal_relaxation_error implements the full Lindblad model
-            # with both T1 (energy) and T2 (dephasing) simultaneously.
-            # Constraint enforced: T2 cannot exceed 2·T1.
-            t2_safe = min(self.t2_ns, 2.0 * self.t1_ns - 1.0)
-            err = thermal_relaxation_error(
-                t1=self.t1_ns,
-                t2=t2_safe,
-                time=self.gate_time_ns,
-            )
-            nm.add_all_qubit_quantum_error(err, gates)
+            err = thermal_relaxation_error(self.t1_ns, self.t2_ns, self.gate_time_ns)
+            nm.add_all_qubit_quantum_error(err, _GATE_NOISE_TARGETS)
 
-        else:
-            print(f"  [Channel] Unknown noise_model='{self.noise_model}', "
-                  f"using ideal channel.")
-            return AerSimulator()
-
-        print(f"  [Channel] {self.description}")
         return AerSimulator(noise_model=nm)

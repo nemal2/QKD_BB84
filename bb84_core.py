@@ -3,13 +3,39 @@ bb84_core.py
 ============
 Quantum parties and classical post-processing for BB84 QKD.
 
-Alice            => qubit preparation
-Bob              => qubit measurement
-Eve              => intercept-resend attack  (Phase 1)
-QuantumChannel   => noise model + Qiskit backend
-sift_keys()      => basis reconciliation
-estimate_qber()  => QBER with Wilson confidence interval
+Classes
+-------
+Alice           - qubit preparation
+Bob             - qubit measurement
+Eve             - intercept-resend attack
+QuantumChannel  - re-exported from bb84_noise (Phase 3: 5 noise models)
 
+Functions
+---------
+sift_keys()     - basis reconciliation (classical post-processing)
+estimate_qber() - QBER with 95 % Wilson confidence interval
+
+Encoding table
+--------------
+bit=0, basis=0  →  |0⟩   (no gates)
+bit=1, basis=0  →  |1⟩   (X gate)
+bit=0, basis=1  →  |+⟩   (H gate)
+bit=1, basis=1  →  |−⟩   (X → H)
+
+Bases: 0 = Rectilinear (+),  1 = Diagonal (×)
+
+Phase 3 note
+------------
+QuantumChannel now lives in bb84_noise.py (5 physically-motivated
+models). It is re-exported here unchanged so existing imports
+(``from bb84_core import QuantumChannel``) keep working without
+modification — see Sec. 3.3 "Backward Compatibility" of the report.
+``run_circuit()`` now returns ``Optional[int]``: ``None`` signals a
+lost photon under the FIBRE_LOSS model. Bob.measure() and Eve.intercept()
+both handle this transparently.
+
+University of Ruhuna - Dept. of Computer Engineering
+MIT Licence - see LICENSE
 """
 
 from __future__ import annotations
@@ -18,96 +44,40 @@ import random
 from typing import Dict, List, Optional
 
 import numpy as np
-from qiskit import QuantumCircuit, transpile
-from qiskit_aer import AerSimulator
-from qiskit_aer.noise import NoiseModel, depolarizing_error
+from qiskit import QuantumCircuit
 
 from bb84_config import QBERResult
+from bb84_noise import QuantumChannel, NoiseModelType  # Phase 3 noise models
+
+__all__ = [
+    "QuantumChannel", "NoiseModelType",
+    "Alice", "Bob", "Eve",
+    "sift_keys", "estimate_qber",
+]
 
 
-
-# QUANTUM CHANNEL
-# ===============
-
-class QuantumChannel:
-    """
-    Models the physical quantum channel between Alice and Bob.
-
-    Phase 1  : ideal channel  OR  depolarizing noise
-
-    Phase 3 (planned — do NOT implement here yet):
-        • Phase damping          (T2 dephasing)
-        • Amplitude damping      (T1 energy relaxation)
-        • Distance-based photon loss  (Beer-Lambert / fibre loss)
-          → will require new constructor param: channel_length_km
-  
-    Adding Phase 3 noise: subclass QuantumChannel or extend
-    _build_simulator() with a noise_model
-    """
-
-    def __init__(
-        self,
-        noise_enabled: bool  = False,
-        depolar_prob:  float = 0.0,
-    ):
-        self.noise_enabled = noise_enabled
-        self.depolar_prob  = depolar_prob
-        self._simulator    = self._build_simulator()
-
-    #  Private helpers ====================
-
-    def _build_simulator(self) -> AerSimulator:
-        if self.noise_enabled and self.depolar_prob > 0:
-            noise_model = NoiseModel()
-            # Depolarizing channel: E(ρ) = (1-p)ρ + (p/3)(XρX + YρY + ZρZ)
-            error = depolarizing_error(self.depolar_prob, 1)
-            noise_model.add_all_qubit_quantum_error(error, ["x", "h", "id"])
-            print(f"  [Channel] Depolarizing noise  p = {self.depolar_prob}")
-            return AerSimulator(noise_model=noise_model)
-        return AerSimulator()
-
-    #  Public interface ====================
-
-    def run_circuit(self, qc: QuantumCircuit) -> int:
-        """
-        Simulate a single-qubit measurement circuit.
-        Returns the measured bit (0 or 1).
-
-        Phase 3 note: photon-loss model will need a 'lost' return value
-        """
-        job    = self._simulator.run(transpile(qc, self._simulator), shots=1)
-        counts = job.result().get_counts()
-        return int(list(counts.keys())[0])
-
-
-# ALICE — Quantum State Preparation ===============================
+# ──────────────────────────────────────────────────────────────────────
+# ALICE - qubit preparation
+# ──────────────────────────────────────────────────────────────────────
 
 class Alice:
     """
-    Alice randomly selects bits and bases, then encodes each bit
-    as a qubit.
+    Alice randomly selects bits and bases, then encodes each bit as a qubit.
 
-    Encoding table
-    ──────────────
-    bit=0, basis=0  →  |0⟩        (no gates)
-    bit=1, basis=0  →  |1⟩        (X gate)
-    bit=0, basis=1  →  |+⟩        (H gate)
-    bit=1, basis=1  →  |−⟩        (X → H)
-
-    Bases
-    ─────
-    0 = Rectilinear (+)
-    1 = Diagonal    (×)
+    Parameters
+    ----------
+    n_qubits : number of qubits to prepare.
+    seed     : RNG seed (None → random).
     """
 
     def __init__(self, n_qubits: int, seed: Optional[int] = None):
         self.n_qubits = n_qubits
         rng = np.random.default_rng(seed)
-        self.bits  = rng.integers(0, 2, n_qubits).tolist()
-        self.bases = rng.integers(0, 2, n_qubits).tolist()
+        self.bits:  List[int] = rng.integers(0, 2, n_qubits).tolist()
+        self.bases: List[int] = rng.integers(0, 2, n_qubits).tolist()
 
     def prepare_qubit(self, index: int) -> QuantumCircuit:
-        """Return a 1-qubit circuit encoding bits[index] in bases[index]."""
+        """Return a 1-qubit circuit encoding ``bits[index]`` in ``bases[index]``."""
         qc = QuantumCircuit(1, 1, name=f"A{index}")
         if self.bits[index] == 1:
             qc.x(0)
@@ -120,68 +90,79 @@ class Alice:
         return [self.bits[i] for i in matching_indices]
 
 
-# BOB — Quantum Measurement ===============================
-
+# ──────────────────────────────────────────────────────────────────────
+# BOB - qubit measurement
+# ──────────────────────────────────────────────────────────────────────
 
 class Bob:
     """
     Bob randomly selects a measurement basis for each qubit.
-    When his basis matches Alice's the outcome is deterministic;
-    otherwise it is uniformly random.
 
-    Bases: 0 = Rectilinear (+),  1 = Diagonal (×)
+    When his basis matches Alice's the outcome is deterministic;
+    otherwise it is uniformly random (superposition collapse).
+    Under the FIBRE_LOSS channel a qubit may never arrive at all, in
+    which case ``measured_bits[index]`` stays ``None``.
+
+    Parameters
+    ----------
+    n_qubits : must equal Alice's n_qubits.
+    seed     : RNG seed (offset internally so bases are independent of Alice's).
     """
 
     def __init__(self, n_qubits: int, seed: Optional[int] = None):
         self.n_qubits = n_qubits
-        # Offset seed so Bob's bases are independent of Alice's
         rng = np.random.default_rng(None if seed is None else seed + 99)
-        self.bases: List[int]           = rng.integers(0, 2, n_qubits).tolist()
+        self.bases: List[int]                  = rng.integers(0, 2, n_qubits).tolist()
         self.measured_bits: List[Optional[int]] = [None] * n_qubits
+        self._shot_seed_base = (seed * 7919) if seed is not None else None
 
     def measure(
         self,
         qc:      QuantumCircuit,
         index:   int,
         channel: QuantumChannel,
-    ) -> int:
+    ) -> Optional[int]:
         """
-        Measure qubit `index` in Bob's chosen basis.
-        Returns the measured bit and stores it in measured_bits[index].
+        Measure qubit *index* in Bob's chosen basis.
+
+        Returns the measured bit (0/1), or ``None`` if the photon never
+        arrived (FIBRE_LOSS model). Stores the same value in
+        ``measured_bits[index]``.
         """
         meas_qc = qc.copy()
         if self.bases[index] == 1:
             meas_qc.h(0)          # rotate to diagonal basis before measuring
         meas_qc.measure(0, 0)
-        bit = channel.run_circuit(meas_qc)
+        shot_seed = (self._shot_seed_base + index) if self._shot_seed_base is not None else None
+        bit = channel.run_circuit(meas_qc, shot_seed=shot_seed)   # apply_loss=True (default)
         self.measured_bits[index] = bit
         return bit
 
     def sift_key(self, matching_indices: List[int]) -> List[int]:
-        # Bob's measured bits at positions where bases agreed with Alice's.
+        """Bob's measured bits at positions where bases agreed with Alice's."""
         return [self.measured_bits[i] for i in matching_indices]
 
 
-
-# EVE — Intercept-Resend Attack  (Phase 1) ==============================
-
+# ──────────────────────────────────────────────────────────────────────
+# EVE - intercept-resend attack
+# ──────────────────────────────────────────────────────────────────────
 
 class Eve:
     """
-    Phase 1 attack: intercept-resend.
-    Eve intercepts each qubit with probability `intercept_prob`,
-    measures in a RANDOM basis, then forwards a freshly prepared
-    qubit to Bob.
+    Intercept-resend eavesdropper.
 
-    Expected effect: ~25 % QBER at intercept_prob = 1.0
+    Eve intercepts each qubit with probability ``intercept_prob``,
+    measures in a random basis, then forwards a freshly prepared qubit
+    to Bob.  At full interception (p = 1.0) the expected QBER is 25 %.
 
-    ===============================================
-    Phase 4 (planned — do NOT implement here yet):
-        • Entanglement-based attacks
-        • Photon Number Splitting (PNS)
-        • Decoy-state countermeasure
-    ===============================================
-    
+    Note: Eve's own measurement call always passes ``apply_loss=False``
+    to the channel, so a single fibre length is only attenuated once,
+    on the final hop into Bob's detector (see bb84_noise module docstring).
+
+    Parameters
+    ----------
+    intercept_prob : fraction of qubits Eve intercepts (0.0-1.0).
+    seed           : RNG seed.
     """
 
     def __init__(
@@ -190,12 +171,11 @@ class Eve:
         seed:           Optional[int] = None,
     ):
         self.intercept_prob    = intercept_prob
-        self._rng              = np.random.default_rng(seed)
+        self._rng              = np.random.default_rng(None if seed is None else seed + 200)
         self.intercepted_count = 0
-        self._eve_bases:  Dict[int, int] = {}
-        self._eve_bits:   Dict[int, int] = {}
-
-    # ── Public interface ==========================================
+        self._eve_bases: Dict[int, int] = {}
+        self._eve_bits:  Dict[int, int] = {}
+        self._shot_seed_base = (seed * 6271) if seed is not None else None
 
     def intercept(
         self,
@@ -204,30 +184,33 @@ class Eve:
         channel: QuantumChannel,
     ) -> QuantumCircuit:
         """
-        Optionally intercept qubit `index`.
+        Optionally intercept qubit *index*.
 
-        Returns either:
-          • The original circuit  (Eve skips this qubit), or
-          • A freshly prepared circuit in Eve's measured state
+        Returns the original circuit (pass-through) or a freshly
+        prepared circuit encoding Eve's measured result.
         """
         if random.random() > self.intercept_prob:
             return qc                          # Eve passes this qubit through
 
         self.intercepted_count += 1
 
-        # ── Step 1: Pick a random basis ────────────────────────────────
+        # Step 1: pick a random basis
         eve_base = int(self._rng.integers(0, 2))
         self._eve_bases[index] = eve_base
 
-        # ── Step 2: Measure Alice's qubit in Eve's basis ───────────────
+        # Step 2: measure Alice's qubit in Eve's basis
         meas_qc = qc.copy()
         if eve_base == 1:
             meas_qc.h(0)
         meas_qc.measure(0, 0)
-        measured_bit = channel.run_circuit(meas_qc)
+        shot_seed = (
+            (self._shot_seed_base + index)
+            if self._shot_seed_base is not None else None
+        )
+        measured_bit = channel.run_circuit(meas_qc, shot_seed=shot_seed, apply_loss=False)
         self._eve_bits[index] = measured_bit
 
-        # ── Step 3: Re-prepare qubit from Eve's result ─────────────────
+        # Step 3: re-prepare qubit from Eve's result
         new_qc = QuantumCircuit(1, 1, name=f"E{index}")
         if measured_bit == 1:
             new_qc.x(0)
@@ -238,6 +221,7 @@ class Eve:
 
     @property
     def stats(self) -> dict:
+        """Summary statistics of Eve's interception activity."""
         return {
             "intercepted": self.intercepted_count,
             "bases":       self._eve_bases,
@@ -245,72 +229,118 @@ class Eve:
         }
 
 
-# KEY SIFTING  (Classical Post-Processing) ===========================
-
+# ──────────────────────────────────────────────────────────────────────
+# KEY SIFTING  (classical post-processing)
+# ──────────────────────────────────────────────────────────────────────
 
 def sift_keys(alice_bases: List[int], bob_bases: List[int]) -> List[int]:
     """
-    Classical public comparison of bases (NOT bits).
-    Returns indices where Alice and Bob chose the same basis.
+    Publicly compare bases (NOT bits) and return matching indices.
+
     Expected retention: ~50 % of transmitted qubits.
+
+    Parameters
+    ----------
+    alice_bases, bob_bases : basis lists from Alice and Bob.
+
+    Returns
+    -------
+    List of qubit indices where both parties chose the same basis.
     """
     return [i for i in range(len(alice_bases)) if alice_bases[i] == bob_bases[i]]
 
 
+# ──────────────────────────────────────────────────────────────────────
+# QBER ESTIMATION  (classical post-processing)
+# ──────────────────────────────────────────────────────────────────────
 
-# QBER ESTIMATION  (Classical Post-Processing) ======================
-
+ 
 def estimate_qber(
     alice_key:       List[int],
     bob_key:         List[int],
-    sample_fraction: float = 0.10,
+    sample_fraction: float = 0.15,
     seed:            Optional[int] = None,
 ) -> QBERResult:
     """
-    Publicly compare a random SAMPLE of the sifted key.
-    The sampled bits are consumed (revealed) and NOT used in the final key.
-
+    Publicly compare a random sample of the sifted key to estimate QBER.
+ 
+    The sampled bits are *consumed* (revealed) and not used in the final key.
+ 
     Security thresholds (BB84 standard)
-    =================================
-    QBER <  5 %  →  SECURE 
-    5 % ≤ QBER < 11 %  →  WARNING    (eavesdropping possible)
-    QBER ≥ 11 %  →  ABORT   (channel compromised)
-
-    Phase 4 note: error correction (Cascade / LDPC) will be applied
-    AFTER this step and the returned QBERResult will then also carry a
-    post-correction residual QBER field.
+    ------------------------------------
+    QBER <  5 %          → ``SECURE ok``
+    5 % ≤ QBER < 11 %    → ``WARNING ``   (eavesdropping possible)
+    QBER ≥ 11 %          → ``ABORT x``    (channel compromised — abort)
+ 
+    Parameters
+    ----------
+    alice_key, bob_key : sifted key lists (equal length).
+    sample_fraction    : fraction of the sifted key to sample (default 15 %).
+    seed               : RNG seed for reproducible sampling.
+ 
+    Returns
+    -------
+    QBERResult with QBER estimate, error count, sample size,
+    security status, and 95 % Wilson confidence interval.
+ 
+    Edge cases
+    ----------
+    Empty key (all photons lost under FIBRE_LOSS): returns QBER=0.0,
+    sample_size=0, CI=[0,1], status='SECURE ok'.
     """
-
-
-    assert len(alice_key) == len(bob_key), \
+    assert len(alice_key) == len(bob_key), (
         f"Key length mismatch: Alice={len(alice_key)}, Bob={len(bob_key)}"
-
-    n           = len(alice_key)
+    )
+ 
+    n = len(alice_key)
+ 
+    # ── Guard: empty key ────────────────────────────────────────────────
+    # Occurs under FIBRE_LOSS at extreme distances when all photons are
+    # lost.  Return a zeroed result: QBER undefined → reported as 0 %.
+    if n == 0:
+        return QBERResult(
+            qber=0.0,
+            errors=0,
+            sample_size=0,
+            security_status="SECURE ok",
+            confidence_low=0.0,
+            confidence_high=1.0,
+        )
+ 
     sample_size = max(1, int(n * sample_fraction))
-
+ 
     rng     = random.Random(seed)
     indices = rng.sample(range(n), min(sample_size, n))
-
+ 
+    # ── Guard: belt-and-braces for zero-length sample ──────────────────
+    if len(indices) == 0:
+        return QBERResult(
+            qber=0.0,
+            errors=0,
+            sample_size=0,
+            security_status="SECURE ok",
+            confidence_low=0.0,
+            confidence_high=1.0,
+        )
+ 
     errors = sum(1 for i in indices if alice_key[i] != bob_key[i])
     qber   = errors / len(indices)
-
+ 
     # 95 % Wilson confidence interval
-    p   = qber
-    z   = 1.96
-    n_s = len(indices)
-    denom  = 1 + z**2 / n_s
-    center = (p + z**2 / (2 * n_s)) / denom
-    margin = (z * (p * (1 - p) / n_s + z**2 / (4 * n_s**2)) ** 0.5) / denom
+    p, z, n_s = qber, 1.96, len(indices)
+    denom  = 1 + z ** 2 / n_s
+    center = (p + z ** 2 / (2 * n_s)) / denom
+    margin = (z * (p * (1 - p) / n_s + z ** 2 / (4 * n_s ** 2)) ** 0.5) / denom
     ci_low  = max(0.0, center - margin)
     ci_high = min(1.0, center + margin)
-
+ 
     if qber < 0.05:
         status = "SECURE ok"
     elif qber < 0.11:
         status = "WARNING "
     else:
         status = "ABORT x"
-
+ 
     return QBERResult(
         qber=qber,
         errors=errors,

@@ -453,7 +453,7 @@ elif page == "sim":
             "Amp. Damp": SimulationConfig(
                 n_qubits=600,
                 noise_enabled=True,
-                noise_model="amplitude_damp",
+                noise_model="amplitude_damping",
                 t1_ns=10_000,
                 gate_time_ns=50,
                 label="Amp.Damp",
@@ -461,7 +461,7 @@ elif page == "sim":
             "Fiber 50km": SimulationConfig(
                 n_qubits=800,
                 noise_enabled=True,
-                noise_model="fiber_loss",
+                noise_model="fibre_loss",
                 channel_length_km=50,
                 label="Fiber 50km",
             ),
@@ -542,18 +542,18 @@ elif page == "sim":
                     "Model",
                     [
                         "depolarizing",
-                        "amplitude_damp",
-                        "phase_damp",
+                        "amplitude_damping",
+                        "phase_damping",
                         "combined",
-                        "fiber_loss",
+                        "fibre_loss",
                     ],
                     key="s_nm",
                     format_func=lambda x: {
                         "depolarizing": "Depolarizing (Pauli)",
-                        "amplitude_damp": "Amplitude Damping (T1)",
-                        "phase_damp": "Phase Damping (T2)",
+                        "amplitude_damping": "Amplitude Damping (T1)",
+                        "phase_damping": "Phase Damping (T2)",
                         "combined": "Combined T1 + T2",
-                        "fiber_loss": "Fiber Loss",
+                        "fibre_loss": "Fiber Loss",
                     }[x],
                 )
                 if noise_model == "depolarizing":
@@ -567,14 +567,14 @@ elif page == "sim":
                         key="s_dp",
                     )
                     st.caption(f"p/3 = {depolar_prob / 3:.5f} per Pauli")
-                elif noise_model == "amplitude_damp":
+                elif noise_model == "amplitude_damping":
                     t1_us = st.slider("T1 (µs)", 1.0, 500.0, 10.0, 1.0, key="s_t1")
                     gate_time_ns = st.slider(
                         "Gate time (ns)", 10, 200, 50, 5, key="s_gtad"
                     )
                     t1_ns = t1_us * 1000
                     st.caption(f"γ = {1.0 - math.exp(-gate_time_ns / t1_ns):.6f}")
-                elif noise_model == "phase_damp":
+                elif noise_model == "phase_damping":
                     t2_us = st.slider("T2 (µs)", 0.5, 200.0, 5.0, 0.5, key="s_t2p")
                     gate_time_ns = st.slider(
                         "Gate time (ns)", 10, 200, 50, 5, key="s_gtpd"
@@ -591,7 +591,7 @@ elif page == "sim":
                     t2_ns = min(t2_us * 1000, 2.0 * t1_ns - 1.0)
                     if t2_us * 1000 > 2 * t1_ns:
                         st.warning("T2 clamped to 2·T1")
-                elif noise_model == "fiber_loss":
+                elif noise_model == "fibre_loss":
                     channel_length_km = st.slider(
                         "Channel length (km)", 0.0, 200.0, 50.0, 5.0, key="s_km"
                     )
@@ -817,10 +817,10 @@ elif page == "sim":
             if cfg_r.noise_enabled:
                 ch = {
                     "depolarizing": f"Depolarizing  p={cfg_r.depolar_prob:.3f}",
-                    "amplitude_damp": f"Amp. damp  T1={cfg_r.t1_ns / 1000:.0f} µs",
-                    "phase_damp": f"Phase damp  T2={cfg_r.t2_ns / 1000:.0f} µs",
+                    "amplitude_damping": f"Amp. damp  T1={cfg_r.t1_ns / 1000:.0f} µs",
+                    "phase_damping": f"Phase damp  T2={cfg_r.t2_ns / 1000:.0f} µs",
                     "combined": "T1+T2",
-                    "fiber_loss": f"Fiber {cfg_r.channel_length_km:.0f} km",
+                    "fibre_loss": f"Fiber {cfg_r.channel_length_km:.0f} km",
                 }.get(cfg_r.noise_model, cfg_r.noise_model)
             st.dataframe(
                 pd.DataFrame(
