@@ -42,6 +42,10 @@ st.markdown(
 
 #MainMenu, footer, .stDeployButton, [data-testid="stSidebar"],
 header[data-testid="stHeader"], [data-testid="stToolbar"] { display: none !important; }
+.stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
+[data-testid="stHeader"], [data-testid="stBottomBlockContainer"] {
+    background-color: #FFFFFF !important;
+}
 .block-container { padding: 0 2.5rem 4rem !important; max-width: 1360px !important; }
 [data-testid="stAppViewContainer"] { padding-top: 0 !important; }
 html, body, .stApp { font-family: 'Outfit', system-ui, sans-serif !important; color: #111827; }
@@ -183,7 +187,7 @@ for col, (label, key) in zip(_nav_cols, _pages):
         if st.button(
             label,
             key=f"nav_{key}",
-            use_container_width=True,
+            width="stretch",
             type="primary" if active else "secondary",
         ):
             st.session_state["page"] = key
@@ -417,7 +421,7 @@ if page == "guide":
     )
     _, btn_c, _ = st.columns([3, 2, 3])
     with btn_c:
-        if st.button("Open Simulator  →", type="primary", use_container_width=True):
+        if st.button("Open Simulator  →", type="primary", width="stretch"):
             st.session_state["page"] = "sim"
             st.rerun()
 
@@ -478,7 +482,7 @@ elif page == "sim":
         preset_clicked = None
         pc = st.columns(len(preset_map))
         for i, name in enumerate(preset_map):
-            if pc[i].button(name, key=f"pre_{name}", use_container_width=True):
+            if pc[i].button(name, key=f"pre_{name}", width="stretch"):
                 preset_clicked = name
 
         st.divider()
@@ -612,7 +616,7 @@ elif page == "sim":
         _, run_col, rt_col = st.columns([3, 1, 1])
         with run_col:
             run_clicked = st.button(
-                "Run Simulation", type="primary", use_container_width=True
+                "Run Simulation", type="primary", width="stretch"
             )
         with rt_col:
             if st.session_state.last_runtime is not None:
@@ -833,7 +837,7 @@ elif page == "sim":
             fig_f.update_layout(
                 **{**_PL, "height": 200, "margin": dict(t=4, b=4, l=4, r=4)}
             )
-            st.plotly_chart(fig_f, use_container_width=True)
+            st.plotly_chart(fig_f, width="stretch")
 
         with col_r:
             st.markdown("**Run configuration**")
@@ -871,7 +875,7 @@ elif page == "sim":
                     }
                 ),
                 hide_index=True,
-                use_container_width=True,
+                width="stretch",
             )
 
             st.write("")
@@ -881,14 +885,14 @@ elif page == "sim":
                 "\n".join(str(b) for b in r.alice_final_key),
                 "alice_key.txt",
                 "text/plain",
-                use_container_width=True,
+                width="stretch",
             )
             st.download_button(
                 "Bob key (.txt)",
                 "\n".join(str(b) for b in r.bob_final_key),
                 "bob_key.txt",
                 "text/plain",
-                use_container_width=True,
+                width="stretch",
             )
             st.download_button(
                 "Results (.json)",
@@ -908,7 +912,7 @@ elif page == "sim":
                 ),
                 "qkd_results.json",
                 "application/json",
-                use_container_width=True,
+                width="stretch",
             )
 
 
@@ -983,7 +987,7 @@ elif page == "analysis":
             fig_g.update_layout(
                 **{**_PL, "height": 250, "margin": dict(t=30, b=10, l=30, r=30)}
             )
-            st.plotly_chart(fig_g, use_container_width=True)
+            st.plotly_chart(fig_g, width="stretch")
             st.markdown(
                 f"95% CI: **{qr.confidence_low * 100:.2f}% – {qr.confidence_high * 100:.2f}%**  \n"
                 f"Errors: **{qr.errors}** / {qr.sample_size} sampled bits  \n"
@@ -1056,7 +1060,7 @@ elif page == "analysis":
                 }
             )
             fig_m.update_yaxes(range=[0, max(35, qr.qber * 100 + 8)], row=1, col=1)
-            st.plotly_chart(fig_m, use_container_width=True)
+            st.plotly_chart(fig_m, width="stretch")
 
         st.divider()
         ca, cb = st.columns(2, gap="large")
@@ -1087,7 +1091,7 @@ elif page == "analysis":
                     "legend": dict(font_size=10),
                 }
             )
-            st.plotly_chart(fig_b, use_container_width=True)
+            st.plotly_chart(fig_b, width="stretch")
         with cb:
             st.markdown("**Error distribution in QBER sample**")
             fig_e = go.Figure(
@@ -1103,7 +1107,7 @@ elif page == "analysis":
             fig_e.update_layout(
                 **{**_PL, "height": 230, "margin": dict(t=10, b=10, l=10, r=10)}
             )
-            st.plotly_chart(fig_e, use_container_width=True)
+            st.plotly_chart(fig_e, width="stretch")
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -1121,21 +1125,19 @@ elif page == "research":
 
     sw_l, sw_m = st.columns([1, 3], gap="large")
     with sw_l:
-        st.markdown("**Experiment**")
         experiment = st.radio(
-            "",
+            "Experiment",
             [
                 "QBER vs Eve intercept probability",
                 "QBER vs depolarizing noise",
                 "QBER vs fibre length",
             ],
-            label_visibility="collapsed",
         )
         st.write("")
         sw_n = st.slider("Qubits / point", 200, 1000, 500, 50, key="sw_n")
         sw_steps = st.slider("Data points", 5, 20, 10, 1, key="sw_steps")
         st.write("")
-        run_sweep = st.button("Run Sweep", type="primary", use_container_width=True)
+        run_sweep = st.button("Run Sweep", type="primary", width="stretch")
 
     with sw_m:
         sweep_data = st.session_state.sweep_result
@@ -1324,7 +1326,7 @@ elif page == "research":
                 fig_sw.update_yaxes(
                     title_text="Rate (%)", row=1, col=2, title_font_size=11
                 )
-            st.plotly_chart(fig_sw, use_container_width=True)
+            st.plotly_chart(fig_sw, width="stretch")
             with st.expander("Raw data"):
                 st.dataframe(
                     pd.DataFrame(
@@ -1335,7 +1337,7 @@ elif page == "research":
                             "CI high": [f"{c:.2f}" for c in sw["ci_h"]],
                         }
                     ),
-                    use_container_width=True,
+                    width="stretch",
                     hide_index=True,
                 )
 
@@ -1363,7 +1365,7 @@ elif page == "compare":
         cmp_n = st.slider("Qubits per scenario", 200, 800, 600, 50, key="cmp_n")
     with crt:
         st.write("")
-        run_cmp = st.button("Run Comparison", type="primary", use_container_width=True)
+        run_cmp = st.button("Run Comparison", type="primary", width="stretch")
 
     if run_cmp:
         if len(sel) < 2:
@@ -1432,7 +1434,7 @@ elif page == "compare":
                     "Runtime (s)": f"{res2.runtime_seconds:.3f}",
                 }
             )
-        st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
+        st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
         st.write("")
 
         fig_cmp = make_subplots(
@@ -1484,4 +1486,4 @@ elif page == "compare":
         fig_cmp.update_xaxes(tickangle=-20, tickfont_size=9)
         fig_cmp.update_yaxes(range=[0, max(35, max(qbers) + 10)], row=1, col=1)
         fig_cmp.update_yaxes(range=[0, 115], row=1, col=3)
-        st.plotly_chart(fig_cmp, use_container_width=True)
+        st.plotly_chart(fig_cmp, width="stretch")
