@@ -530,7 +530,12 @@ elif page == "sim":
                 unsafe_allow_html=True,
             )
             noise_enabled = st.checkbox("Enable noise model", key="s_noise")
-            noise_model = "depolarizing"
+            # FIX: noise_model must default to None (ideal), not "depolarizing".
+            # Previously this was hardcoded to "depolarizing" unconditionally,
+            # so QuantumChannel.from_config() (which treats any non-None
+            # noise_model as authoritative, ignoring noise_enabled) applied
+            # depolarizing noise to EVERY run, even with the checkbox off.
+            noise_model = None
             depolar_prob = 0.01
             t1_ns = 100_000.0
             t2_ns = 50_000.0
