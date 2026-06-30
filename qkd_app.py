@@ -11,22 +11,14 @@ import math
 import time
 from typing import Optional
 
-import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 from plotly.subplots import make_subplots
 
 from bb84_config import SimulationConfig, SimulationResult
-from bb84_fast import fast_run_simulation as _fast_sim
 from bb84_runner import PRESET_SCENARIOS
-from bb84_runner import run_simulation as _qiskit_sim
-
-
-def _run(cfg: SimulationConfig) -> SimulationResult:
-    if st.session_state.get("use_fast", True):
-        return _fast_sim(cfg)
-    return _qiskit_sim(cfg, verbose=False)
+from bb84_runner import run_simulation as _run
 
 
 st.set_page_config(
@@ -123,9 +115,7 @@ div[data-testid="stDownloadButton"] button:hover { border-color: #2563EB !import
 _defaults = {
     "page": "guide",
     "result": None,
-    "sweep_result": None,
     "comparison_results": None,
-    "use_fast": True,
     "last_runtime": None,
 }
 for k, v in _defaults.items():
@@ -165,11 +155,10 @@ _pages = [
     ("Guide", "guide"),
     ("Simulator", "sim"),
     ("Analysis", "analysis"),
-    ("Research", "research"),
     ("Compare", "compare"),
 ]
 
-nh, *_nav_cols, n_end = st.columns([2.8] + [1] * 5 + [1.4])
+nh, *_nav_cols = st.columns([2.8] + [1] * 4)
 
 with nh:
     st.markdown(
@@ -191,14 +180,6 @@ for col, (label, key) in zip(_nav_cols, _pages):
         ):
             st.session_state["page"] = key
             st.rerun()
-
-with n_end:
-    use_fast = st.toggle(
-        "⚡ Fast mode",
-        value=st.session_state.use_fast,
-        help="numpy density matrix (~200× faster). Off = Qiskit AerSimulator.",
-    )
-    st.session_state["use_fast"] = use_fast
 
 st.markdown(
     "<div style='border-top:1px solid #E5E7EB;margin:10px 0 28px;'></div>",
@@ -369,10 +350,10 @@ if page == "guide":
             ),
             (
                 "3",
-                "Explore & research",
-                "Use **Analysis** for detailed QBER charts. "
-                "Use **Research Sweeps** to plot QBER vs Eve probability "
-                "or noise level. Use **Compare** for multi-scenario analysis.",
+                "Explore & compare",
+                "Use **Analysis** for detailed QBER charts and confidence intervals. "
+                "Use **Compare** to run multiple preset scenarios side-by-side "
+                "and see how different noise models and attack strategies affect the key.",
             ),
         ],
     ):
@@ -421,9 +402,8 @@ if page == "guide":
     st.markdown(
         "<div style='text-align:center;padding:20px;'>"
         "<span style='font-size:13px;color:#9CA3AF;'>"
-        "Simulation engine: numpy vectorised density matrices  ·  "
-        "~200× faster than Qiskit AerSimulator  ·  "
-        "Identical physics via Kraus operators</span></div>",
+        "Simulation engine: Qiskit AerSimulator  ·  "
+        "Physically accurate noise models via Kraus operators</span></div>",
         unsafe_allow_html=True,
     )
     _, btn_c, _ = st.columns([3, 2, 3])
@@ -633,12 +613,11 @@ elif page == "sim":
             )
         with rt_col:
             if st.session_state.last_runtime is not None:
-                bk = "numpy" if use_fast else "Qiskit"
                 st.markdown(
                     f"<div style='text-align:right;padding-top:6px;'>"
                     f"<span style='font-size:12px;color:#6B7280;'>"
                     f"Last: <span style='font-family:JetBrains Mono,monospace;'>"
-                    f"{st.session_state.last_runtime:.3f}s [{bk}]</span></span></div>",
+                    f"{st.session_state.last_runtime:.3f}s [Qiskit]</span></span></div>",
                     unsafe_allow_html=True,
                 )
 
@@ -677,7 +656,7 @@ elif page == "sim":
             with st.status("Running simulation…", expanded=True) as _s:
                 st.write(f"Transmitting {cfg.n_qubits:,} qubits…")
                 t0 = time.time()
-                result = _run(cfg)
+                result = _run(cfg, verbose=False)
                 elapsed = time.time() - t0
                 st.write(
                     f"Sifted: {result.n_sifted:,} bits  ({result.sifted_key_rate:.1%})"
@@ -772,7 +751,7 @@ elif page == "sim":
         k8.metric(
             "Runtime",
             f"{st.session_state.last_runtime or r.runtime_seconds:.3f} s",
-            "numpy" if use_fast else "Qiskit",
+            "Qiskit",
         )
 
         st.divider()
@@ -1088,240 +1067,6 @@ elif page == "analysis":
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# PAGE: RESEARCH SWEEPS
-# ═════════════════════════════════════════════════════════════════════════════
-
-elif page == "research":
-    st.markdown(
-        "<h2 style='font-size:22px;font-weight:700;color:#111827;margin:0 0 6px;'>"
-        "Research Sweeps</h2>"
-        "<p style='font-size:13px;color:#9CA3AF;margin:0 0 22px;'>"
-        "Sweep a parameter across a range and observe how QBER changes.</p>",
-        unsafe_allow_html=True,
-    )
-
-    sw_l, sw_m = st.columns([1, 3], gap="large")
-    with sw_l:
-        st.markdown("**Experiment**")
-        experiment = st.radio(
-            "",
-            [
-                "QBER vs Eve intercept probability",
-                "QBER vs depolarizing noise",
-                "QBER vs fiber length",
-            ],
-            label_visibility="collapsed",
-        )
-        st.write("")
-        sw_n = st.slider("Qubits / point", 200, 1000, 500, 50, key="sw_n")
-        sw_steps = st.slider("Data points", 5, 20, 10, 1, key="sw_steps")
-        st.write("")
-        run_sweep = st.button("Run Sweep", type="primary", use_container_width=True)
-
-    with sw_m:
-        sweep_data = st.session_state.sweep_result
-        if run_sweep:
-            xs, qbers, ci_l, ci_h, key_rates = [], [], [], [], []
-            if experiment == "QBER vs Eve intercept probability":
-                x_vals, x_label, is_fiber = (
-                    np.linspace(0, 1, sw_steps + 1),
-                    "Eve intercept prob",
-                    False,
-                )
-                with st.status("Sweeping…", expanded=True) as _ss:
-                    for p in x_vals:
-                        cfg = SimulationConfig(
-                            n_qubits=sw_n,
-                            eve_present=(p > 0),
-                            eve_intercept_prob=float(p),
-                            noise_enabled=False,
-                            seed=42,
-                        )
-                        res = _run(cfg)
-                        xs.append(float(p))
-                        qbers.append(res.qber_result.qber * 100)
-                        ci_l.append(res.qber_result.confidence_low * 100)
-                        ci_h.append(res.qber_result.confidence_high * 100)
-                        key_rates.append(res.key_generation_rate * 100)
-                        st.write(f"p={p:.2f}  →  QBER {qbers[-1]:.1f}%")
-                    _ss.update(label="Done", state="complete", expanded=False)
-            elif experiment == "QBER vs depolarizing noise":
-                x_vals, x_label, is_fiber = (
-                    np.linspace(0, 0.15, sw_steps + 1),
-                    "Depolarizing prob (p)",
-                    False,
-                )
-                with st.status("Sweeping…", expanded=True) as _ss:
-                    for p in x_vals:
-                        cfg = SimulationConfig(
-                            n_qubits=sw_n,
-                            noise_enabled=(p > 0),
-                            noise_model="depolarizing",
-                            depolar_prob=float(p),
-                            seed=42,
-                        )
-                        res = _run(cfg)
-                        xs.append(float(p))
-                        qbers.append(res.qber_result.qber * 100)
-                        ci_l.append(res.qber_result.confidence_low * 100)
-                        ci_h.append(res.qber_result.confidence_high * 100)
-                        key_rates.append(res.key_generation_rate * 100)
-                        st.write(f"p={p:.3f}  →  QBER {qbers[-1]:.1f}%")
-                    _ss.update(label="Done", state="complete", expanded=False)
-            else:
-                x_vals, x_label, is_fiber = (
-                    np.linspace(0, 150, sw_steps + 1),
-                    "Fiber length (km)",
-                    True,
-                )
-                with st.status("Sweeping…", expanded=True) as _ss:
-                    for km in x_vals:
-                        cfg = SimulationConfig(
-                            n_qubits=sw_n,
-                            noise_enabled=True,
-                            noise_model="fiber_loss",
-                            channel_length_km=float(km),
-                            seed=42,
-                        )
-                        res = _run(cfg)
-                        xs.append(float(km))
-                        qbers.append(res.qber_result.qber * 100)
-                        ci_l.append(res.qber_result.confidence_low * 100)
-                        ci_h.append(res.qber_result.confidence_high * 100)
-                        key_rates.append(res.sifted_key_rate * 100)
-                        st.write(f"{km:.0f}km  →  survive {res.sifted_key_rate:.1%}")
-                    _ss.update(label="Done", state="complete", expanded=False)
-            st.session_state.sweep_result = {
-                "x": xs,
-                "qbers": qbers,
-                "ci_l": ci_l,
-                "ci_h": ci_h,
-                "key_rates": key_rates,
-                "x_label": x_label,
-                "is_fiber": is_fiber,
-                "experiment": experiment,
-            }
-            sweep_data = st.session_state.sweep_result
-
-        if sweep_data is None:
-            st.info("Select an experiment on the left and click **Run Sweep**.")
-        else:
-            sw = sweep_data
-            is_fiber = sw.get("is_fiber", False)
-            specs = (
-                [[{"type": "xy"}, {"type": "xy"}]] if is_fiber else [[{"type": "xy"}]]
-            )
-            fig_sw = make_subplots(
-                1,
-                2 if is_fiber else 1,
-                specs=specs,
-                subplot_titles=["QBER (%)", "Sifted rate (%)"]
-                if is_fiber
-                else ["QBER (%)"],
-            )
-            fig_sw.add_trace(
-                go.Scatter(
-                    x=sw["x"],
-                    y=sw["qbers"],
-                    mode="lines+markers",
-                    name="QBER (%)",
-                    line=dict(color=C_BLUE, width=2),
-                    marker=dict(size=6),
-                ),
-                1,
-                1,
-            )
-            fig_sw.add_trace(
-                go.Scatter(
-                    x=sw["x"],
-                    y=sw["ci_h"],
-                    mode="lines",
-                    line=dict(width=0),
-                    showlegend=False,
-                ),
-                1,
-                1,
-            )
-            fig_sw.add_trace(
-                go.Scatter(
-                    x=sw["x"],
-                    y=sw["ci_l"],
-                    mode="lines",
-                    fill="tonexty",
-                    fillcolor="rgba(37,99,235,.08)",
-                    line=dict(width=0),
-                    name="95% CI",
-                ),
-                1,
-                1,
-            )
-            if sw["experiment"] == "QBER vs Eve intercept probability":
-                fig_sw.add_trace(
-                    go.Scatter(
-                        x=sw["x"],
-                        y=[0.25 * p * 100 for p in sw["x"]],
-                        mode="lines",
-                        name="Theory (0.25×p)",
-                        line=dict(color=C_RED, dash="dot", width=1.5),
-                    ),
-                    1,
-                    1,
-                )
-            fig_sw.add_hline(
-                y=11,
-                line_dash="dot",
-                line_color=C_RED,
-                annotation_text="Abort 11%",
-                annotation_font_size=9,
-                row=1,
-                col=1,
-            )
-            fig_sw.add_hline(
-                y=5,
-                line_dash="dot",
-                line_color=C_AMBER,
-                annotation_text="Warning 5%",
-                annotation_font_size=9,
-                row=1,
-                col=1,
-            )
-            if is_fiber:
-                fig_sw.add_trace(
-                    go.Scatter(
-                        x=sw["x"],
-                        y=sw["key_rates"],
-                        mode="lines+markers",
-                        name="Sifted rate (%)",
-                        line=dict(color=C_GREEN, width=2),
-                        marker=dict(size=6),
-                    ),
-                    1,
-                    2,
-                )
-            fig_sw.update_layout(**{**_PL, "height": 400, "legend": dict(font_size=10)})
-            fig_sw.update_xaxes(title_text=sw["x_label"], title_font_size=11)
-            fig_sw.update_yaxes(title_text="QBER (%)", row=1, col=1, title_font_size=11)
-            if is_fiber:
-                fig_sw.update_yaxes(
-                    title_text="Rate (%)", row=1, col=2, title_font_size=11
-                )
-            st.plotly_chart(fig_sw, use_container_width=True)
-            with st.expander("Raw data"):
-                st.dataframe(
-                    pd.DataFrame(
-                        {
-                            sw["x_label"]: sw["x"],
-                            "QBER (%)": [f"{q:.2f}" for q in sw["qbers"]],
-                            "CI low": [f"{c:.2f}" for c in sw["ci_l"]],
-                            "CI high": [f"{c:.2f}" for c in sw["ci_h"]],
-                        }
-                    ),
-                    use_container_width=True,
-                    hide_index=True,
-                )
-
-
-# ═════════════════════════════════════════════════════════════════════════════
 # PAGE: SCENARIO COMPARISON
 # ═════════════════════════════════════════════════════════════════════════════
 
@@ -1367,7 +1112,7 @@ elif page == "compare":
                         label=cfg.label,
                         seed=42,
                     )
-                    res = _run(cfg2)
+                    res = _run(cfg2, verbose=False)
                     cmp_res.append((name, res))
                     st.write(
                         f"{name}  →  QBER {res.qber_result.qber * 100:.1f}%  ·  "
