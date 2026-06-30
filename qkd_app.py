@@ -11,20 +11,14 @@ import math
 import time
 from typing import Optional
 
-import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 from plotly.subplots import make_subplots
 
 from bb84_config import SimulationConfig, SimulationResult
-from bb84_noise import NoiseModelType
 from bb84_runner import PRESET_SCENARIOS
-from bb84_runner import run_simulation as _run_sim
-
-
-def _run(cfg: SimulationConfig) -> SimulationResult:
-    return _run_sim(cfg, verbose=False)
+from bb84_runner import run_simulation as _run
 
 
 st.set_page_config(
@@ -42,10 +36,6 @@ st.markdown(
 
 #MainMenu, footer, .stDeployButton, [data-testid="stSidebar"],
 header[data-testid="stHeader"], [data-testid="stToolbar"] { display: none !important; }
-.stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
-[data-testid="stHeader"], [data-testid="stBottomBlockContainer"] {
-    background-color: #FFFFFF !important;
-}
 .block-container { padding: 0 2.5rem 4rem !important; max-width: 1360px !important; }
 [data-testid="stAppViewContainer"] { padding-top: 0 !important; }
 html, body, .stApp { font-family: 'Outfit', system-ui, sans-serif !important; color: #111827; }
@@ -125,7 +115,6 @@ div[data-testid="stDownloadButton"] button:hover { border-color: #2563EB !import
 _defaults = {
     "page": "guide",
     "result": None,
-    "sweep_result": None,
     "comparison_results": None,
     "last_runtime": None,
 }
@@ -166,11 +155,10 @@ _pages = [
     ("Guide", "guide"),
     ("Simulator", "sim"),
     ("Analysis", "analysis"),
-    ("Research", "research"),
     ("Compare", "compare"),
 ]
 
-nh, *_nav_cols = st.columns([2.8] + [1] * 5)
+nh, *_nav_cols = st.columns([2.8] + [1] * 4)
 
 with nh:
     st.markdown(
@@ -187,7 +175,7 @@ for col, (label, key) in zip(_nav_cols, _pages):
         if st.button(
             label,
             key=f"nav_{key}",
-            width="stretch",
+            use_container_width=True,
             type="primary" if active else "secondary",
         ):
             st.session_state["page"] = key
@@ -251,7 +239,7 @@ if page == "guide":
             "Quantum channel",
             "Qubits travel over the quantum channel. "
             "Real channels introduce photon loss, depolarizing noise, "
-            "T1/T2 relaxation, or fibre attenuation. "
+            "T1/T2 relaxation, or fiber attenuation. "
             "An eavesdropper (Eve) may intercept.",
         ),
         (
@@ -350,7 +338,7 @@ if page == "guide":
                 "1",
                 "Configure & run",
                 "Go to the **Simulator** tab. "
-                "Choose a quick preset (e.g. Ideal, Eve 100%, Fibre 50km) "
+                "Choose a quick preset (e.g. Ideal, Eve 100%, Fiber 50km) "
                 "or set parameters manually. Click **Run Simulation**.",
             ),
             (
@@ -362,10 +350,10 @@ if page == "guide":
             ),
             (
                 "3",
-                "Explore & research",
-                "Use **Analysis** for detailed QBER charts. "
-                "Use **Research Sweeps** to plot QBER vs Eve probability "
-                "or noise level. Use **Compare** for multi-scenario analysis.",
+                "Explore & compare",
+                "Use **Analysis** for detailed QBER charts and confidence intervals. "
+                "Use **Compare** to run multiple preset scenarios side-by-side "
+                "and see how different noise models and attack strategies affect the key.",
             ),
         ],
     ):
@@ -397,7 +385,7 @@ if page == "guide":
             ("Amplitude Damp", "T1 energy relaxation (|1⟩→|0⟩ decay)"),
             ("Phase Damp", "T2 dephasing without energy loss"),
             ("Combined T1+T2", "Thermal relaxation combining T1 and T2"),
-            ("Fibre Loss", "Photon absorption (0.2 dB/km attenuation)"),
+            ("Fiber Loss", "Photon absorption (0.2 dB/km attenuation)"),
         ],
     ):
         with col:
@@ -415,13 +403,12 @@ if page == "guide":
         "<div style='text-align:center;padding:20px;'>"
         "<span style='font-size:13px;color:#9CA3AF;'>"
         "Simulation engine: Qiskit AerSimulator  ·  "
-        "5 physically-motivated noise models  ·  "
-        "Lindblad-derived Kraus operators</span></div>",
+        "Physically accurate noise models via Kraus operators</span></div>",
         unsafe_allow_html=True,
     )
     _, btn_c, _ = st.columns([3, 2, 3])
     with btn_c:
-        if st.button("Open Simulator  →", type="primary", width="stretch"):
+        if st.button("Open Simulator  →", type="primary", use_container_width=True):
             st.session_state["page"] = "sim"
             st.rerun()
 
@@ -459,30 +446,30 @@ elif page == "sim":
             "Depolar": SimulationConfig(
                 n_qubits=600,
                 noise_enabled=True,
-                noise_model=NoiseModelType.DEPOLARIZING,
+                noise_model="depolarizing",
                 depolar_prob=0.05,
                 label="Depolarizing",
             ),
             "Amp. Damp": SimulationConfig(
                 n_qubits=600,
                 noise_enabled=True,
-                noise_model=NoiseModelType.AMPLITUDE_DAMPING,
+                noise_model="amplitude_damping",
                 t1_ns=10_000,
                 gate_time_ns=50,
                 label="Amp.Damp",
             ),
-            "Fibre 50km": SimulationConfig(
+            "Fiber 50km": SimulationConfig(
                 n_qubits=800,
                 noise_enabled=True,
-                noise_model=NoiseModelType.FIBRE_LOSS,
+                noise_model="fibre_loss",
                 channel_length_km=50,
-                label="Fibre 50km",
+                label="Fiber 50km",
             ),
         }
         preset_clicked = None
         pc = st.columns(len(preset_map))
         for i, name in enumerate(preset_map):
-            if pc[i].button(name, key=f"pre_{name}", width="stretch"):
+            if pc[i].button(name, key=f"pre_{name}", use_container_width=True):
                 preset_clicked = name
 
         st.divider()
@@ -543,7 +530,7 @@ elif page == "sim":
                 unsafe_allow_html=True,
             )
             noise_enabled = st.checkbox("Enable noise model", key="s_noise")
-            noise_model = NoiseModelType.DEPOLARIZING
+            noise_model = "depolarizing"
             depolar_prob = 0.01
             t1_ns = 100_000.0
             t2_ns = 50_000.0
@@ -554,16 +541,22 @@ elif page == "sim":
                 noise_model = st.selectbox(
                     "Model",
                     [
-                        NoiseModelType.DEPOLARIZING,
-                        NoiseModelType.AMPLITUDE_DAMPING,
-                        NoiseModelType.PHASE_DAMPING,
-                        NoiseModelType.COMBINED,
-                        NoiseModelType.FIBRE_LOSS,
+                        "depolarizing",
+                        "amplitude_damping",
+                        "phase_damping",
+                        "combined",
+                        "fibre_loss",
                     ],
                     key="s_nm",
-                    format_func=lambda x: NoiseModelType.LABELS.get(x, x),
+                    format_func=lambda x: {
+                        "depolarizing": "Depolarizing (Pauli)",
+                        "amplitude_damping": "Amplitude Damping (T1)",
+                        "phase_damping": "Phase Damping (T2)",
+                        "combined": "Combined T1 + T2",
+                        "fibre_loss": "Fiber Loss",
+                    }[x],
                 )
-                if noise_model == NoiseModelType.DEPOLARIZING:
+                if noise_model == "depolarizing":
                     depolar_prob = st.slider(
                         "Gate error prob",
                         0.001,
@@ -574,21 +567,21 @@ elif page == "sim":
                         key="s_dp",
                     )
                     st.caption(f"p/3 = {depolar_prob / 3:.5f} per Pauli")
-                elif noise_model == NoiseModelType.AMPLITUDE_DAMPING:
+                elif noise_model == "amplitude_damping":
                     t1_us = st.slider("T1 (µs)", 1.0, 500.0, 10.0, 1.0, key="s_t1")
                     gate_time_ns = st.slider(
                         "Gate time (ns)", 10, 200, 50, 5, key="s_gtad"
                     )
                     t1_ns = t1_us * 1000
                     st.caption(f"γ = {1.0 - math.exp(-gate_time_ns / t1_ns):.6f}")
-                elif noise_model == NoiseModelType.PHASE_DAMPING:
+                elif noise_model == "phase_damping":
                     t2_us = st.slider("T2 (µs)", 0.5, 200.0, 5.0, 0.5, key="s_t2p")
                     gate_time_ns = st.slider(
                         "Gate time (ns)", 10, 200, 50, 5, key="s_gtpd"
                     )
                     t2_ns = t2_us * 1000
                     st.caption(f"λ = {1.0 - math.exp(-gate_time_ns / t2_ns):.6f}")
-                elif noise_model == NoiseModelType.COMBINED:
+                elif noise_model == "combined":
                     t1_us = st.slider("T1 (µs)", 1.0, 500.0, 10.0, 1.0, key="s_t1c")
                     t2_us = st.slider("T2 (µs)", 0.5, 200.0, 8.0, 0.5, key="s_t2c")
                     gate_time_ns = st.slider(
@@ -598,7 +591,7 @@ elif page == "sim":
                     t2_ns = min(t2_us * 1000, 2.0 * t1_ns - 1.0)
                     if t2_us * 1000 > 2 * t1_ns:
                         st.warning("T2 clamped to 2·T1")
-                elif noise_model == NoiseModelType.FIBRE_LOSS:
+                elif noise_model == "fibre_loss":
                     channel_length_km = st.slider(
                         "Channel length (km)", 0.0, 200.0, 50.0, 5.0, key="s_km"
                     )
@@ -616,7 +609,7 @@ elif page == "sim":
         _, run_col, rt_col = st.columns([3, 1, 1])
         with run_col:
             run_clicked = st.button(
-                "Run Simulation", type="primary", width="stretch"
+                "Run Simulation", type="primary", use_container_width=True
             )
         with rt_col:
             if st.session_state.last_runtime is not None:
@@ -624,7 +617,7 @@ elif page == "sim":
                     f"<div style='text-align:right;padding-top:6px;'>"
                     f"<span style='font-size:12px;color:#6B7280;'>"
                     f"Last: <span style='font-family:JetBrains Mono,monospace;'>"
-                    f"{st.session_state.last_runtime:.3f}s</span></span></div>",
+                    f"{st.session_state.last_runtime:.3f}s [Qiskit]</span></span></div>",
                     unsafe_allow_html=True,
                 )
 
@@ -643,8 +636,6 @@ elif page == "sim":
             gate_time_ns = pc_cfg.gate_time_ns
             channel_length_km = pc_cfg.channel_length_km
             sim_label = pc_cfg.label
-            sample_fraction = pc_cfg.sample_fraction
-            seed = pc_cfg.seed
 
         cfg = SimulationConfig(
             n_qubits=n_qubits,
@@ -665,13 +656,8 @@ elif page == "sim":
             with st.status("Running simulation…", expanded=True) as _s:
                 st.write(f"Transmitting {cfg.n_qubits:,} qubits…")
                 t0 = time.time()
-                result = _run(cfg)
+                result = _run(cfg, verbose=False)
                 elapsed = time.time() - t0
-                if result.n_lost > 0:
-                    st.write(
-                        f"Lost in transit: {result.n_lost:,} "
-                        f"(survival {result.photon_survival_rate:.1%})"
-                    )
                 st.write(
                     f"Sifted: {result.n_sifted:,} bits  ({result.sifted_key_rate:.1%})"
                 )
@@ -704,12 +690,6 @@ elif page == "sim":
             "then click <strong>Run Simulation</strong>.</div></div>",
             unsafe_allow_html=True,
         )
-    elif r.n_sifted == 0:
-        st.warning(
-            "All photons were lost in transit (fibre loss too high for this "
-            "qubit count) — no sifted key could be formed. Try a shorter "
-            "channel length or more qubits."
-        )
     else:
         status_label, status_color, status_bg, status_border = _sec(r)
         qr = r.qber_result
@@ -739,11 +719,7 @@ elif page == "sim":
 
         # KPI row 1
         k1, k2, k3, k4 = st.columns(4)
-        k1.metric(
-            "Transmitted",
-            f"{r.n_transmitted:,}",
-            "qubits sent" if r.n_lost == 0 else f"{r.n_lost:,} lost in transit",
-        )
+        k1.metric("Transmitted", f"{r.n_transmitted:,}", "qubits sent")
         k2.metric("Sifted key", f"{r.n_sifted:,}", f"{r.sifted_key_rate:.1%} retained")
         k3.metric(
             "Final key", f"{r.key_length:,}", f"{r.key_generation_rate:.4f} bits/qubit"
@@ -775,7 +751,7 @@ elif page == "sim":
         k8.metric(
             "Runtime",
             f"{st.session_state.last_runtime or r.runtime_seconds:.3f} s",
-            "Qiskit Aer",
+            "Qiskit",
         )
 
         st.divider()
@@ -814,22 +790,17 @@ elif page == "sim":
             )
             st.write("")
             st.markdown("**Key bit pipeline**")
-            funnel_y = ["Transmitted"]
-            funnel_x = [r.n_transmitted]
-            funnel_c = [C_BLUE]
-            if r.n_lost > 0:
-                funnel_y.append("Arrived")
-                funnel_x.append(r.n_transmitted - r.n_lost)
-                funnel_c.append(C_PURPLE)
-            funnel_y += ["Sifted", "After QBER sample", "Final key"]
-            funnel_x += [r.n_sifted, r.n_sifted - qr.sample_size, r.key_length]
-            funnel_c += [C_TEAL, C_AMBER, C_GREEN]
             fig_f = go.Figure(
                 go.Funnel(
-                    y=funnel_y,
-                    x=funnel_x,
+                    y=["Transmitted", "Sifted", "After QBER sample", "Final key"],
+                    x=[
+                        r.n_transmitted,
+                        r.n_sifted,
+                        r.n_sifted - qr.sample_size,
+                        r.key_length,
+                    ],
                     textinfo="value+percent initial",
-                    marker=dict(color=funnel_c),
+                    marker=dict(color=[C_BLUE, C_TEAL, C_AMBER, C_GREEN]),
                     textfont=dict(size=11, color="#fff"),
                     connector=dict(line=dict(color="#E5E7EB", width=1)),
                 )
@@ -837,20 +808,20 @@ elif page == "sim":
             fig_f.update_layout(
                 **{**_PL, "height": 200, "margin": dict(t=4, b=4, l=4, r=4)}
             )
-            st.plotly_chart(fig_f, width="stretch")
+            st.plotly_chart(fig_f, use_container_width=True)
 
         with col_r:
             st.markdown("**Run configuration**")
             cfg_r = r.config
             ch = "Ideal"
-            if cfg_r.noise_enabled or cfg_r.noise_model not in (None, NoiseModelType.IDEAL):
+            if cfg_r.noise_enabled:
                 ch = {
-                    NoiseModelType.DEPOLARIZING: f"Depolarizing  p={cfg_r.depolar_prob:.3f}",
-                    NoiseModelType.AMPLITUDE_DAMPING: f"Amp. damp  T1={cfg_r.t1_ns / 1000:.0f} µs",
-                    NoiseModelType.PHASE_DAMPING: f"Phase damp  T2={cfg_r.t2_ns / 1000:.0f} µs",
-                    NoiseModelType.COMBINED: "T1+T2",
-                    NoiseModelType.FIBRE_LOSS: f"Fibre {cfg_r.channel_length_km:.0f} km",
-                }.get(cfg_r.noise_model, cfg_r.noise_model or "Ideal")
+                    "depolarizing": f"Depolarizing  p={cfg_r.depolar_prob:.3f}",
+                    "amplitude_damping": f"Amp. damp  T1={cfg_r.t1_ns / 1000:.0f} µs",
+                    "phase_damping": f"Phase damp  T2={cfg_r.t2_ns / 1000:.0f} µs",
+                    "combined": "T1+T2",
+                    "fibre_loss": f"Fiber {cfg_r.channel_length_km:.0f} km",
+                }.get(cfg_r.noise_model, cfg_r.noise_model)
             st.dataframe(
                 pd.DataFrame(
                     {
@@ -875,7 +846,7 @@ elif page == "sim":
                     }
                 ),
                 hide_index=True,
-                width="stretch",
+                use_container_width=True,
             )
 
             st.write("")
@@ -885,14 +856,14 @@ elif page == "sim":
                 "\n".join(str(b) for b in r.alice_final_key),
                 "alice_key.txt",
                 "text/plain",
-                width="stretch",
+                use_container_width=True,
             )
             st.download_button(
                 "Bob key (.txt)",
                 "\n".join(str(b) for b in r.bob_final_key),
                 "bob_key.txt",
                 "text/plain",
-                width="stretch",
+                use_container_width=True,
             )
             st.download_button(
                 "Results (.json)",
@@ -901,7 +872,6 @@ elif page == "sim":
                         "label": r.config.label,
                         "qber": r.qber_result.qber,
                         "n_transmitted": r.n_transmitted,
-                        "n_lost": r.n_lost,
                         "n_sifted": r.n_sifted,
                         "key_length": r.key_length,
                         "key_agreement_rate": r.key_agreement_rate,
@@ -912,7 +882,7 @@ elif page == "sim":
                 ),
                 "qkd_results.json",
                 "application/json",
-                width="stretch",
+                use_container_width=True,
             )
 
 
@@ -932,12 +902,6 @@ elif page == "analysis":
         if st.button("Go to Simulator"):
             st.session_state["page"] = "sim"
             st.rerun()
-    elif r.n_sifted == 0 or r.key_length == 0:
-        st.info(
-            "The last run produced no usable key (all photons lost, or the "
-            "entire sifted key was consumed by QBER sampling). Run a new "
-            "simulation on the **Simulator** tab."
-        )
     else:
         qr = r.qber_result
         status_label, status_color, status_bg, status_border = _sec(r)
@@ -987,7 +951,7 @@ elif page == "analysis":
             fig_g.update_layout(
                 **{**_PL, "height": 250, "margin": dict(t=30, b=10, l=30, r=30)}
             )
-            st.plotly_chart(fig_g, width="stretch")
+            st.plotly_chart(fig_g, use_container_width=True)
             st.markdown(
                 f"95% CI: **{qr.confidence_low * 100:.2f}% – {qr.confidence_high * 100:.2f}%**  \n"
                 f"Errors: **{qr.errors}** / {qr.sample_size} sampled bits  \n"
@@ -1060,25 +1024,17 @@ elif page == "analysis":
                 }
             )
             fig_m.update_yaxes(range=[0, max(35, qr.qber * 100 + 8)], row=1, col=1)
-            st.plotly_chart(fig_m, width="stretch")
+            st.plotly_chart(fig_m, use_container_width=True)
 
         st.divider()
         ca, cb = st.columns(2, gap="large")
         with ca:
             st.markdown("**Basis matching (sifting)**")
-            discarded = r.n_transmitted - r.n_lost - r.n_sifted
-            labels = ["Matched (kept)", "Discarded (basis mismatch)"]
-            values = [r.n_sifted, discarded]
-            colors = [C_GREEN, "#E5E7EB"]
-            if r.n_lost > 0:
-                labels.append("Lost in transit")
-                values.append(r.n_lost)
-                colors.append(C_PURPLE)
             fig_b = go.Figure(
                 go.Pie(
-                    labels=labels,
-                    values=values,
-                    marker_colors=colors,
+                    labels=["Matched (kept)", "Discarded"],
+                    values=[r.n_sifted, r.n_transmitted - r.n_sifted],
+                    marker_colors=[C_GREEN, "#E5E7EB"],
                     hole=0.52,
                     textfont_size=10,
                 )
@@ -1091,7 +1047,7 @@ elif page == "analysis":
                     "legend": dict(font_size=10),
                 }
             )
-            st.plotly_chart(fig_b, width="stretch")
+            st.plotly_chart(fig_b, use_container_width=True)
         with cb:
             st.markdown("**Error distribution in QBER sample**")
             fig_e = go.Figure(
@@ -1107,239 +1063,7 @@ elif page == "analysis":
             fig_e.update_layout(
                 **{**_PL, "height": 230, "margin": dict(t=10, b=10, l=10, r=10)}
             )
-            st.plotly_chart(fig_e, width="stretch")
-
-
-# ═════════════════════════════════════════════════════════════════════════════
-# PAGE: RESEARCH SWEEPS
-# ═════════════════════════════════════════════════════════════════════════════
-
-elif page == "research":
-    st.markdown(
-        "<h2 style='font-size:22px;font-weight:700;color:#111827;margin:0 0 6px;'>"
-        "Research Sweeps</h2>"
-        "<p style='font-size:13px;color:#9CA3AF;margin:0 0 22px;'>"
-        "Sweep a parameter across a range and observe how QBER changes.</p>",
-        unsafe_allow_html=True,
-    )
-
-    sw_l, sw_m = st.columns([1, 3], gap="large")
-    with sw_l:
-        experiment = st.radio(
-            "Experiment",
-            [
-                "QBER vs Eve intercept probability",
-                "QBER vs depolarizing noise",
-                "QBER vs fibre length",
-            ],
-        )
-        st.write("")
-        sw_n = st.slider("Qubits / point", 200, 1000, 500, 50, key="sw_n")
-        sw_steps = st.slider("Data points", 5, 20, 10, 1, key="sw_steps")
-        st.write("")
-        run_sweep = st.button("Run Sweep", type="primary", width="stretch")
-
-    with sw_m:
-        sweep_data = st.session_state.sweep_result
-        if run_sweep:
-            xs, qbers, ci_l, ci_h, key_rates = [], [], [], [], []
-            if experiment == "QBER vs Eve intercept probability":
-                x_vals, x_label, is_fiber = (
-                    np.linspace(0, 1, sw_steps + 1),
-                    "Eve intercept prob",
-                    False,
-                )
-                with st.status("Sweeping…", expanded=True) as _ss:
-                    for p in x_vals:
-                        cfg = SimulationConfig(
-                            n_qubits=sw_n,
-                            eve_present=(p > 0),
-                            eve_intercept_prob=float(p),
-                            noise_enabled=False,
-                            seed=42,
-                        )
-                        res = _run(cfg)
-                        xs.append(float(p))
-                        qbers.append(res.qber_result.qber * 100)
-                        ci_l.append(res.qber_result.confidence_low * 100)
-                        ci_h.append(res.qber_result.confidence_high * 100)
-                        key_rates.append(res.key_generation_rate * 100)
-                        st.write(f"p={p:.2f}  →  QBER {qbers[-1]:.1f}%")
-                    _ss.update(label="Done", state="complete", expanded=False)
-            elif experiment == "QBER vs depolarizing noise":
-                x_vals, x_label, is_fiber = (
-                    np.linspace(0, 0.15, sw_steps + 1),
-                    "Depolarizing prob (p)",
-                    False,
-                )
-                with st.status("Sweeping…", expanded=True) as _ss:
-                    for p in x_vals:
-                        cfg = SimulationConfig(
-                            n_qubits=sw_n,
-                            noise_enabled=(p > 0),
-                            noise_model=NoiseModelType.DEPOLARIZING,
-                            depolar_prob=float(p),
-                            seed=42,
-                        )
-                        res = _run(cfg)
-                        xs.append(float(p))
-                        qbers.append(res.qber_result.qber * 100)
-                        ci_l.append(res.qber_result.confidence_low * 100)
-                        ci_h.append(res.qber_result.confidence_high * 100)
-                        key_rates.append(res.key_generation_rate * 100)
-                        st.write(f"p={p:.3f}  →  QBER {qbers[-1]:.1f}%")
-                    _ss.update(label="Done", state="complete", expanded=False)
-            else:
-                x_vals, x_label, is_fiber = (
-                    np.linspace(0, 150, sw_steps + 1),
-                    "Fibre length (km)",
-                    True,
-                )
-                with st.status("Sweeping…", expanded=True) as _ss:
-                    for km in x_vals:
-                        cfg = SimulationConfig(
-                            n_qubits=sw_n,
-                            noise_enabled=True,
-                            noise_model=NoiseModelType.FIBRE_LOSS,
-                            channel_length_km=float(km),
-                            seed=42,
-                        )
-                        res = _run(cfg)
-                        xs.append(float(km))
-                        qbers.append(res.qber_result.qber * 100)
-                        ci_l.append(res.qber_result.confidence_low * 100)
-                        ci_h.append(res.qber_result.confidence_high * 100)
-                        key_rates.append(res.sifted_key_rate * 100)
-                        st.write(f"{km:.0f}km  →  survive {res.sifted_key_rate:.1%}")
-                    _ss.update(label="Done", state="complete", expanded=False)
-            st.session_state.sweep_result = {
-                "x": xs,
-                "qbers": qbers,
-                "ci_l": ci_l,
-                "ci_h": ci_h,
-                "key_rates": key_rates,
-                "x_label": x_label,
-                "is_fiber": is_fiber,
-                "experiment": experiment,
-            }
-            sweep_data = st.session_state.sweep_result
-
-        if sweep_data is None:
-            st.info("Select an experiment on the left and click **Run Sweep**.")
-        else:
-            sw = sweep_data
-            is_fiber = sw.get("is_fiber", False)
-            specs = (
-                [[{"type": "xy"}, {"type": "xy"}]] if is_fiber else [[{"type": "xy"}]]
-            )
-            fig_sw = make_subplots(
-                1,
-                2 if is_fiber else 1,
-                specs=specs,
-                subplot_titles=["QBER (%)", "Sifted rate (%)"]
-                if is_fiber
-                else ["QBER (%)"],
-            )
-            fig_sw.add_trace(
-                go.Scatter(
-                    x=sw["x"],
-                    y=sw["qbers"],
-                    mode="lines+markers",
-                    name="QBER (%)",
-                    line=dict(color=C_BLUE, width=2),
-                    marker=dict(size=6),
-                ),
-                1,
-                1,
-            )
-            fig_sw.add_trace(
-                go.Scatter(
-                    x=sw["x"],
-                    y=sw["ci_h"],
-                    mode="lines",
-                    line=dict(width=0),
-                    showlegend=False,
-                ),
-                1,
-                1,
-            )
-            fig_sw.add_trace(
-                go.Scatter(
-                    x=sw["x"],
-                    y=sw["ci_l"],
-                    mode="lines",
-                    fill="tonexty",
-                    fillcolor="rgba(37,99,235,.08)",
-                    line=dict(width=0),
-                    name="95% CI",
-                ),
-                1,
-                1,
-            )
-            if sw["experiment"] == "QBER vs Eve intercept probability":
-                fig_sw.add_trace(
-                    go.Scatter(
-                        x=sw["x"],
-                        y=[0.25 * p * 100 for p in sw["x"]],
-                        mode="lines",
-                        name="Theory (0.25×p)",
-                        line=dict(color=C_RED, dash="dot", width=1.5),
-                    ),
-                    1,
-                    1,
-                )
-            fig_sw.add_hline(
-                y=11,
-                line_dash="dot",
-                line_color=C_RED,
-                annotation_text="Abort 11%",
-                annotation_font_size=9,
-                row=1,
-                col=1,
-            )
-            fig_sw.add_hline(
-                y=5,
-                line_dash="dot",
-                line_color=C_AMBER,
-                annotation_text="Warning 5%",
-                annotation_font_size=9,
-                row=1,
-                col=1,
-            )
-            if is_fiber:
-                fig_sw.add_trace(
-                    go.Scatter(
-                        x=sw["x"],
-                        y=sw["key_rates"],
-                        mode="lines+markers",
-                        name="Sifted rate (%)",
-                        line=dict(color=C_GREEN, width=2),
-                        marker=dict(size=6),
-                    ),
-                    1,
-                    2,
-                )
-            fig_sw.update_layout(**{**_PL, "height": 400, "legend": dict(font_size=10)})
-            fig_sw.update_xaxes(title_text=sw["x_label"], title_font_size=11)
-            fig_sw.update_yaxes(title_text="QBER (%)", row=1, col=1, title_font_size=11)
-            if is_fiber:
-                fig_sw.update_yaxes(
-                    title_text="Rate (%)", row=1, col=2, title_font_size=11
-                )
-            st.plotly_chart(fig_sw, width="stretch")
-            with st.expander("Raw data"):
-                st.dataframe(
-                    pd.DataFrame(
-                        {
-                            sw["x_label"]: sw["x"],
-                            "QBER (%)": [f"{q:.2f}" for q in sw["qbers"]],
-                            "CI low": [f"{c:.2f}" for c in sw["ci_l"]],
-                            "CI high": [f"{c:.2f}" for c in sw["ci_h"]],
-                        }
-                    ),
-                    width="stretch",
-                    hide_index=True,
-                )
+            st.plotly_chart(fig_e, use_container_width=True)
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -1365,7 +1089,7 @@ elif page == "compare":
         cmp_n = st.slider("Qubits per scenario", 200, 800, 600, 50, key="cmp_n")
     with crt:
         st.write("")
-        run_cmp = st.button("Run Comparison", type="primary", width="stretch")
+        run_cmp = st.button("Run Comparison", type="primary", use_container_width=True)
 
     if run_cmp:
         if len(sel) < 2:
@@ -1388,7 +1112,7 @@ elif page == "compare":
                         label=cfg.label,
                         seed=42,
                     )
-                    res = _run(cfg2)
+                    res = _run(cfg2, verbose=False)
                     cmp_res.append((name, res))
                     st.write(
                         f"{name}  →  QBER {res.qber_result.qber * 100:.1f}%  ·  "
@@ -1434,7 +1158,7 @@ elif page == "compare":
                     "Runtime (s)": f"{res2.runtime_seconds:.3f}",
                 }
             )
-        st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
+        st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
         st.write("")
 
         fig_cmp = make_subplots(
@@ -1486,4 +1210,4 @@ elif page == "compare":
         fig_cmp.update_xaxes(tickangle=-20, tickfont_size=9)
         fig_cmp.update_yaxes(range=[0, max(35, max(qbers) + 10)], row=1, col=1)
         fig_cmp.update_yaxes(range=[0, 115], row=1, col=3)
-        st.plotly_chart(fig_cmp, width="stretch")
+        st.plotly_chart(fig_cmp, use_container_width=True)
