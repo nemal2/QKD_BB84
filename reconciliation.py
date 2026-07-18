@@ -113,9 +113,10 @@ class SiftedPool:
 
 def generate_sifted_pool(
     n_sifted_target: int,
-    depolar_prob: float,
+    depolar_prob: float = 0.0,
     seed: int = 42,
     batch_size: int = 8000,
+    channel_kwargs: Optional[dict] = None,
 ) -> SiftedPool:
     """
     Generate at least ``n_sifted_target`` sifted key bits with the existing
@@ -125,16 +126,23 @@ def generate_sifted_pool(
     construction (identical semantics to bb84_runner) and the
     QuantumChannel's own AerSimulator (identical noise model), but submits
     circuits in large batches rather than one job per qubit.
+
+    ``channel_kwargs``: optional full QuantumChannel constructor kwargs
+    (e.g. noise_model / t1_ns / t2_ns / gate_time_ns) for non-depolarising
+    channels; when given, ``depolar_prob`` is ignored.
     """
     # ~50 % of qubits survive sifting; 2.2x head-room then trim.
     n_qubits = int(n_sifted_target * 2.2) + 64
 
     alice = Alice(n_qubits, seed=seed)
     bob = Bob(n_qubits, seed=seed)
-    channel = QuantumChannel(
-        noise_model=NoiseModelType.DEPOLARIZING if depolar_prob > 0 else NoiseModelType.IDEAL,
-        depolar_prob=depolar_prob,
-    )
+    if channel_kwargs is not None:
+        channel = QuantumChannel(**channel_kwargs)
+    else:
+        channel = QuantumChannel(
+            noise_model=NoiseModelType.DEPOLARIZING if depolar_prob > 0 else NoiseModelType.IDEAL,
+            depolar_prob=depolar_prob,
+        )
     sim = channel._simulator
 
     # Build every measured circuit exactly as Bob.measure() does.
