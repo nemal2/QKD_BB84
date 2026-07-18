@@ -86,6 +86,30 @@ class SiftedPool:
         mask[idx] = False
         return est, mask
 
+    def estimated_qber_by_basis(
+        self, sample_fraction: float = 0.10, seed: int = 0,
+    ) -> Tuple[float, Dict[int, float], np.ndarray]:
+        """
+        Like estimated_qber, but additionally estimates the error rate
+        separately for the two (public) measurement bases from the SAME
+        sacrificial sample - no extra key material is consumed.
+
+        Returns (overall_estimate, {basis: estimate}, usable-index mask).
+        """
+        rng = np.random.default_rng(seed)
+        n = self.n_sifted
+        k = max(1, int(n * sample_fraction))
+        idx = rng.choice(n, size=k, replace=False)
+        errs = self.alice_bits[idx] != self.bob_bits[idx]
+        est = float(np.mean(errs))
+        by_basis = {}
+        for basis in (0, 1):
+            sel = self.alice_bases[idx] == basis
+            by_basis[basis] = float(np.mean(errs[sel])) if sel.any() else est
+        mask = np.ones(n, dtype=bool)
+        mask[idx] = False
+        return est, by_basis, mask
+
 
 def generate_sifted_pool(
     n_sifted_target: int,
@@ -343,10 +367,25 @@ class LDPCReconciler:
         bob_block: np.ndarray,
         p_est: float,
         max_iter: int = 120,
+        p_vec: Optional[np.ndarray] = None,
+        rate_p: Optional[float] = None,
+        force_rate: Optional[float] = None,
     ) -> "ReconcileResult":
-        """Run the full syndrome protocol on one block. See module docstring."""
+        """
+        Run the full syndrome protocol on one block. See module docstring.
+
+        ``p_vec``     : optional per-position crossover priors for BP
+                        (basis-aware decoding); default = uniform p_est.
+        ``rate_p``    : optional scalar to drive rate selection with (e.g.
+                        an effective entropy-matched p); default = p_est.
+        ``force_rate``: bypass rate adaptation entirely and use this ladder
+                        rate (controlled experiments only).
+        """
         n = self.n
-        rate = self._pick_rate(p_est)
+        if force_rate is not None:
+            rate = force_rate
+        else:
+            rate = self._pick_rate(p_est if rate_p is None else rate_p)
         H = self.codes[rate]
         m = H.shape[0]  # exact row count of the chosen code
 
@@ -355,7 +394,8 @@ class LDPCReconciler:
         s_b = (H @ bob_block) % 2
         s_delta = (s_a ^ s_b).astype(np.uint8)  # = H @ e (mod 2)
 
-        e_hat, converged, iters = _bp_syndrome_decode(H, s_delta, p_est, max_iter)
+        e_hat, converged, iters = _bp_syndrome_decode(
+            H, s_delta, p_est if p_vec is None else p_vec, max_iter)
         dt = time.perf_counter() - t0
 
         corrected = bob_block ^ e_hat
@@ -374,12 +414,15 @@ class LDPCReconciler:
 def _bp_syndrome_decode(
     H: np.ndarray,
     syndrome: np.ndarray,
-    p: float,
+    p,
     max_iter: int = 120,
 ) -> Tuple[np.ndarray, bool, int]:
     """
     Sum-product BP for the syndrome decoding problem  H e = s (mod 2),
     error prior P(e_i = 1) = p  (BSC crossover probability).
+
+    ``p`` may be a scalar (uniform BSC, study-1 behaviour) or a length-n
+    vector of per-position crossover probabilities (basis-aware priors).
 
     Standard tanh-rule message passing on the Tanner graph, with the check
     sign flipped for rows whose target syndrome bit is 1.
@@ -390,12 +433,12 @@ def _bp_syndrome_decode(
     rows, cols = np.nonzero(H)
     n_edges = len(rows)
 
-    p = min(max(p, 1e-6), 0.499)
-    llr_prior = math.log((1 - p) / p)          # positive: e_i = 0 favoured
+    p_arr = np.clip(np.broadcast_to(np.asarray(p, dtype=float), n), 1e-6, 0.499)
+    llr_prior = np.log((1 - p_arr) / p_arr)    # positive: e_i = 0 favoured
     sign_s = np.where(syndrome[rows] == 1, -1.0, 1.0)
 
     # Messages live on edges. v2c: variable -> check, c2v: check -> variable.
-    v2c = np.full(n_edges, llr_prior)
+    v2c = llr_prior[cols].copy()
     c2v = np.zeros(n_edges)
 
     for it in range(1, max_iter + 1):
@@ -460,7 +503,21 @@ class GRANDReconciler:
         p_est: float,
         max_guesses: int = 2_000_000,
         w_max: Optional[int] = None,
+        basis: Optional[np.ndarray] = None,
+        p_by_class: Optional[Dict[int, float]] = None,
     ) -> "ReconcileResult":
+        """
+        Weight-ordered GRAND (default), or - when ``basis`` and
+        ``p_by_class`` are given - two-class maximum-likelihood-ordered
+        GRAND that exploits the public per-basis error rates: patterns are
+        enumerated in exact likelihood order for the mixture-BSC channel,
+        and the syndrome length shrinks to the mixture entropy
+        m = ceil(n0 h2(p0) + n1 h2(p1)) + 16 (<= the uniform rule, by
+        concavity of h2).
+        """
+        if basis is not None and p_by_class is not None:
+            return self._reconcile_two_class(alice_block, bob_block, basis,
+                                             p_by_class, max_guesses)
         n = self.n
         # GRAND rate adaptation: with ML-ordered guessing, the true error
         # pattern always matches its own syndrome; failure modes are
@@ -507,6 +564,121 @@ class GRANDReconciler:
             time_s=dt,
             work_units=guesses,
         )
+
+
+    def _reconcile_two_class(
+        self,
+        alice_block: np.ndarray,
+        bob_block: np.ndarray,
+        basis: np.ndarray,
+        p_by_class: Dict[int, float],
+        max_guesses: int,
+    ) -> "ReconcileResult":
+        n = self.n
+        idx0 = [j for j in range(n) if basis[j] == 0]
+        idx1 = [j for j in range(n) if basis[j] == 1]
+        p0 = min(max(p_by_class[0], 1e-4), 0.499)
+        p1 = min(max(p_by_class[1], 1e-4), 0.499)
+
+        # Mixture-entropy leakage rule (<= uniform rule by h2 concavity)
+        m = int(math.ceil(len(idx0) * h2(p0) + len(idx1) * h2(p1))) + 16
+        m = max(4, min(n, m))
+        cols, H = self._get_code(m)
+
+        t0 = time.perf_counter()
+        s_a = (H @ alice_block) % 2
+        s_b = (H @ bob_block) % 2
+        s_delta = s_a ^ s_b
+        target_int = int("".join(map(str, s_delta)), 2)
+
+        def wcap(k, p):
+            mu = k * max(p, 1e-3)
+            return min(k, int(math.ceil(mu + 5.0 * math.sqrt(mu * (1 - max(p, 1e-3))))) + 1)
+
+        e_pos, guesses = _grand_search_two_class(
+            cols, idx0, idx1,
+            math.log((1 - p0) / p0), math.log((1 - p1) / p1),
+            target_int, wcap(len(idx0), p0), wcap(len(idx1), p1), max_guesses)
+        dt = time.perf_counter() - t0
+
+        found = e_pos is not None
+        e_hat = np.zeros(n, dtype=np.uint8)
+        if found:
+            e_hat[list(e_pos)] = 1
+        corrected = bob_block ^ e_hat
+        return ReconcileResult(
+            method="GRAND",
+            n=n,
+            leaked_bits=m,
+            syndrome_rate=m / n,
+            claimed_success=found,
+            actually_correct=bool(np.array_equal(corrected, alice_block)),
+            time_s=dt,
+            work_units=guesses,
+        )
+
+
+def _combo_xor_iter(cols: List[int], idx: List[int], w: int):
+    """
+    Yield (positions_tuple, xor_of_columns) over all size-w combinations of
+    ``idx``, with a prefix-XOR stack so successive combinations cost ~1 XOR.
+    """
+    if w == 0:
+        yield (), 0
+        return
+    k = len(idx)
+    if w > k:
+        return
+    sel = list(range(w))
+    prefix = [0] * (w + 1)
+    for i in range(w):
+        prefix[i + 1] = prefix[i] ^ cols[idx[sel[i]]]
+    while True:
+        yield tuple(idx[s] for s in sel), prefix[w]
+        j = w - 1
+        while j >= 0 and sel[j] == k - w + j:
+            j -= 1
+        if j < 0:
+            return
+        sel[j] += 1
+        prefix[j + 1] = prefix[j] ^ cols[idx[sel[j]]]
+        for t in range(j + 1, w):
+            sel[t] = sel[t - 1] + 1
+            prefix[t + 1] = prefix[t] ^ cols[idx[sel[t]]]
+
+
+def _grand_search_two_class(
+    cols: List[int],
+    idx0: List[int],
+    idx1: List[int],
+    c0: float,
+    c1: float,
+    target: int,
+    w0_max: int,
+    w1_max: int,
+    max_guesses: int,
+) -> Tuple[Optional[Tuple[int, ...]], int]:
+    """
+    Exact ML-ordered GRAND for a two-class mixture BSC: every pattern with
+    w0 errors in class 0 and w1 in class 1 has log-likelihood penalty
+    w0*c0 + w1*c1 (c = log((1-p)/p) > 0), so enumerating (w0, w1) pairs by
+    ascending penalty and exhausting each pair is maximum-likelihood order.
+    """
+    pairs = sorted(
+        ((w0, w1) for w0 in range(min(w0_max, len(idx0)) + 1)
+         for w1 in range(min(w1_max, len(idx1)) + 1)),
+        key=lambda t: t[0] * c0 + t[1] * c1)
+
+    guesses = 0
+    for w0, w1 in pairs:
+        for pos0, x0 in _combo_xor_iter(cols, idx0, w0):
+            for pos1, x1 in _combo_xor_iter(cols, idx1, w1):
+                guesses += 1
+                if guesses > max_guesses:
+                    return None, guesses - 1
+                if x0 ^ x1 == target:
+                    return pos0 + pos1, guesses
+    return None, guesses
 
 
 def _grand_search(
