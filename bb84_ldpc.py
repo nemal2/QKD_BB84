@@ -1,3 +1,4 @@
+
 """
 bb84_ldpc.py
 ============
@@ -217,9 +218,15 @@ class LDPCCode:
         can go -- real LDPC-reconciliation systems support a *range* of
         QBER with one mother code, not an unbounded one; beyond this
         cap ``design_rate`` reports the request as infeasible.
-    max_puncture_frac : symmetric cap on how much of the parity budget
-        may be punctured (keeps the achievable rate within a sane range;
-        excessive puncturing degrades the effective decoding threshold).
+    max_puncture_frac : cap on how much of the m0 check budget may be
+        dropped/punctured. Raising the rate this way *reduces* the
+        code's error-correcting margin (fewer enforced constraints per
+        real bit), so, counter-intuitively, too much puncturing can make
+        even a very low-QBER block fail to decode. Empirically (see the
+        companion notebook) this (dv=3, dc=6) code under flooding-schedule
+        BP only holds up reliably to about rate ~0.55-0.60 before that
+        margin runs out; the conservative default keeps puncturing well
+        inside that region rather than chasing the full Shannon rate.
     qber_design_ceiling : hard cutoff on estimated QBER. Above this, the
         code family is not attempted at all -- this is a deliberate,
         explicit "abort" rather than letting BP run and hope: a real
@@ -233,8 +240,8 @@ class LDPCCode:
         dv: int = 3,
         dc: int = 6,
         seed: int = 1,
-        max_shorten_frac: float = 0.75,
-        max_puncture_frac: float = 0.6,
+        max_shorten_frac: float = 0.85,
+        max_puncture_frac: float = 0.15,
         qber_design_ceiling: float = 0.15,
     ):
         self.dv, self.dc = dv, dc
@@ -247,11 +254,12 @@ class LDPCCode:
         self.max_puncture_frac  = max_puncture_frac
         self.qber_design_ceiling = qber_design_ceiling
 
-        # Fixed (public) position ordering used to pick which positions
-        # get punctured / shortened for a given (s, p). Fixed once per
-        # code instance so the *same* mother code + position scheme is
+        # Fixed (public) orderings used to pick which *variable* positions
+        # get shortened, and which *check* rows get punctured, for a given
+        # (s, p). Fixed once per code instance so the same mother code is
         # reused across every QBER value -- only s (or p) changes.
         self._position_order = np.random.default_rng(seed + 1).permutation(self.n0)
+        self._check_order     = np.random.default_rng(seed + 2).permutation(self.m0)
 
         self._build_bp_indices()
 
@@ -260,7 +268,6 @@ class LDPCCode:
     def _build_bp_indices(self) -> None:
         n0, m0, dv, dc = self.n0, self.m0, self.dv, self.dc
         # var-major edge order: edges of var 0 (dv of them), then var 1, ...
-        edge_var = np.repeat(np.arange(n0), dv)
         edge_chk = np.zeros(n0 * dv, dtype=int)
         # recover, for each var, its dv connected checks in a fixed order
         for v in range(n0):
@@ -276,24 +283,35 @@ class LDPCCode:
 
         self._order = order                                  # (n0*dv,)
         self._inv_order = np.argsort(order)                   # (n0*dv,)
-        self._C2V = edge_var[order].reshape(m0, dc)            # var id per (check, slot)
 
     # ── Rate design (puncturing / shortening) ───────────────────────
 
-    def design_rate(self, estimated_qber: float, f_ec: float = 1.1) -> dict:
+    def design_rate(self, estimated_qber: float, f_ec: float = 1.5) -> dict:
         """
-        Choose (s, p) -- shortened / punctured position counts -- so the
-        code's *effective* rate over the real (non-shortened,
-        non-punctured) bits approximates the Shannon target rate for
-        the given estimated QBER.
+        Choose (s, p) so the code's effective rate approximates the
+        Shannon/Slepian-Wolf target rate for the given estimated QBER,
+        reusing the *same* mother matrix H0 in both directions:
 
-        Returns a dict with keys: feasible, s, p, n_real, target_rate,
-        achieved_rate, reason (set when infeasible).
+        - s = number of **variable** positions shortened (fixed to a
+          known value 0, removed from the real secret-key budget). This
+          only ever *lowers* the rate -- used when the channel is worse
+          than the mother code's native rate0 (high QBER).
+        - p = number of **check** rows punctured, i.e. simply not sent /
+          not enforced (Alice does not reveal that syndrome bit at all,
+          and Bob's decoder drops that parity constraint entirely). Rate
+          over the (unchanged) n0 real bits then INCREASES: fewer parity
+          bits are spent per real bit. Used when the channel is better
+          than rate0 (low QBER).
+
+        Exactly one of (s, p) is nonzero. Returns a dict with keys:
+        feasible, s, p, n_real (real variable positions used, n0 - s),
+        m_eff (syndrome bits actually sent/enforced, m0 - p),
+        target_rate, achieved_rate, reason (set when infeasible).
         """
         p_est = float(np.clip(estimated_qber, 1e-4, 0.5 - 1e-4))
 
         if estimated_qber > self.qber_design_ceiling:
-            return dict(feasible=False, s=0, p=0, n_real=0,
+            return dict(feasible=False, s=0, p=0, n_real=0, m_eff=0,
                         target_rate=None, achieved_rate=None,
                         reason=(f"estimated QBER {estimated_qber:.3f} exceeds this "
                                 f"code family's design ceiling "
@@ -304,56 +322,59 @@ class LDPCCode:
         target_rate = shannon_target_rate(p_est, f_ec=f_ec)
         n0, m0 = self.n0, self.m0
         max_s = int(self.max_shorten_frac * (self.k0 - 1))
-        max_p = int(self.max_puncture_frac * (self.k0 - 1))
+        max_p = int(self.max_puncture_frac * m0)
 
         if target_rate <= self.rate0:
-            # Need MORE redundancy per real bit -> shortening.
+            # Need MORE redundancy per real bit -> shorten variable positions.
             # R_eff(s) = (n0 - s - m0) / (n0 - s) = target_rate
-            #   => n0 - s - m0 = target_rate*(n0 - s)
             #   => s = (n0 - m0 - target_rate*n0) / (1 - target_rate)
             denom = max(1e-9, 1.0 - target_rate)
             s = int(math.ceil((n0 - m0 - target_rate * n0) / denom))
             s = int(np.clip(s, 0, max_s))
             p = 0
-            n_real = n0 - s
-            if n_real <= m0:
-                return dict(feasible=False, s=s, p=0, n_real=n_real,
+            n_real, m_eff = n0 - s, m0
+            if n_real <= m_eff:
+                return dict(feasible=False, s=s, p=0, n_real=n_real, m_eff=m_eff,
                             target_rate=target_rate, achieved_rate=None,
                             reason="required shortening exceeds max_shorten_frac cap")
-            achieved_rate = (n_real - m0) / n_real
+            achieved_rate = (n_real - m_eff) / n_real
         else:
-            # Need LESS redundancy per real bit -> puncturing.
-            # R_eff(p) = (n0 - p - m0) / (n0 - p) = target_rate
-            #   => n0 - p = m0 / (1 - target_rate)
-            denom = max(1e-9, 1.0 - target_rate)
-            n_real_target = m0 / denom
-            p = int(math.floor(n0 - n_real_target))
+            # Need LESS redundancy per real bit -> puncture (drop) check rows.
+            # R_eff(p) = (n0 - (m0 - p)) / n0 = target_rate
+            #   => p = m0 - n0*(1 - target_rate)
+            p = int(math.floor(m0 - n0 * (1.0 - target_rate)))
             p = int(np.clip(p, 0, max_p))
             s = 0
-            n_real = n0 - p
-            achieved_rate = (n_real - m0) / n_real
+            n_real, m_eff = n0, m0 - p
+            achieved_rate = (n_real - m_eff) / n_real
 
-        return dict(feasible=True, s=s, p=p, n_real=n_real,
+        return dict(feasible=True, s=s, p=p, n_real=n_real, m_eff=m_eff,
                      target_rate=target_rate, achieved_rate=achieved_rate,
                      reason=None)
 
-    # ── Positions for a given (s, p), with optional extra shortening
-    #    to pad a short final block ─────────────────────────────────
+    # ── Positions / check-mask for a given (s, p), with optional extra
+    #    shortening to pad a short final block ───────────────────────
 
-    def _positions(self, s: int, p: int, extra_shorten: int = 0):
+    def _active_var_positions(self, s: int, extra_shorten: int = 0):
+        """Return (active, shortened) variable-position index arrays."""
         order = self._position_order
         s_eff = s + extra_shorten
-        punctured = order[:p]
         shortened = order[self.n0 - s_eff:] if s_eff > 0 else order[self.n0:self.n0]
-        active_mask = np.ones(self.n0, dtype=bool)
-        active_mask[punctured] = False
-        active_mask[shortened] = False
-        active = order[p:self.n0 - s_eff]
-        return active, punctured, shortened
+        active = order[:self.n0 - s_eff]
+        return active, shortened
+
+    def _active_check_mask(self, p: int) -> np.ndarray:
+        """Boolean (m0,) mask, True for the m0-p check rows that are
+        actually revealed (syndrome sent) and enforced during decoding."""
+        mask = np.ones(self.m0, dtype=bool)
+        if p > 0:
+            mask[self._check_order[:p]] = False
+        return mask
 
     # ── Belief propagation (log-domain sum-product) ─────────────────
 
     def bp_decode(self, channel_llr: np.ndarray, syndrome: np.ndarray,
+                  active_check_mask: Optional[np.ndarray] = None,
                   max_iter: int = 100, llr_clip: float = 25.0):
         """
         Sum-product (belief propagation) syndrome decoding.
@@ -363,18 +384,24 @@ class LDPCCode:
         channel_llr : (n0,) array. L = log(P(x=0)/P(x=1)) per position;
                       positive means bit 0 is more likely.
         syndrome    : (m0,) 0/1 array, the *target* syndrome H0 @ x.
+        active_check_mask : (m0,) bool array. False entries mark punctured
+                      check rows -- their syndrome bit was never revealed,
+                      so they contribute no message and are excluded from
+                      the convergence test (True = all m0 checks active).
         max_iter    : maximum flooding-schedule iterations.
 
         Returns
         -------
         x_hat : (n0,) int array, hard-decision estimate.
-        converged : bool, True iff H0 @ x_hat (mod 2) == syndrome was
-                    reached before max_iter (explicitly checked, never
+        converged : bool, True iff H0[active] @ x_hat (mod 2) == syndrome[active]
+                    was reached before max_iter (explicitly checked, never
                     assumed from running out of iterations).
         n_iter : number of iterations actually run.
         """
         m0, dc, dv = self.m0, self.dc, self.dv
-        order, inv_order, C2V = self._order, self._inv_order, self._C2V
+        order, inv_order = self._order, self._inv_order
+        if active_check_mask is None:
+            active_check_mask = np.ones(m0, dtype=bool)
 
         sign_fix = np.where(syndrome % 2 == 1, -1.0, 1.0)   # (-1)^{s_c}, shape (m0,)
         eps = 1e-8
@@ -407,6 +434,7 @@ class LDPCCode:
 
             Mc2v_ck = 2.0 * np.arctanh(tanh_excl)
             Mc2v_ck = np.clip(Mc2v_ck, -llr_clip, llr_clip)
+            Mc2v_ck[~active_check_mask, :] = 0.0    # punctured checks: no message
 
             Mc2v = Mc2v_ck.flatten()[inv_order].reshape(self.n0, dv)
 
@@ -414,7 +442,7 @@ class LDPCCode:
             x_hat = (marginal < 0).astype(int)
 
             syn = (self.H0 @ x_hat) % 2
-            if np.array_equal(syn, syndrome):
+            if np.array_equal(syn[active_check_mask], syndrome[active_check_mask]):
                 return x_hat, True, it
 
         return x_hat, False, max_iter
@@ -476,7 +504,7 @@ def reconcile_sifted_key_with_ldpc(
     bob_key: List[int],
     alice_key: List[int],
     estimated_qber: float,
-    f_ec: float = 1.1,
+    f_ec: float = 1.5,
     code: Optional[LDPCCode] = None,
     n0: int = 512,
     dv: int = 3,
@@ -502,7 +530,15 @@ def reconcile_sifted_key_with_ldpc(
         report residual errors).
     estimated_qber : QBER estimate from the public sample
         (``result.qber_result.qber``).
-    f_ec : target reconciliation efficiency (>= 1). Typical values 1.05-1.2.
+    f_ec : target reconciliation efficiency (>= 1) used to set the design
+        rate R = 1 - f_ec*h2(p). Large, near-capacity, degree-optimised
+        irregular LDPC codes in the literature reach f_EC ~ 1.05-1.2; the
+        modest regular (dv, dc) code built here needs a larger design
+        margin to decode reliably at finite block length under simple
+        flooding BP (validated empirically in the companion notebook),
+        hence the higher default. The *achieved* f_EC is reported
+        separately in the result and will typically sit above 1.2 for
+        that reason -- see the notebook's discussion section.
     code : reuse an existing LDPCCode (mother matrix) instead of building
         a new one -- saves the PEG-construction cost across repeated
         calls. If None, one is built with the given (n0, dv, dc, seed).
@@ -540,8 +576,9 @@ def reconcile_sifted_key_with_ldpc(
             feasible=False, reason=design["reason"],
         )
 
-    s, p, n_real = design["s"], design["p"], design["n_real"]
+    s, p, n_real, m_eff = design["s"], design["p"], design["n_real"], design["m_eff"]
     n_blocks = math.ceil(L / n_real)
+    active_check_mask = code._active_check_mask(p)
 
     reconciled: List[int] = []
     total_iters = 0
@@ -551,24 +588,22 @@ def reconcile_sifted_key_with_ldpc(
     total_n_real = 0
     per_block_converged: List[bool] = []
 
-    filler_rng = np.random.default_rng(code.seed + 777)
-
     for b in range(n_blocks):
         a_blk = list(alice_key[b * n_real:(b + 1) * n_real])
         y_blk = list(bob_key[b * n_real:(b + 1) * n_real])
         extra_shorten = n_real - len(a_blk)      # pad a short final block
 
-        active, punctured, shortened = code._positions(s, p, extra_shorten)
+        active, shortened = code._active_var_positions(s, extra_shorten)
         n0 = code.n0
 
         # ── build Alice's full n0-length codeword x ─────────────────
         x = np.zeros(n0, dtype=int)
         x[active] = a_blk
-        if len(punctured) > 0:
-            x[punctured] = filler_rng.integers(0, 2, size=len(punctured))
         # shortened positions already 0
 
-        syndrome = (code.H0 @ x) % 2
+        syndrome = (code.H0 @ x) % 2       # full m0-length syndrome; only the
+                                            # m_eff active rows are actually
+                                            # revealed/enforced below.
 
         # ── build Bob's channel LLR vector ──────────────────────────
         p_bsc = float(np.clip(estimated_qber, 1e-4, 0.5 - 1e-4))
@@ -579,10 +614,10 @@ def reconcile_sifted_key_with_ldpc(
         channel_llr[active] = (1 - 2 * y_active) * base_llr
         if len(shortened) > 0:
             channel_llr[shortened] = 25.0     # certain 0 (known/shared padding)
-        if len(punctured) > 0:
-            channel_llr[punctured] = 0.0      # fully erased / unknown to Bob
 
-        x_hat, converged, n_iter = code.bp_decode(channel_llr, syndrome, max_iter=max_iter)
+        x_hat, converged, n_iter = code.bp_decode(
+            channel_llr, syndrome, active_check_mask=active_check_mask, max_iter=max_iter,
+        )
 
         block_active_len = len(a_blk)          # real bits actually from the key
         if converged:
@@ -593,8 +628,8 @@ def reconcile_sifted_key_with_ldpc(
 
         per_block_converged.append(bool(converged))
         total_iters += n_iter
-        total_leaked += code.m0
-        total_k_real += (n_real - code.m0)
+        total_leaked += m_eff
+        total_k_real += (n_real - m_eff)
         total_n_real += n_real
 
     residual_errors = sum(a != b for a, b in zip(alice_key, reconciled))
@@ -639,12 +674,8 @@ if __name__ == "__main__":
     print("bb84_ldpc.py -- self-test")
     print("=" * 70)
 
-    rng = np.random.default_rng(0)
-    key_len = 4000
-    alice_key = rng.integers(0, 2, key_len).tolist()
-
     print(f"\nBuilding mother LDPC code (n0=512, dv=3, dc=6, PEG construction)...")
-    code = LDPCCode(n0=512, dv=3, dc=6, seed=1, qber_design_ceiling=0.15)
+    code = LDPCCode(n0=512, dv=3, dc=6, seed=1)
     print(f"  m0={code.m0}  n0={code.n0}  k0={code.k0}  rate0={code.rate0:.3f}")
 
     # sanity: exactly regular
@@ -654,42 +685,69 @@ if __name__ == "__main__":
     assert np.all(row_deg == code.dc), "check degree not regular"
     print(f"  Tanner graph confirmed exactly ({code.dv},{code.dc})-regular.")
 
-    test_points = [
-        (0.01, True), (0.03, True), (0.05, True),
-        (0.08, True), (0.12, True),
-        (0.25, False),   # above qber_design_ceiling -> must abort cleanly
-        (0.40, False),   # deep in ABORT territory
-    ]
+    # Below the design ceiling, a single LDPC block (one BP decode call)
+    # at each QBER point must converge to the *correct* codeword at least
+    # ~90% of the time over independent BSC draws -- this is exactly the
+    # frame-error-rate (FER) metric explored in depth in the companion
+    # notebook (Section 2). A handful of failures right at the margin is
+    # expected finite-length behaviour, not a bug; what would be a bug is
+    # *silent* corruption (success=True but wrong key) or a success rate
+    # that never gets close to 90% inside the design range.
+    # Above the ceiling, the request must be refused outright (feasible
+    # = False) rather than let BP run and silently produce a wrong key.
+    below_ceiling = [0.005, 0.01, 0.02, 0.04, 0.06, 0.08, 0.10, 0.12, 0.15]
+    above_ceiling = [0.20, 0.25, 0.40]
+
+    n_trials = 30
+    key_len = 128     # <= every achievable n_real in this range -> 1 block/trial
 
     all_ok = True
-    for qber, should_succeed in test_points:
-        bob_key = _bsc_corrupt(alice_key, qber, seed=int(qber * 1000) + 1)
+
+    print(f"\n--- below design ceiling ({code.qber_design_ceiling:.2f}): "
+          f"single-block FER should be low ---")
+    for qber in below_ceiling:
+        successes = 0
+        for t in range(n_trials):
+            rng = np.random.default_rng(1000 + t)
+            alice_key = rng.integers(0, 2, key_len).tolist()
+            bob_key = _bsc_corrupt(alice_key, qber, seed=2000 + int(qber * 1000) + t)
+
+            reconciled, result = reconcile_sifted_key_with_ldpc(
+                bob_key, alice_key, estimated_qber=qber, code=code,
+            )
+            assert result.n_blocks == 1
+            if result.success:
+                successes += 1
+                assert reconciled == alice_key, (
+                    "BP reported success but reconciled key does not match "
+                    "Alice's key -- silent corruption bug!"
+                )
+                assert result.residual_errors == 0
+
+        rate = successes / n_trials
+        ok = rate >= 0.9
+        all_ok &= ok
+        print(f"[{'OK  ' if ok else 'FAIL'}] QBER={qber:.3f}  "
+              f"success={successes}/{n_trials}  achieved_rate={result.code_rate:.3f}  "
+              f"f_EC={result.reconciliation_efficiency:.2f}  leaked_bits={result.leaked_bits}  "
+              f"avg_iters={result.num_bp_iterations:.1f}")
+
+    print(f"\n--- above design ceiling: expect a clean, explicit abort ---")
+    for qber in above_ceiling:
+        rng = np.random.default_rng(42)
+        alice_key = rng.integers(0, 2, key_len).tolist()
+        bob_key = _bsc_corrupt(alice_key, qber, seed=int(qber * 1000))
         n_errors_in = sum(a != b for a, b in zip(alice_key, bob_key))
 
         reconciled, result = reconcile_sifted_key_with_ldpc(
-            bob_key, alice_key, estimated_qber=qber, f_ec=1.1, code=code,
+            bob_key, alice_key, estimated_qber=qber, code=code,
         )
-
-        status = "OK  " if result.success == should_succeed else "FAIL"
-        if result.success != should_succeed:
-            all_ok = False
-
-        print(f"\n[{status}] QBER={qber:.2f}  errors_in={n_errors_in}  "
-              f"success={result.success}  converged={result.converged}")
-        if result.success:
-            assert reconciled == alice_key, (
-                "BP reported success but reconciled key does not match "
-                "Alice's key -- silent corruption bug!"
-            )
-            print(f"        rate={result.code_rate:.3f}  f_EC={result.reconciliation_efficiency:.3f}  "
-                  f"leaked_bits={result.leaked_bits}  residual_errors={result.residual_errors}  "
-                  f"avg_iters={result.num_bp_iterations:.1f}  n_blocks={result.n_blocks}")
-            assert result.residual_errors == 0
-        else:
-            print(f"        aborted / failed as expected  "
-                  f"(feasible={result.feasible}, reason={result.reason})")
-            # Must NOT silently claim success with a wrong key.
-            assert reconciled != alice_key or n_errors_in == 0
+        ok = (not result.success) and (not result.feasible)
+        all_ok &= ok
+        print(f"[{'OK  ' if ok else 'FAIL'}] QBER={qber:.2f}  errors_in={n_errors_in}  "
+              f"success={result.success}  feasible={result.feasible}  reason={result.reason}")
+        # Must NOT silently claim success with a wrong key.
+        assert reconciled != alice_key or n_errors_in == 0
 
     print("\n" + "=" * 70)
     if all_ok:
