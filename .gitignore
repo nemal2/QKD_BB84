@@ -1,5 +1,7 @@
 .venv_fyp/
 .venv_fyp
+.venv/
+.venv
 
 # Python cache and compiled files
 __pycache__/
@@ -21,3 +23,8 @@ build/
 # OS
 .DS_Store
 Thumbs.db
+report/
+notes.md
+*.zip
+tx.txt
+reconciliation_report.md
