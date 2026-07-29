@@ -61,32 +61,37 @@ __all__ = [
 # ──────────────────────────────────────────────────────────────────────
 
 class Alice:
-    """
-    Alice randomly selects bits and bases, then encodes each bit as a qubit.
-
-    Parameters
-    ----------
-    n_qubits : number of qubits to prepare.
-    seed     : RNG seed (None → random).
-    """
-
     def __init__(self, n_qubits: int, seed: Optional[int] = None):
         self.n_qubits = n_qubits
         rng = np.random.default_rng(seed)
         self.bits:  List[int] = rng.integers(0, 2, n_qubits).tolist()
         self.bases: List[int] = rng.integers(0, 2, n_qubits).tolist()
-
-    def prepare_qubit(self, index: int) -> QuantumCircuit:
-        """Return a 1-qubit circuit encoding ``bits[index]`` in ``bases[index]``."""
-        qc = QuantumCircuit(1, 1, name=f"A{index}")
-        if self.bits[index] == 1:
-            qc.x(0)
-        if self.bases[index] == 1:
-            qc.h(0)
-        return qc
-
+ 
+    def prepare_qubit(self, index: int, gate_scheme: Optional[str] = None) -> QuantumCircuit:
+        """Return a 1-qubit circuit encoding ``bits[index]`` in ``bases[index]``.
+ 
+        gate_scheme=None (default): ORIGINAL behavior, unchanged.
+            bit=0,basis=0 -> no gates      |0>
+            bit=1,basis=0 -> X             |1>
+            bit=0,basis=1 -> H             |+>
+            bit=1,basis=1 -> X,H           |->
+ 
+        gate_scheme='A'|'B'|'C': control-experiment gate-exposure scheme
+        from bb84_gate_schemes.py (adds noisy-but-logically-inert `id`
+        gates so every basis/bit path gets >=1 noisy-gate exposure).
+        """
+        if gate_scheme is None:
+            qc = QuantumCircuit(1, 1, name=f"A{index}")
+            if self.bits[index] == 1:
+                qc.x(0)
+            if self.bases[index] == 1:
+                qc.h(0)
+            return qc
+ 
+        from bb84_gate_schemes import build_scheme_circuit
+        return build_scheme_circuit(self.bits[index], self.bases[index], gate_scheme, name=f"A{index}")
+ 
     def sift_key(self, matching_indices: List[int]) -> List[int]:
-        """Alice's bits at positions where bases agreed with Bob's."""
         return [self.bits[i] for i in matching_indices]
 
 
