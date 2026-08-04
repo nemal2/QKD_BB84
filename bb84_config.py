@@ -86,6 +86,23 @@ class SimulationConfig:
     """Fibre-optic channel length in km (fibre_loss model only)."""
 
 
+    def __post_init__(self) -> None:
+        """
+        Validate the Bloch-sphere physical constraint T2 <= 2*T1.
+
+        This is checked at configuration-creation time so an invalid
+        (t1_ns, t2_ns) pair fails immediately and explicitly, rather
+        than being silently clamped later inside QuantumChannel.
+        """
+        if self.t2_ns > 2 * self.t1_ns:
+            raise ValueError(
+                f"Invalid config: T2 ({self.t2_ns} ns) exceeds 2*T1 "
+                f"({2 * self.t1_ns} ns). This violates the physical "
+                f"Bloch-sphere bound T2 <= 2*T1 for any real qubit. "
+                f"Reduce t2_ns or increase t1_ns."
+            )
+
+
 # ──────────────────────────────────────────────────────────────────────
 # QBER RESULT
 # ──────────────────────────────────────────────────────────────────────

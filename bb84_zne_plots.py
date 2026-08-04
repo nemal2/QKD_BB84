@@ -9,11 +9,17 @@ Seven plot functions, one per E11 sub-result:
     plot_zne_extrapolation()        - E11a: QBER vs f_scale, fitted lines -> f=0
     plot_bias_comparison()          - E11a: raw vs ZNE-linear bias, grouped bars
     plot_control_convergence()      - E11b: no-Eve intercept vs base p_dep, CI whiskers
-    plot_discriminator_comparison() - E11c: D/R ratio vs ZNE error, dual-panel
+    plot_discriminator_comparison() - E11c: D/R ratio vs ZNE error, single panel, twin y-axes
     plot_sensitivity_sweep()        - bias reduction vs base p_dep (robustness check)
     plot_threshold_crossing()       - E11e: QBER vs pEve with 5% crossing points marked
     plot_key_length_recovery()      - E11f: Shor-Preskill secure key length, raw vs ZNE
     plot_combined_noise_diagnostic()- E11d: linear vs quadratic curvature diagnostic
+
+Style conventions applied throughout (per project house-style pass):
+    - No in-axes titles / suptitles. Captions live outside the figure
+      (e.g. in the paper or notebook markdown), not baked into the PNG.
+    - A very light grid is drawn inside every axes box (low alpha, thin
+      line, placed behind the data) via `_light_grid(ax)`.
 
 University of Ruhuna - Dept. of Computer Engineering
 MIT Licence - see LICENSE
@@ -30,6 +36,18 @@ import numpy as np
 import bb84_ieee_style as style
 
 _ALPHA_BAR = 0.82
+
+# Colorblind-safe (Okabe–Ito) pair for the E11c twin-axis plot — chosen
+# together deliberately for contrast, rather than pulled from style.C,
+# since the two series share one panel and must stay distinguishable
+# in print and in grayscale reproduction.
+_COL_DR      = "#0072B2"   # blue   — D/R ratio (left axis)
+_COL_ZNE_ERR = "#D55E00"   # vermillion — ZNE-linear error (right axis)
+
+def _light_grid(ax, axis: str = "both") -> None:
+    """Very light grid drawn behind the data, inside the axes box only."""
+    ax.set_axisbelow(True)
+    ax.grid(True, axis=axis, color="grey", alpha=0.22, linewidth=0.5, zorder=0)
 
 
 # ──────────────────────────────────────────────────────────────────────
@@ -51,8 +69,12 @@ def plot_zne_extrapolation(
     horizontal marker at the true Eve-only QBER for that p_eve.
     This is the single most important figure in the ZNE section —
     it visually IS the extrapolation.
+
+    Rendered as a square panel (rather than the wide 2-column
+    footprint) with the x-axis ticked every 0.5 in f, since f_scales
+    are naturally spaced in 0.5 steps.
     """
-    fig, ax = plt.subplots(figsize=style.FIG_2COL)
+    fig, ax = plt.subplots(figsize=(5.2, 5.2))
 
     palette = [style.C["secure"], style.C["warning"], style.C["abort"],
                style.C["combined"], style.C["phase_damp"], style.C["fibre"]]
@@ -80,12 +102,13 @@ def plot_zne_extrapolation(
 
     ax.set_xlabel("Noise-Scaling Factor $f$")
     ax.set_ylabel("QBER (%)")
-    ax.set_title("ZNE Extrapolation Under Depolarising Noise\n"
-                  "Stars = true Eve-only QBER; dashed lines extrapolate to $f=0$")
     ax.legend(loc="upper left", fontsize=6.5, ncol=2)
     ax.set_xlim(left=-0.15)
     ax.set_ylim(bottom=0)
+    ax.xaxis.set_major_locator(mticker.MultipleLocator(0.5))
+    ax.set_box_aspect(1)
     style.box_ticks(ax)
+    _light_grid(ax)
     plt.tight_layout()
     return style.save(fig, save_path)
 
@@ -138,11 +161,10 @@ def plot_bias_comparison(
     ax.set_xticklabels([f"{p:.1f}" for p in p_eve_grid])
     ax.set_xlabel("Eve Intercept Probability (pEve)")
     ax.set_ylabel("QBER (%)")
-    ax.set_title("Raw vs. ZNE-Corrected QBER Against Ground Truth\n"
-                  "(depolarising noise, masking regime)")
     ax.legend(loc="upper left")
     ax.set_ylim(bottom=0)
     style.box_ticks(ax)
+    _light_grid(ax, axis="y")
     plt.tight_layout()
     return style.save(fig, save_path)
 
@@ -187,16 +209,17 @@ def plot_control_convergence(
 
     ax.set_xlabel(r"Base Depolarising Probability $p_{\mathrm{dep}}$ (%)")
     ax.set_ylabel("QBER at $f=0$ (%)")
-    ax.set_title("E11b: No-Eve Control\nExtrapolated intercept should stay near zero")
     ax.legend(loc="upper left", fontsize=6.5)
     ax.set_ylim(bottom=-0.5)
     style.box_ticks(ax)
+    _light_grid(ax)
     plt.tight_layout()
     return style.save(fig, save_path)
 
 
 # ──────────────────────────────────────────────────────────────────────
-# E11c  Discriminator comparison — D/R ratio vs ZNE error, dual panel
+# E11c  Discriminator comparison — D/R ratio vs ZNE error, single
+#       panel with twin y-axes (left = D/R ratio, right = ZNE error)
 # ──────────────────────────────────────────────────────────────────────
 
 def plot_discriminator_comparison(
@@ -206,36 +229,34 @@ def plot_discriminator_comparison(
     save_path:   Optional[str] = None,
 ) -> plt.Figure:
     """
-    The key differentiation figure for the paper: left panel shows
-    basis-resolved D/R ratio collapsing toward its noise-only baseline
-    under depolarising noise (losing discriminating power); right
-    panel shows ZNE-linear error staying small over the same pEve
-    range. Placed side by side so the "complementary tools" argument
-    is visually immediate.
+    ...
     """
-    fig, axes = plt.subplots(1, 2, figsize=style.FIG_2PANEL)
+    fig, ax1 = plt.subplots(figsize=style.FIG_1COL)
 
-    ax = axes[0]
-    ax.plot(p_eve_grid, dr_ratios, "o-", color=style.C["diag"], lw=1.8, ms=7)
-    ax.axhline(1.0, ls=":", color="grey", lw=1.0, alpha=0.7, label="D/R = 1 (no discrimination)")
-    ax.set_xlabel("Eve Intercept Probability (pEve)")
-    ax.set_ylabel("Diagonal / Rectilinear QBER Ratio")
-    ax.set_title("Basis-Resolved Discriminator\n(weak under depolarising noise)")
-    ax.legend(loc="upper right", fontsize=6.5)
-    ax.set_ylim(bottom=0)
-    style.box_ticks(ax)
+    col_dr  = _COL_DR
+    col_err = _COL_ZNE_ERR
 
-    ax2 = axes[1]
-    ax2.plot(p_eve_grid, zne_errors, "o-", color=style.C["secure"], lw=1.8, ms=7)
-    ax2.axhline(0, color="grey", lw=0.8, alpha=0.6)
-    ax2.set_xlabel("Eve Intercept Probability (pEve)")
-    ax2.set_ylabel("|ZNE-linear QBER \u2212 True Eve QBER| (pp)")
-    ax2.set_title("ZNE-QBER Error\n(remains small over the same range)")
+    l1, = ax1.plot(p_eve_grid, dr_ratios, "o-", color=col_dr, lw=1.8, ms=7,
+                    label="Basis-resolved D/R ratio", zorder=3)
+    ax1.axhline(1.0, ls=":", color="grey", lw=1.0, alpha=0.7, zorder=1)
+    ax1.set_xlabel("Eve Intercept Probability (pEve)")
+    ax1.set_ylabel("Diagonal / Rectilinear QBER Ratio", color=col_dr)
+    ax1.tick_params(axis="y", labelcolor=col_dr)
+    ax1.set_ylim(bottom=0)
+    style.box_ticks(ax1)
+    _light_grid(ax1)
+
+    ax2 = ax1.twinx()
+    l2, = ax2.plot(p_eve_grid, zne_errors, "s--", color=col_err, lw=1.6, ms=6,
+                    label="ZNE-linear |error| (pp)", zorder=3)
+    ax2.set_ylabel("|ZNE-linear QBER \u2212 True Eve QBER| (pp)", color=col_err)
+    ax2.tick_params(axis="y", labelcolor=col_err)
     ax2.set_ylim(bottom=0)
-    style.box_ticks(ax2)
+    ax2.grid(False)
 
-    plt.suptitle("E11c: Complementary Discriminators Under Depolarising Noise",
-                 fontsize=9, fontweight="bold", y=1.03)
+    ax1.legend([l1, l2], [l1.get_label(), l2.get_label()],
+               loc="upper right", fontsize=6.5)
+
     plt.tight_layout()
     return style.save(fig, save_path)
 
@@ -270,10 +291,10 @@ def plot_sensitivity_sweep(
 
     ax.set_xlabel(r"Base Depolarising Probability $p_{\mathrm{dep}}$ (%)")
     ax.set_ylabel("Mean Absolute Bias vs. True Eve QBER (pp)")
-    ax.set_title("Sensitivity of Bias Reduction\nto Base Noise Level")
     ax.legend(loc="best", fontsize=6.5)
     ax.set_ylim(bottom=0)
     style.box_ticks(ax)
+    _light_grid(ax)
     plt.tight_layout()
     return style.save(fig, save_path)
 
@@ -314,10 +335,10 @@ def plot_threshold_crossing(
 
     ax.set_xlabel("Eve Intercept Probability (pEve)")
     ax.set_ylabel("QBER (%)")
-    ax.set_title("E11e: Detection-Threshold Crossing\nRaw vs. ZNE-Corrected QBER")
     ax.legend(loc="upper left", fontsize=6.5)
     ax.set_ylim(bottom=0)
     style.box_ticks(ax)
+    _light_grid(ax)
     plt.tight_layout()
     return style.save(fig, save_path)
 
@@ -358,10 +379,10 @@ def plot_key_length_recovery(
     ax.set_xticklabels([f"{p:.1f}" for p in p_eve_grid])
     ax.set_xlabel("Eve Intercept Probability (pEve)")
     ax.set_ylabel("Shor\u2013Preskill Secure Key Length (bits)")
-    ax.set_title("E11f: Secure Key-Length Recovery\n(fixed sifted-key length, both QBER inputs)")
     ax.legend(loc="upper right")
     ax.set_ylim(bottom=0)
     style.box_ticks(ax)
+    _light_grid(ax, axis="y")
     plt.tight_layout()
     return style.save(fig, save_path)
 
@@ -405,10 +426,9 @@ def plot_combined_noise_diagnostic(
 
     ax.set_xlabel("Eve Intercept Probability (pEve)")
     ax.set_ylabel("QBER (%)")
-    ax.set_title("E11d: Combined T1+T2 Noise (Limitation Case)\n"
-                  "Neither fit recovers the true Eve contribution reliably")
     ax.legend(loc="upper left", fontsize=6.5)
     ax.set_ylim(bottom=-1)
     style.box_ticks(ax)
+    _light_grid(ax)
     plt.tight_layout()
     return style.save(fig, save_path)
