@@ -4,3 +4,6 @@ plotly>=5.18.0
 qiskit>=1.0.0
 qiskit-aer>=0.14.0
 matplotlib>=3.8.0
+numpy>=1.26.0
+scipy>=1.11.0
+pyldpc==0.7.9

@@ -18,6 +18,8 @@ MIT Licence - see LICENSE
 from __future__ import annotations
 
 import math
+import time
+from dataclasses import dataclass
 from typing import List, Optional, Tuple, Dict
 
 import numpy as np
@@ -384,3 +386,128 @@ def run_zne_sweep(
         "f_scales": f_scales,
         "p_eve_grid": p_eve_grid,
 }
+
+
+# ──────────────────────────────────────────────────────────────────────
+# 5. UI-FACING SINGLE-CONFIG SWEEP  (interactive, not the notebook grid)
+# ──────────────────────────────────────────────────────────────────────
+
+_ZNE_SUPPORTED_MODELS = (
+    NoiseModelType.DEPOLARIZING,
+    NoiseModelType.AMPLITUDE_DAMPING,
+    NoiseModelType.PHASE_DAMPING,
+)
+
+
+@dataclass
+class ZNEResult:
+    """Output of one run_zne_analysis() sweep."""
+    base_label: str
+    noise_model: str
+    f_scales: List[float]
+    n_seeds: int
+    per_f_qber: Dict[float, Tuple[float, float, float]]   # mean%, ci_low%, ci_high%
+    linear_intercept: float
+    linear_slope: float
+    exponential: Dict[str, float]
+    quadratic_intercept: float
+    bootstrap_ci: Optional[Tuple[float, float, float]]
+    qber_at_f1: float
+    recommended_estimate: float
+    runtime_seconds: float
+
+
+def run_zne_analysis(
+    base_config: SimulationConfig,
+    f_scales: List[float],
+    n_seeds: int = 5,
+    method: str = "linear",
+    bootstrap: bool = False,
+) -> ZNEResult:
+    """
+    Run a Zero-Noise Extrapolation sweep seeded from one interactive
+    SimulationConfig, treated as the f_scale=1.0 baseline.
+
+    Unlike run_zne_sweep() (grid-oriented over p_eve x f_scale x seeds,
+    built for notebook figures), this runs a single p_eve (whatever
+    base_config already has) across f_scales x n_seeds simulations,
+    reusing base_config's own noise parameters as the scaling basis
+    rather than requiring them as separate kwargs.
+
+    Raises ValueError if base_config.noise_model isn't one of the three
+    scalable Kraus-noise models — fibre_loss/ideal have no ZNE meaning,
+    the same restriction build_scaled_config already enforces.
+    """
+    if base_config.noise_model not in _ZNE_SUPPORTED_MODELS:
+        raise ValueError(
+            f"ZNE not supported for noise_model={base_config.noise_model!r}; "
+            f"must be one of {_ZNE_SUPPORTED_MODELS}."
+        )
+
+    t0 = time.perf_counter()
+    p_eve = base_config.eve_intercept_prob if base_config.eve_present else 0.0
+    base_seed = base_config.seed if base_config.seed is not None else 0
+
+    per_f_qber: Dict[float, Tuple[float, float, float]] = {}
+    per_seed_qbers: Dict[float, List[float]] = {}
+    mean_qbers: List[float] = []
+    weights: List[float] = []
+
+    for f_scale in f_scales:
+        qbers_here: List[float] = []
+        halfwidths: List[float] = []
+        for i in range(n_seeds):
+            cfg = build_scaled_config(
+                base_config.noise_model, f_scale,
+                n_qubits=base_config.n_qubits,
+                seed=base_seed + i,
+                p_eve=p_eve,
+                base_depolar_prob=base_config.depolar_prob,
+                base_t1_ns=base_config.t1_ns,
+                base_t2_ns=base_config.t2_ns,
+                gate_time_ns=base_config.gate_time_ns,
+                sample_fraction=base_config.sample_fraction,
+            )
+            r = run_simulation(cfg, verbose=False)
+            qr = r.qber_result
+            qbers_here.append(qr.qber * 100)
+            halfwidths.append(max(1e-3, (qr.confidence_high - qr.confidence_low) * 100 / 2))
+
+        mean_q = float(np.mean(qbers_here))
+        ci_lo = float(np.percentile(qbers_here, 2.5)) if n_seeds > 1 else mean_q
+        ci_hi = float(np.percentile(qbers_here, 97.5)) if n_seeds > 1 else mean_q
+        per_f_qber[f_scale] = (mean_q, ci_lo, ci_hi)
+        per_seed_qbers[f_scale] = qbers_here
+        mean_qbers.append(mean_q)
+        weights.append(1.0 / (float(np.mean(halfwidths)) ** 2))
+
+    linear_a, linear_b = linear_extrapolate(f_scales, mean_qbers, weights)
+    exp_result = exponential_extrapolate(f_scales, mean_qbers)
+    quad_a, _ = quadratic_extrapolate(f_scales, mean_qbers, weights)
+
+    boot_ci = None
+    if bootstrap:
+        boot_ci = bootstrap_zne_intercept(per_seed_qbers, f_scales)
+
+    if method == "exponential" and exp_result["converged"]:
+        recommended = exp_result["estimate"]
+    else:
+        recommended = max(0.0, linear_a)
+
+    qber_at_f1 = per_f_qber[1.0][0] if 1.0 in per_f_qber else mean_qbers[0]
+
+    return ZNEResult(
+        base_label=base_config.label,
+        noise_model=base_config.noise_model,
+        f_scales=list(f_scales),
+        n_seeds=n_seeds,
+        per_f_qber=per_f_qber,
+        linear_intercept=max(0.0, linear_a),
+        linear_slope=linear_b,
+        exponential=exp_result,
+        quadratic_intercept=quad_a,
+        bootstrap_ci=boot_ci,
+        qber_at_f1=qber_at_f1,
+        recommended_estimate=recommended,
+        runtime_seconds=time.perf_counter() - t0,
+    )

@@ -31,6 +31,9 @@ report/
 final_report/
 results_error_analysis.zip
 tx.txt
+QKD_Research_Summary.pdf
+QKD_Research_Summary_Explained.md
+final_report_revisions_summary.md
 
 # Local test venv
 .test_venv/

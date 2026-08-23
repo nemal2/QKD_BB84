@@ -171,6 +171,7 @@ PHASE3_SCENARIOS: List[Tuple[str, SimulationConfig]] = [
 def run_simulation(
     config:  SimulationConfig,
     verbose: bool = True,
+    ldpc_reconciler=None,
 ) -> SimulationResult:
     """
     Run one complete BB84 simulation.
@@ -179,6 +180,10 @@ def run_simulation(
     ----------
     config  : SimulationConfig instance.
     verbose : print step-by-step progress and a result summary.
+    ldpc_reconciler : optional pre-built reconciliation.LDPCReconciler,
+        reused instead of constructing a fresh one when config.ldpc_enabled
+        is True (e.g. a UI layer caching it across reruns for the same
+        block_len/seed). Ignored when LDPC is disabled.
 
     Returns
     -------
@@ -313,6 +318,33 @@ def run_simulation(
         eve.intercepted_count / config.n_qubits if eve is not None else 0.0
     )
 
+    # ── Step 5: LDPC Reconciliation (optional) ────────────────────────
+    ldpc_result = None
+    if config.ldpc_enabled:
+        from reconciliation import reconcile_full_key, _MIN_LDPC_BLOCK
+        if len(alice_final) >= _MIN_LDPC_BLOCK:
+            if verbose:
+                print(f"\n  LDPC Reconciliation  "
+                      f"(block_len = {config.ldpc_block_len})...")
+            ldpc_result = reconcile_full_key(
+                alice_final, bob_final,
+                p_est=qber_result.qber,
+                block_len=config.ldpc_block_len,
+                seed=(config.ldpc_seed if config.ldpc_seed is not None
+                      else (config.seed or 0)),
+                calibrate=config.ldpc_calibrate,
+                reconciler=ldpc_reconciler,
+            )
+            if verbose:
+                print(f"        ↳ Blocks : {ldpc_result.n_blocks}  "
+                      f"(dropped: {ldpc_result.remainder_bits} remainder, "
+                      f"{ldpc_result.failed_block_bits} failed-block bits)")
+                print(f"        ↳ Net key: {ldpc_result.net_key_bits} bits  "
+                      f"(leaked {ldpc_result.total_leaked_bits})")
+        elif verbose:
+            print(f"\n  LDPC Reconciliation skipped — key too short "
+                  f"({len(alice_final)} < {_MIN_LDPC_BLOCK} bits).")
+
     result = SimulationResult(
         config=config,
         n_transmitted=config.n_qubits,
@@ -325,6 +357,7 @@ def run_simulation(
         eve_interception_rate=eve_rate,
         runtime_seconds=time.time() - start,
         n_lost=len(lost_qubits),
+        ldpc_result=ldpc_result,
     )
 
     if verbose:

@@ -17,8 +17,18 @@ import streamlit as st
 from plotly.subplots import make_subplots
 
 from bb84_config import SimulationConfig, SimulationResult
+from bb84_noise import NoiseModelType
 from bb84_runner import PRESET_SCENARIOS
 from bb84_runner import run_simulation as _run
+from bb84_zne import run_zne_analysis, ZNEResult
+from reconciliation import LDPCReconciler
+
+_ZNE_SUPPORTED_MODELS = (
+    NoiseModelType.DEPOLARIZING,
+    NoiseModelType.AMPLITUDE_DAMPING,
+    NoiseModelType.PHASE_DAMPING,
+)
+_LDPC_BLOCK_LENS = [20, 40, 80, 160, 320, 640]
 
 
 st.set_page_config(
@@ -117,6 +127,7 @@ _defaults = {
     "result": None,
     "comparison_results": None,
     "last_runtime": None,
+    "zne_result": None,
 }
 for k, v in _defaults.items():
     if k not in st.session_state:
@@ -146,6 +157,17 @@ def _sec(r: SimulationResult):
     if "WARNING" in s:
         return "WARNING", C_AMBER, "#FFFBEB", "#FDE68A"
     return "ABORT", C_RED, "#FEF2F2", "#FECACA"
+
+
+@st.cache_resource
+def get_ldpc_reconciler(block_len: int, seed: int, calibrate: bool) -> LDPCReconciler:
+    """Cached across reruns — LDPCReconciler construction (and optional
+    calibration) rebuilds up to 13 sparse parity-check matrices, not
+    cheap to redo on every click with the same settings."""
+    rec = LDPCReconciler(n=block_len, seed=seed)
+    if calibrate:
+        rec.calibrate()
+    return rec
 
 
 # ── Top navigation ────────────────────────────────────────────────────────────
@@ -225,7 +247,6 @@ if page == "guide":
         unsafe_allow_html=True,
     )
 
-    step_cols = st.columns(4, gap="medium")
     steps_data = [
         (
             "01",
@@ -257,7 +278,17 @@ if page == "guide":
             "Low QBER → secure key. "
             "High QBER → eavesdropping detected, abort.",
         ),
+        (
+            "05",
+            "Reconciliation & noise mitigation",
+            "LDPC syndrome decoding corrects remaining bit errors between "
+            "Alice's and Bob's keys. Zero-Noise Extrapolation (ZNE) reruns "
+            "the channel at scaled noise levels and extrapolates back to "
+            "estimate the noiseless QBER. Privacy amplification is not yet "
+            "implemented.",
+        ),
     ]
+    step_cols = st.columns(len(steps_data), gap="medium")
     for col, (num, title, desc) in zip(step_cols, steps_data):
         with col:
             st.markdown(
@@ -605,6 +636,41 @@ elif page == "sim":
         st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
         st.divider()
 
+        # Error correction (LDPC)
+        st.markdown(
+            "<div style='font-size:12px;font-weight:600;color:#374151;"
+            "margin-bottom:8px;'>Error Correction (LDPC)</div>",
+            unsafe_allow_html=True,
+        )
+        lc1, lc2, lc3 = st.columns([1, 1, 2])
+        with lc1:
+            ldpc_enabled = st.checkbox("Enable LDPC reconciliation", key="s_ldpc")
+        with lc2:
+            ldpc_block_len = st.selectbox(
+                "Block length",
+                _LDPC_BLOCK_LENS,
+                index=_LDPC_BLOCK_LENS.index(160),
+                key="s_ldpc_bl",
+                disabled=not ldpc_enabled,
+            )
+        with lc3:
+            ldpc_calibrate = st.checkbox(
+                "Calibrate code rates (slower, more accurate)",
+                key="s_ldpc_cal",
+                disabled=not ldpc_enabled,
+            )
+        if ldpc_enabled:
+            st.caption(
+                "Reconciles Alice's and Bob's key in fixed blocks after QBER "
+                "sampling, using LDPC syndrome decoding. Exact block "
+                "accounting (blocks used, bits leaked) appears in the "
+                "results below once the final key length is known — keys "
+                "shorter than 20 bits skip reconciliation entirely."
+            )
+
+        st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+        st.divider()
+
         # Run row
         _, run_col, rt_col = st.columns([3, 1, 1])
         with run_col:
@@ -651,12 +717,21 @@ elif page == "sim":
             sample_fraction=sample_fraction,
             seed=seed,
             label=sim_label,
+            ldpc_enabled=ldpc_enabled,
+            ldpc_block_len=ldpc_block_len,
+            ldpc_calibrate=ldpc_calibrate,
         )
         try:
             with st.status("Running simulation…", expanded=True) as _s:
                 st.write(f"Transmitting {cfg.n_qubits:,} qubits…")
                 t0 = time.time()
-                result = _run(cfg, verbose=False)
+                ldpc_reconciler = None
+                if cfg.ldpc_enabled:
+                    ldpc_reconciler = get_ldpc_reconciler(
+                        cfg.ldpc_block_len, cfg.ldpc_seed or (cfg.seed or 0),
+                        cfg.ldpc_calibrate,
+                    )
+                result = _run(cfg, verbose=False, ldpc_reconciler=ldpc_reconciler)
                 elapsed = time.time() - t0
                 st.write(
                     f"Sifted: {result.n_sifted:,} bits  ({result.sifted_key_rate:.1%})"
@@ -665,6 +740,13 @@ elif page == "sim":
                     f"QBER: {result.qber_result.qber * 100:.2f}%  —  "
                     f"{result.qber_result.security_status.strip()}"
                 )
+                if result.ldpc_result is not None:
+                    lr = result.ldpc_result
+                    st.write(
+                        f"LDPC: {lr.n_blocks} blocks reconciled  ·  "
+                        f"net key {lr.net_key_bits} bits  ·  "
+                        f"{'no undetected errors' if not lr.any_undetected_error else 'undetected error flagged'}"
+                    )
                 _s.update(
                     label=f"Complete  ·  {elapsed:.3f} s",
                     state="complete",
@@ -672,6 +754,7 @@ elif page == "sim":
                 )
             st.session_state.result = result
             st.session_state.last_runtime = elapsed
+            st.session_state.zne_result = None
             r = result
         except Exception as e:
             st.error(f"Simulation error: {e}")
@@ -790,17 +873,24 @@ elif page == "sim":
             )
             st.write("")
             st.markdown("**Key bit pipeline**")
+            funnel_y = ["Transmitted", "Sifted", "After QBER sample", "Final key"]
+            funnel_x = [
+                r.n_transmitted,
+                r.n_sifted,
+                r.n_sifted - qr.sample_size,
+                r.key_length,
+            ]
+            funnel_colors = [C_BLUE, C_TEAL, C_AMBER, C_GREEN]
+            if r.ldpc_result is not None:
+                funnel_y.append("Reconciled key")
+                funnel_x.append(r.ldpc_result.net_key_bits)
+                funnel_colors.append(C_PURPLE)
             fig_f = go.Figure(
                 go.Funnel(
-                    y=["Transmitted", "Sifted", "After QBER sample", "Final key"],
-                    x=[
-                        r.n_transmitted,
-                        r.n_sifted,
-                        r.n_sifted - qr.sample_size,
-                        r.key_length,
-                    ],
+                    y=funnel_y,
+                    x=funnel_x,
                     textinfo="value+percent initial",
-                    marker=dict(color=[C_BLUE, C_TEAL, C_AMBER, C_GREEN]),
+                    marker=dict(color=funnel_colors),
                     textfont=dict(size=11, color="#fff"),
                     connector=dict(line=dict(color="#E5E7EB", width=1)),
                 )
@@ -865,25 +955,236 @@ elif page == "sim":
                 "text/plain",
                 use_container_width=True,
             )
+            if r.ldpc_result is not None:
+                st.download_button(
+                    "Reconciled Alice key (.txt)",
+                    "\n".join(str(b) for b in r.ldpc_result.reconciled_alice_key),
+                    "reconciled_alice_key.txt",
+                    "text/plain",
+                    use_container_width=True,
+                )
+                st.download_button(
+                    "Reconciled Bob key (.txt)",
+                    "\n".join(str(b) for b in r.ldpc_result.reconciled_bob_key),
+                    "reconciled_bob_key.txt",
+                    "text/plain",
+                    use_container_width=True,
+                )
+
+            results_json = {
+                "label": r.config.label,
+                "qber": r.qber_result.qber,
+                "n_transmitted": r.n_transmitted,
+                "n_sifted": r.n_sifted,
+                "key_length": r.key_length,
+                "key_agreement_rate": r.key_agreement_rate,
+                "eve_interception_rate": r.eve_interception_rate,
+                "runtime_seconds": r.runtime_seconds,
+            }
+            if r.ldpc_result is not None:
+                lr = r.ldpc_result
+                results_json["ldpc"] = {
+                    "block_len": lr.block_len,
+                    "n_blocks": lr.n_blocks,
+                    "remainder_bits": lr.remainder_bits,
+                    "failed_block_bits": lr.failed_block_bits,
+                    "net_key_bits": lr.net_key_bits,
+                    "total_leaked_bits": lr.total_leaked_bits,
+                    "any_undetected_error": lr.any_undetected_error,
+                }
             st.download_button(
                 "Results (.json)",
-                json.dumps(
-                    {
-                        "label": r.config.label,
-                        "qber": r.qber_result.qber,
-                        "n_transmitted": r.n_transmitted,
-                        "n_sifted": r.n_sifted,
-                        "key_length": r.key_length,
-                        "key_agreement_rate": r.key_agreement_rate,
-                        "eve_interception_rate": r.eve_interception_rate,
-                        "runtime_seconds": r.runtime_seconds,
-                    },
-                    indent=2,
-                ),
+                json.dumps(results_json, indent=2),
                 "qkd_results.json",
                 "application/json",
                 use_container_width=True,
             )
+
+        # ── LDPC reconciliation results ─────────────────────────────────
+        if r.ldpc_result is not None:
+            lr = r.ldpc_result
+            st.divider()
+            st.markdown("**LDPC reconciliation**")
+            st.caption(
+                "Net key bits is a Shannon-cost estimate of what would remain "
+                "after (hypothetical) privacy amplification — not yet "
+                "implemented, so the reconciled key exported above is the "
+                "full error-corrected key, not a shortened one. "
+                "\"Actually correct\" is checked against Alice's key directly, "
+                "which is only possible in simulation."
+            )
+            lk1, lk2, lk3, lk4 = st.columns(4)
+            lk1.metric("Blocks reconciled", f"{lr.n_blocks}",
+                       f"of {lr.n_blocks} attempted")
+            lk2.metric("Net key bits", f"{lr.net_key_bits:,}",
+                       f"leaked {lr.total_leaked_bits}")
+            leak_rate = (lr.total_leaked_bits / lr.total_input_bits * 100
+                         if lr.total_input_bits else 0.0)
+            lk3.metric("Leak rate", f"{leak_rate:.1f}%", "of input bits")
+            if lr.any_undetected_error:
+                lk4.metric("Undetected error", "Yes", "decoder wrong, unflagged")
+            elif not lr.all_blocks_correct:
+                lk4.metric("Undetected error", "No", "but a block failed safely")
+            else:
+                lk4.metric("Undetected error", "No", "all blocks verified correct")
+
+            if lr.n_blocks > 0:
+                block_colors = []
+                for b in lr.blocks:
+                    if b.claimed_success and not b.actually_correct:
+                        block_colors.append(C_RED)
+                    elif not b.actually_correct:
+                        block_colors.append(C_AMBER)
+                    else:
+                        block_colors.append(C_GREEN)
+                fig_ldpc = make_subplots(specs=[[{"secondary_y": False}]])
+                fig_ldpc.add_trace(go.Bar(
+                    x=list(range(1, lr.n_blocks + 1)),
+                    y=[b.leaked_bits for b in lr.blocks],
+                    name="Leaked bits",
+                    marker_color=block_colors,
+                    marker_opacity=0.55,
+                ))
+                fig_ldpc.add_trace(go.Bar(
+                    x=list(range(1, lr.n_blocks + 1)),
+                    y=[(lr.block_len - b.leaked_bits) if b.actually_correct else 0
+                       for b in lr.blocks],
+                    name="Net bits",
+                    marker_color=block_colors,
+                ))
+                fig_ldpc.update_layout(
+                    **{**_PL, "height": 240, "barmode": "stack",
+                       "margin": dict(t=20, b=30, l=10, r=10),
+                       "legend": dict(font_size=10, orientation="h", y=1.12)}
+                )
+                fig_ldpc.update_xaxes(title_text="Block", tickfont_size=9)
+                st.plotly_chart(fig_ldpc, use_container_width=True)
+                st.caption(
+                    "Green = correctly reconciled  ·  Amber = decoder safely "
+                    "flagged failure  ·  Red = undetected error (claimed "
+                    "success but wrong)."
+                )
+
+        # ── ZNE analysis (separate action, own qubit-count control) ─────
+        st.divider()
+        st.markdown("**Zero-Noise Extrapolation (ZNE)**")
+        if r.config.noise_model not in _ZNE_SUPPORTED_MODELS:
+            st.info(
+                "ZNE requires a scalable noise model (depolarizing, "
+                "amplitude damping, or phase damping). The last run used "
+                f"`{r.config.noise_model or 'ideal'}`, which fibre loss and "
+                "the ideal channel don't support — noise-scaling has no "
+                "meaning for photon loss or a noiseless channel."
+            )
+        else:
+            with st.container(border=True):
+                zc1, zc2, zc3, zc4 = st.columns([2, 1, 1, 1])
+                with zc1:
+                    zne_f_scales = st.multiselect(
+                        "Noise scale factors",
+                        [0.5, 1.0, 1.5, 2.0, 2.5, 3.0],
+                        default=[1.0, 1.5, 2.0, 2.5, 3.0],
+                        key="s_zne_f",
+                    )
+                with zc2:
+                    zne_n_qubits = st.slider(
+                        "Qubits per point", 200, 1200, 600, 100, key="s_zne_nq"
+                    )
+                    st.caption("Separate from the main run — keeps the sweep fast.")
+                with zc3:
+                    zne_n_seeds = st.slider("Seeds per point", 3, 10, 5, 1, key="s_zne_ns")
+                with zc4:
+                    zne_method = st.selectbox(
+                        "Fit method", ["linear", "exponential"], key="s_zne_m"
+                    )
+                zne_bootstrap = st.checkbox(
+                    "Compute bootstrap confidence interval (slower)", key="s_zne_boot"
+                )
+                run_zne_clicked = st.button(
+                    "Run ZNE Analysis", type="primary", key="s_zne_run"
+                )
+
+            if run_zne_clicked:
+                if len(zne_f_scales) < 2:
+                    st.warning("Select at least 2 noise scale factors.")
+                else:
+                    zne_base_cfg = SimulationConfig(
+                        **{**r.config.__dict__, "n_qubits": zne_n_qubits},
+                    )
+                    try:
+                        with st.status("Running ZNE sweep…", expanded=True) as _zs:
+                            st.write(
+                                f"{len(sorted(set(zne_f_scales)))} scale factors × "
+                                f"{zne_n_seeds} seeds = "
+                                f"{len(set(zne_f_scales)) * zne_n_seeds} simulations…"
+                            )
+                            zne_result = run_zne_analysis(
+                                zne_base_cfg, sorted(set(zne_f_scales)),
+                                n_seeds=zne_n_seeds, method=zne_method,
+                                bootstrap=zne_bootstrap,
+                            )
+                            _zs.update(
+                                label=f"Complete  ·  {zne_result.runtime_seconds:.2f} s",
+                                state="complete", expanded=False,
+                            )
+                        st.session_state.zne_result = zne_result
+                    except ValueError as e:
+                        st.error(f"ZNE error: {e}")
+
+            zr_state: Optional[ZNEResult] = st.session_state.zne_result
+            if zr_state is not None and zr_state.noise_model == r.config.noise_model:
+                f_sorted = sorted(zr_state.per_f_qber)
+                means = [zr_state.per_f_qber[f][0] for f in f_sorted]
+                lo = [means[i] - zr_state.per_f_qber[f_sorted[i]][1] for i in range(len(f_sorted))]
+                hi = [zr_state.per_f_qber[f_sorted[i]][2] - means[i] for i in range(len(f_sorted))]
+
+                fig_zne = go.Figure()
+                fig_zne.add_trace(go.Scatter(
+                    x=f_sorted, y=means, mode="markers",
+                    error_y=dict(type="data", symmetric=False, array=hi, arrayminus=lo,
+                                 color="#9CA3AF", thickness=1.2, width=6),
+                    marker=dict(color=C_BLUE, size=9),
+                    name="Measured QBER",
+                ))
+                fit_x = [0.0] + f_sorted
+                fit_y = [zr_state.linear_intercept + zr_state.linear_slope * f for f in fit_x]
+                fig_zne.add_trace(go.Scatter(
+                    x=fit_x, y=fit_y, mode="lines",
+                    line=dict(color=C_BLUE, dash="dash", width=1.5),
+                    name="Linear fit",
+                ))
+                fig_zne.add_trace(go.Scatter(
+                    x=[0.0], y=[zr_state.recommended_estimate], mode="markers",
+                    marker=dict(color=C_GREEN, size=13, symbol="star"),
+                    name="ZNE estimate (f=0)",
+                ))
+                if 1.0 in zr_state.per_f_qber:
+                    fig_zne.add_trace(go.Scatter(
+                        x=[1.0], y=[zr_state.qber_at_f1], mode="markers",
+                        marker=dict(color=C_AMBER, size=11, symbol="diamond"),
+                        name="Raw (no ZNE)",
+                    ))
+                fig_zne.update_layout(
+                    **{**_PL, "height": 320,
+                       "margin": dict(t=20, b=30, l=10, r=10),
+                       "legend": dict(font_size=10, orientation="h", y=1.1)}
+                )
+                fig_zne.update_xaxes(title_text="Noise scale factor (f)")
+                fig_zne.update_yaxes(title_text="QBER (%)")
+                st.plotly_chart(fig_zne, use_container_width=True)
+
+                zk1, zk2, zk3 = st.columns(3)
+                zk1.metric("Raw QBER (f=1)", f"{zr_state.qber_at_f1:.2f}%",
+                           "what you'd report without ZNE")
+                zk2.metric("ZNE estimate (f=0)", f"{zr_state.recommended_estimate:.2f}%",
+                           f"{zne_method} fit")
+                if zr_state.bootstrap_ci is not None:
+                    bmean, blo, bhi = zr_state.bootstrap_ci
+                    zk3.metric("Bootstrap 95% CI", f"[{blo:.2f}, {bhi:.2f}]%",
+                               f"mean {bmean:.2f}%")
+                else:
+                    zk3.metric("Exponential converged",
+                               "Yes" if zr_state.exponential["converged"] else "No")
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -1064,6 +1365,46 @@ elif page == "analysis":
                 **{**_PL, "height": 230, "margin": dict(t=10, b=10, l=10, r=10)}
             )
             st.plotly_chart(fig_e, use_container_width=True)
+
+        zr_state: Optional[ZNEResult] = st.session_state.zne_result
+        zne_applies = zr_state is not None and zr_state.noise_model == r.config.noise_model
+        if r.ldpc_result is not None or zne_applies:
+            st.divider()
+            st.markdown("**Reconciliation & Mitigation**")
+            st.caption(
+                "Compares the raw measured QBER against the ZNE-extrapolated "
+                "zero-noise estimate and the post-LDPC key agreement, where "
+                "available — run LDPC/ZNE on the Simulator page first."
+            )
+            rm_cols = st.columns(3)
+            rm_cols[0].metric(
+                "Raw QBER", f"{qr.qber * 100:.2f}%",
+                r.qber_result.security_status.strip(),
+            )
+            if zne_applies:
+                rm_cols[1].metric(
+                    "ZNE estimate (f=0)", f"{zr_state.recommended_estimate:.2f}%",
+                    "noise-mitigated"
+                    if zr_state.recommended_estimate < qr.qber * 100
+                    else "no improvement",
+                )
+            else:
+                rm_cols[1].metric("ZNE estimate", "—", "not run for this config")
+            if r.ldpc_result is not None:
+                lr = r.ldpc_result
+                agree_label = (
+                    "all blocks match" if lr.all_blocks_correct
+                    else "undetected error" if lr.any_undetected_error
+                    else "some blocks failed"
+                )
+                has_reconciled_key = len(lr.reconciled_alice_key) > 0
+                rm_cols[2].metric(
+                    "Post-LDPC agreement",
+                    "100.0%" if (has_reconciled_key and lr.keys_match) else "—",
+                    agree_label if has_reconciled_key else "no blocks succeeded",
+                )
+            else:
+                rm_cols[2].metric("Post-LDPC agreement", "—", "not run for this config")
 
 
 # ═════════════════════════════════════════════════════════════════════════════

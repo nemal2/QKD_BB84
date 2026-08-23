@@ -45,6 +45,7 @@ import numpy as np
 
 from bb84_core import Alice, Bob
 from bb84_noise import QuantumChannel, NoiseModelType
+from bb84_config import LDPCBlockSummary, LDPCReconciliationResult
 
 
 # ──────────────────────────────────────────────────────────────────────
@@ -416,6 +417,7 @@ class LDPCReconciler:
             actually_correct=bool(np.array_equal(corrected, alice_block)),
             time_s=dt,
             work_units=iters,
+            corrected_block=corrected,
         )
 
 
@@ -470,6 +472,109 @@ def _bp_syndrome_decode(
             return e_hat, True, it
 
     return e_hat, False, max_iter
+
+
+# ──────────────────────────────────────────────────────────────────────
+# LDPC: full-key orchestration (pipeline integration entry point)
+# ──────────────────────────────────────────────────────────────────────
+
+_MIN_LDPC_BLOCK = 20
+"""Smallest block length with any usable ladder entry (divides d_c=20,
+the smallest _LDPC_LADDER divisor). Below this, LDPC is skipped rather
+than forcing a degenerate code."""
+
+
+def reconcile_full_key(
+    alice_final: List[int],
+    bob_final: List[int],
+    p_est: float,
+    block_len: int = 160,
+    seed: int = 0,
+    calibrate: bool = False,
+    max_iter: int = 120,
+    reconciler: Optional["LDPCReconciler"] = None,
+) -> LDPCReconciliationResult:
+    """
+    Reconcile a full post-QBER-sample key by chunking it into
+    ``block_len``-sized blocks and running independent LDPC syndrome
+    reconciliation (see LDPCReconciler.reconcile) on each.
+
+    Every block uses the SAME ``p_est`` (the run's measured global QBER)
+    as the BP error prior - a real deployment would need additional
+    leaked bits to re-estimate p locally per block; this is a documented
+    simplification, not a per-block re-calibration.
+
+    Any leftover tail (``len(alice_final) % block_len``) is dropped
+    entirely, and blocks whose decode did not actually succeed are also
+    excluded from the returned reconciled key - neither is silently
+    carried under a "reconciled" label. Both are still counted (see
+    ``remainder_bits`` / ``failed_block_bits`` on the returned result) so
+    the caller can report them transparently.
+
+    ``reconciler``: an optional pre-built LDPCReconciler (e.g. one the UI
+    layer cached across reruns). When omitted, a fresh one is constructed
+    (and optionally calibrated) for this call.
+    """
+    if len(alice_final) != len(bob_final):
+        raise ValueError("alice_final and bob_final must be the same length")
+
+    t0 = time.perf_counter()
+    n_blocks = len(alice_final) // block_len
+    remainder_bits = len(alice_final) - n_blocks * block_len
+
+    if reconciler is None:
+        reconciler = LDPCReconciler(n=block_len, seed=seed)
+        if calibrate:
+            reconciler.calibrate()
+
+    blocks: List[LDPCBlockSummary] = []
+    reconciled_alice: List[int] = []
+    reconciled_bob: List[int] = []
+    total_leaked_bits = 0
+    net_key_bits = 0
+    failed_block_bits = 0
+    any_undetected_error = False
+    all_blocks_correct = True
+
+    for i in range(n_blocks):
+        start = i * block_len
+        a_block = np.asarray(alice_final[start:start + block_len], dtype=np.uint8)
+        b_block = np.asarray(bob_final[start:start + block_len], dtype=np.uint8)
+        r = reconciler.reconcile(a_block, b_block, p_est=p_est, max_iter=max_iter)
+
+        blocks.append(LDPCBlockSummary(
+            leaked_bits=r.leaked_bits,
+            syndrome_rate=r.syndrome_rate,
+            claimed_success=r.claimed_success,
+            actually_correct=r.actually_correct,
+            work_units=r.work_units,
+        ))
+        total_leaked_bits += r.leaked_bits
+        any_undetected_error = any_undetected_error or r.undetected_error
+        all_blocks_correct = all_blocks_correct and r.actually_correct
+
+        if r.actually_correct:
+            net_key_bits += block_len - r.leaked_bits
+            reconciled_alice.extend(int(x) for x in a_block)
+            reconciled_bob.extend(int(x) for x in r.corrected_block)
+        else:
+            failed_block_bits += block_len
+
+    return LDPCReconciliationResult(
+        block_len=block_len,
+        n_blocks=n_blocks,
+        remainder_bits=remainder_bits,
+        failed_block_bits=failed_block_bits,
+        total_input_bits=n_blocks * block_len,
+        total_leaked_bits=total_leaked_bits,
+        net_key_bits=net_key_bits,
+        any_undetected_error=any_undetected_error,
+        all_blocks_correct=all_blocks_correct,
+        blocks=blocks,
+        reconciled_alice_key=reconciled_alice,
+        reconciled_bob_key=reconciled_bob,
+        runtime_seconds=time.perf_counter() - t0,
+    )
 
 
 # ──────────────────────────────────────────────────────────────────────
@@ -752,6 +857,10 @@ class ReconcileResult:
     actually_correct: bool      # ground truth: corrected key == Alice's key
     time_s: float
     work_units: int             # BP iterations or GRAND guesses
+    corrected_block: Optional[np.ndarray] = field(default=None, repr=False, compare=False)
+    """Bob's block XOR the decoded error pattern. Optional/additive field
+    (only populated by LDPCReconciler.reconcile) so existing callers that
+    only read the named scalar fields are unaffected."""
 
     @property
     def undetected_error(self) -> bool:

@@ -85,6 +85,24 @@ class SimulationConfig:
     channel_length_km: float = 0.0
     """Fibre-optic channel length in km (fibre_loss model only)."""
 
+    # ── LDPC reconciliation (Phase 5) ─────────────────────────────────
+    ldpc_enabled: bool = False
+    """True → run LDPC syndrome reconciliation on the post-QBER-sample key."""
+
+    ldpc_block_len: int = 160
+    """LDPC operating block length in bits. Must divide evenly with at
+    least one (d_v, d_c) entry in reconciliation._LDPC_LADDER; 160 gives
+    access to the full rate ladder (0.15-0.875)."""
+
+    ldpc_calibrate: bool = False
+    """True → run LDPCReconciler.calibrate() (offline FER-curve Monte
+    Carlo) before reconciling, for more accurate rate selection. Slower;
+    off by default so interactive runs stay fast."""
+
+    ldpc_seed: Optional[int] = None
+    """RNG seed for LDPC code construction/calibration. None → falls
+    back to (config.seed or 0), independent of the transmission RNG."""
+
 
     def __post_init__(self) -> None:
         """
@@ -131,6 +149,94 @@ class QBERResult:
 
 
 # ──────────────────────────────────────────────────────────────────────
+# LDPC RECONCILIATION RESULT
+# ──────────────────────────────────────────────────────────────────────
+
+@dataclass
+class LDPCBlockSummary:
+    """Outcome of LDPC syndrome reconciliation on one fixed-length block."""
+
+    leaked_bits: int
+    """Syndrome bits Alice published for this block (m = H.shape[0])."""
+
+    syndrome_rate: float
+    """m / block_len for the code the rate-adaptation logic picked."""
+
+    claimed_success: bool
+    """True if belief propagation converged to a consistent syndrome."""
+
+    actually_correct: bool
+    """True if the corrected block matches Alice's block exactly.
+
+    Only checkable here because this is a simulation and Alice's block
+    is available for comparison - a real deployment would instead use a
+    hash/MAC check. See LDPCReconciliationResult docstring.
+    """
+
+    work_units: int
+    """Belief-propagation iterations used."""
+
+
+@dataclass
+class LDPCReconciliationResult:
+    """
+    Aggregate output of running LDPC syndrome reconciliation over a
+    sifted, post-QBER-sample key, in fixed-length blocks.
+
+    Ground-truth checking (``LDPCBlockSummary.actually_correct``) is only
+    possible because Alice's key is available in-process in this
+    simulation; a real deployment cannot do this and would instead rely
+    on an explicit hash/MAC verification step.
+
+    ``net_key_bits`` / ``total_leaked_bits`` are an information-theoretic
+    accounting of what a real deployment would need to strip via privacy
+    amplification against an eavesdropper who saw the published syndrome.
+    Privacy amplification itself (universal hashing) is NOT implemented -
+    ``reconciled_bob_key`` is the full error-corrected key, not a
+    shortened one.
+    """
+
+    block_len: int
+    n_blocks: int
+    remainder_bits: int
+    """Bits left over after chunking into block_len-sized blocks.
+    Dropped entirely - not carried into the reconciled key, reconciled
+    or not, since including possibly-erroneous bits under a "reconciled"
+    label would be misleading."""
+    failed_block_bits: int
+    """Bits belonging to blocks whose decode did not actually succeed
+    (actually_correct is False). Also excluded from reconciled_*_key for
+    the same reason as remainder_bits - a distinct cause (decode failure
+    vs. leftover length), reported separately so the UI can distinguish
+    them."""
+    total_input_bits: int
+    total_leaked_bits: int
+    """Syndrome bits published across every attempted block (correct and
+    failed alike - Alice publishes a block's syndrome before decoding is
+    known to succeed)."""
+    net_key_bits: int
+    """Sum of (block_len - leaked_bits) over successfully reconciled
+    blocks only - the Shannon-cost estimate of what would remain as
+    secure key after (hypothetical) privacy amplification."""
+    any_undetected_error: bool
+    """True if any block claimed success but was actually wrong - the
+    dangerous failure mode a real deployment would need a hash check to
+    catch."""
+    all_blocks_correct: bool
+    blocks: List[LDPCBlockSummary]
+    reconciled_alice_key: List[int]
+    """Concatenation of successfully reconciled blocks only (excludes
+    the remainder tail and any failed blocks)."""
+    reconciled_bob_key: List[int]
+    runtime_seconds: float
+
+    @property
+    def keys_match(self) -> bool:
+        """True when the reconciled keys are identical (full blocks only)."""
+        return self.reconciled_alice_key == self.reconciled_bob_key
+
+
+# ──────────────────────────────────────────────────────────────────────
 # SIMULATION RESULT
 # ──────────────────────────────────────────────────────────────────────
 
@@ -150,6 +256,10 @@ class SimulationResult:
     runtime_seconds: float
     n_lost: int = 0
     """Qubits never detected by Bob (FIBRE_LOSS model). 0 for all other channels."""
+    ldpc_result: Optional["LDPCReconciliationResult"] = None
+    """Populated only when config.ldpc_enabled is True. Reconciliation
+    operates on alice_final_key/bob_final_key but is reported separately
+    here - those fields keep their pre-reconciliation meaning."""
 
     @property
     def photon_survival_rate(self) -> float:
