@@ -6,4 +6,4 @@ qiskit-aer>=0.14.0
 matplotlib>=3.8.0
 numpy>=1.26.0
 scipy>=1.11.0
-pyldpc==0.7.9
+./wheels/pyldpc-0.7.9-py3-none-any.whl
