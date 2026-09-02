@@ -604,6 +604,11 @@ elif page == "sim":
                         "Gate time (ns)", 10, 200, 50, 5, key="s_gtad"
                     )
                     t1_ns = t1_us * 1000
+                    # t2_ns is unused by amplitude damping's Kraus operators,
+                    # but SimulationConfig always validates T2 <= 2*T1 —
+                    # pin it to T1 so an unrelated default can't trip that
+                    # check for this model.
+                    t2_ns = t1_ns
                     st.caption(f"γ = {1.0 - math.exp(-gate_time_ns / t1_ns):.6f}")
                 elif noise_model == "phase_damping":
                     t2_us = st.slider("T2 (µs)", 0.5, 200.0, 5.0, 0.5, key="s_t2p")
@@ -611,6 +616,11 @@ elif page == "sim":
                         "Gate time (ns)", 10, 200, 50, 5, key="s_gtpd"
                     )
                     t2_ns = t2_us * 1000
+                    # t1_ns is unused by phase damping's Kraus operators,
+                    # but SimulationConfig always validates T2 <= 2*T1 —
+                    # pin it to T2 so an unrelated default can't trip that
+                    # check for this model.
+                    t1_ns = t2_ns
                     st.caption(f"λ = {1.0 - math.exp(-gate_time_ns / t2_ns):.6f}")
                 elif noise_model == "combined":
                     t1_us = st.slider("T1 (µs)", 1.0, 500.0, 10.0, 1.0, key="s_t1c")
@@ -702,6 +712,18 @@ elif page == "sim":
             gate_time_ns = pc_cfg.gate_time_ns
             channel_length_km = pc_cfg.channel_length_km
             sim_label = pc_cfg.label
+
+        # Defensive belt-and-braces: SimulationConfig always enforces the
+        # physical bound T2 <= 2*T1, but only the "combined" noise branch
+        # above actively keeps both sliders in that relationship. Clamp
+        # here so any future model/UI path that forgets this degrades
+        # gracefully with a warning instead of raising ValueError.
+        if t2_ns > 2 * t1_ns:
+            st.warning(
+                f"T2 ({t2_ns / 1000:.1f} µs) exceeded the physical bound "
+                f"2×T1 ({2 * t1_ns / 1000:.1f} µs) — clamped to stay valid."
+            )
+            t2_ns = 2 * t1_ns - 1.0
 
         cfg = SimulationConfig(
             n_qubits=n_qubits,
