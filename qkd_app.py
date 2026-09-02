@@ -482,10 +482,11 @@ elif page == "sim":
                 label="Depolarizing",
             ),
             "Amp. Damp": SimulationConfig(
-                n_qubits=600,
+                n_qubits=1200,
+                sample_fraction=0.25,
                 noise_enabled=True,
                 noise_model="amplitude_damping",
-                t1_ns=10_000,
+                t1_ns=3_000,          # 3 µs — was 10 µs (gamma ~0.05%, invisible)
                 gate_time_ns=50,
                 label="Amp.Damp",
             ),
@@ -508,9 +509,9 @@ elif page == "sim":
         # Main parameters
         mp1, mp2, mp3, mp4 = st.columns([2, 1, 1, 1])
         with mp1:
-            n_qubits = st.slider("Number of qubits", 100, 2000, 600, 50, key="s_n")
+            n_qubits = st.slider("Number of qubits", 100, 2000, 1000, 50, key="s_n")
         with mp2:
-            sample_pct = st.slider("QBER sample (%)", 5, 30, 10, 1, key="s_sp")
+            sample_pct = st.slider("QBER sample (%)", 5, 30, 20, 1, key="s_sp")
             sample_fraction = sample_pct / 100.0
         with mp3:
             s1, s2 = st.columns([1, 1])
@@ -631,7 +632,12 @@ elif page == "sim":
                     _expected = 1 - (1 - _p_flip) ** 1.25
                     _effect_caption(_expected, "Expected QBER")
                 elif noise_model == "amplitude_damping":
-                    t1_us = st.slider("T1 (µs)", 1.0, 500.0, 10.0, 1.0, key="s_t1")
+                    # Rescaled from the old 1-500 µs range: at 50 ns gate
+                    # time, anything above ~50 µs is indistinguishable from
+                    # ideal (gamma < 0.1%). 0.1-50 µs keeps the slider's
+                    # low end usable (gamma up to ~40%) and moves the
+                    # default into a range with a real, checkable effect.
+                    t1_us = st.slider("T1 (µs)", 0.1, 50.0, 3.0, 0.1, key="s_t1")
                     gate_time_ns = st.slider(
                         "Gate time (ns)", 10, 200, 50, 5, key="s_gtad"
                     )
@@ -645,7 +651,8 @@ elif page == "sim":
                     st.caption(f"γ = {gamma:.6f}")
                     _effect_caption(gamma * 1.25, "Expected QBER")
                 elif noise_model == "phase_damping":
-                    t2_us = st.slider("T2 (µs)", 0.5, 200.0, 5.0, 0.5, key="s_t2p")
+                    # Rescaled for the same reason as T1 above.
+                    t2_us = st.slider("T2 (µs)", 0.05, 50.0, 3.0, 0.05, key="s_t2p")
                     gate_time_ns = st.slider(
                         "Gate time (ns)", 10, 200, 50, 5, key="s_gtpd"
                     )
@@ -662,8 +669,9 @@ elif page == "sim":
                     # sifted bits, and roughly halves the visible flip rate.
                     _effect_caption(lam * 0.5 * 1.25, "Expected QBER")
                 elif noise_model == "combined":
-                    t1_us = st.slider("T1 (µs)", 1.0, 500.0, 10.0, 1.0, key="s_t1c")
-                    t2_us = st.slider("T2 (µs)", 0.5, 200.0, 8.0, 0.5, key="s_t2c")
+                    # Rescaled for the same reason as T1/T2 above.
+                    t1_us = st.slider("T1 (µs)", 0.1, 50.0, 4.0, 0.1, key="s_t1c")
+                    t2_us = st.slider("T2 (µs)", 0.05, 25.0, 3.0, 0.05, key="s_t2c")
                     gate_time_ns = st.slider(
                         "Gate time (ns)", 10, 200, 50, 5, key="s_gtc"
                     )
