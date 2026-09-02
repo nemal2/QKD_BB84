@@ -561,7 +561,13 @@ elif page == "sim":
                 unsafe_allow_html=True,
             )
             noise_enabled = st.checkbox("Enable noise model", key="s_noise")
-            noise_model = "depolarizing"
+            # BUGFIX: this must default to IDEAL, not "depolarizing".
+            # bb84_noise.QuantumChannel.from_config() only respects
+            # `noise_enabled` when config.noise_model is None — any concrete
+            # string here (even the old "depolarizing" placeholder) makes it
+            # apply that model unconditionally, so unchecking the box did
+            # nothing. IDEAL is a real, safe no-op noise model.
+            noise_model = NoiseModelType.IDEAL
             depolar_prob = 0.01
             t1_ns = 100_000.0
             t2_ns = 50_000.0
@@ -587,6 +593,26 @@ elif page == "sim":
                         "fibre_loss": "Fiber Loss",
                     }[x],
                 )
+                # Rough resolution floor: with this many sifted+sampled bits,
+                # a true error rate well below ~1/sqrt(sample_size) will
+                # usually look like "no effect" in a single run, buried in
+                # the Wilson CI. Warn instead of leaving people guessing.
+                _approx_sample_n = max(1, int(n_qubits * 0.5 * sample_fraction))
+                _res_floor = 1.0 / math.sqrt(_approx_sample_n)
+
+                def _effect_caption(expected_qber: float, label: str) -> None:
+                    pct = expected_qber * 100
+                    if expected_qber < _res_floor:
+                        st.caption(
+                            f"{label} ≈ {pct:.2f}% — below this run's ~"
+                            f"{_res_floor * 100:.1f}% statistical resolution "
+                            f"(~{_approx_sample_n} sampled bits). A single run "
+                            f"will likely look flat; raise the noise, qubits, "
+                            f"or QBER sample % to see a clear trend."
+                        )
+                    else:
+                        st.caption(f"{label} ≈ {pct:.2f}%")
+
                 if noise_model == "depolarizing":
                     depolar_prob = st.slider(
                         "Gate error prob",
@@ -598,6 +624,12 @@ elif page == "sim":
                         key="s_dp",
                     )
                     st.caption(f"p/3 = {depolar_prob / 3:.5f} per Pauli")
+                    # Sifted qubits see 0, 1, or 2 noisy gates depending on
+                    # basis/bit (avg 1.25); each exposure flips the bit with
+                    # prob ~2p/3 (X or Y error).
+                    _p_flip = 2 * depolar_prob / 3
+                    _expected = 1 - (1 - _p_flip) ** 1.25
+                    _effect_caption(_expected, "Expected QBER")
                 elif noise_model == "amplitude_damping":
                     t1_us = st.slider("T1 (µs)", 1.0, 500.0, 10.0, 1.0, key="s_t1")
                     gate_time_ns = st.slider(
@@ -609,7 +641,9 @@ elif page == "sim":
                     # pin it to T1 so an unrelated default can't trip that
                     # check for this model.
                     t2_ns = t1_ns
-                    st.caption(f"γ = {1.0 - math.exp(-gate_time_ns / t1_ns):.6f}")
+                    gamma = 1.0 - math.exp(-gate_time_ns / t1_ns)
+                    st.caption(f"γ = {gamma:.6f}")
+                    _effect_caption(gamma * 1.25, "Expected QBER")
                 elif noise_model == "phase_damping":
                     t2_us = st.slider("T2 (µs)", 0.5, 200.0, 5.0, 0.5, key="s_t2p")
                     gate_time_ns = st.slider(
@@ -621,7 +655,12 @@ elif page == "sim":
                     # pin it to T2 so an unrelated default can't trip that
                     # check for this model.
                     t1_ns = t2_ns
-                    st.caption(f"λ = {1.0 - math.exp(-gate_time_ns / t2_ns):.6f}")
+                    lam = 1.0 - math.exp(-gate_time_ns / t2_ns)
+                    st.caption(f"λ = {lam:.6f}")
+                    # Pure dephasing only shows up as errors for qubits
+                    # measured in the diagonal (X) basis, i.e. ~half of
+                    # sifted bits, and roughly halves the visible flip rate.
+                    _effect_caption(lam * 0.5 * 1.25, "Expected QBER")
                 elif noise_model == "combined":
                     t1_us = st.slider("T1 (µs)", 1.0, 500.0, 10.0, 1.0, key="s_t1c")
                     t2_us = st.slider("T2 (µs)", 0.5, 200.0, 8.0, 0.5, key="s_t2c")
@@ -632,9 +671,20 @@ elif page == "sim":
                     t2_ns = min(t2_us * 1000, 2.0 * t1_ns - 1.0)
                     if t2_us * 1000 > 2 * t1_ns:
                         st.warning("T2 clamped to 2·T1")
+                    _gamma_c = 1.0 - math.exp(-gate_time_ns / t1_ns)
+                    _lam_c = 1.0 - math.exp(-gate_time_ns / t2_ns)
+                    _effect_caption(
+                        (_gamma_c + _lam_c * 0.5) * 1.25, "Expected QBER"
+                    )
                 elif noise_model == "fibre_loss":
                     channel_length_km = st.slider(
                         "Channel length (km)", 0.0, 200.0, 50.0, 5.0, key="s_km"
+                    )
+                    st.caption(
+                        "Fibre loss drops photons before they reach Bob — it "
+                        "lowers the sifted/final key **rate**, not the QBER. "
+                        "Expect the QBER to stay flat as you increase distance; "
+                        "that's correct, not a bug."
                     )
                     if channel_length_km > 0:
                         survive = 10 ** (-0.2 * channel_length_km / 10)
