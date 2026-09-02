@@ -728,7 +728,9 @@ elif page == "sim":
                 ldpc_reconciler = None
                 if cfg.ldpc_enabled:
                     ldpc_reconciler = get_ldpc_reconciler(
-                        cfg.ldpc_block_len, cfg.ldpc_seed or (cfg.seed or 0),
+                        cfg.ldpc_block_len,
+                        cfg.ldpc_seed if cfg.ldpc_seed is not None
+                        else (cfg.seed if cfg.seed is not None else 0),
                         cfg.ldpc_calibrate,
                     )
                 result = _run(cfg, verbose=False, ldpc_reconciler=ldpc_reconciler)
@@ -1068,14 +1070,36 @@ elif page == "sim":
         # ── ZNE analysis (separate action, own qubit-count control) ─────
         st.divider()
         st.markdown("**Zero-Noise Extrapolation (ZNE)**")
-        if r.config.noise_model not in _ZNE_SUPPORTED_MODELS:
-            st.info(
-                "ZNE requires a scalable noise model (depolarizing, "
-                "amplitude damping, or phase damping). The last run used "
-                f"`{r.config.noise_model or 'ideal'}`, which fibre loss and "
-                "the ideal channel don't support — noise-scaling has no "
-                "meaning for photon loss or a noiseless channel."
+
+        zne_blocked_reason = None
+        if not r.config.noise_enabled:
+            zne_blocked_reason = (
+                "ZNE scales *hardware* noise and extrapolates back to f=0 — "
+                "there's no noise enabled on this run for it to scale. Enable "
+                "a noise model on the Simulator page above (Eve's "
+                "intercept-resend attack alone won't move with the "
+                "noise-scale factor, so running ZNE without noise just "
+                "repeats the same QBER at every f)."
             )
+        elif r.config.noise_model not in _ZNE_SUPPORTED_MODELS:
+            if r.config.noise_model == "combined":
+                zne_blocked_reason = (
+                    "ZNE is disabled for the Combined T1+T2 model. Linear "
+                    "extrapolation gave no reliable correction under combined "
+                    "T1/T2 noise in evaluation — run depolarizing, amplitude "
+                    "damping, or phase damping individually instead."
+                )
+            else:
+                zne_blocked_reason = (
+                    "ZNE requires a scalable Kraus noise model (depolarizing, "
+                    "amplitude damping, or phase damping). The last run used "
+                    f"`{r.config.noise_model or 'ideal'}`, for which "
+                    "noise-scaling has no defined meaning (photon loss or a "
+                    "noiseless channel)."
+                )
+
+        if zne_blocked_reason:
+            st.info(zne_blocked_reason)
         else:
             with st.container(border=True):
                 zc1, zc2, zc3, zc4 = st.columns([2, 1, 1, 1])
@@ -1095,11 +1119,26 @@ elif page == "sim":
                     zne_n_seeds = st.slider("Seeds per point", 3, 10, 5, 1, key="s_zne_ns")
                 with zc4:
                     zne_method = st.selectbox(
-                        "Fit method", ["linear", "exponential"], key="s_zne_m"
+                        "Fit method", ["linear", "exponential"], key="s_zne_m",
+                        help=(
+                            "Linear is the recommended default. The "
+                            "exponential ansatz is unreliable at this "
+                            "f-resolution and silently falls back to linear "
+                            "when it doesn't converge cleanly."
+                        ),
                     )
                 zne_bootstrap = st.checkbox(
                     "Compute bootstrap confidence interval (slower)", key="s_zne_boot"
                 )
+                if r.config.eve_present:
+                    st.caption(
+                        "Eve's intercept-resend attack is active. The f=0 "
+                        "intercept will still include Eve's contribution — "
+                        "ZNE removes *hardware* noise, not eavesdropping. "
+                        "Read it as \"QBER attributable to Eve once hardware "
+                        "noise is extrapolated away,\" not as a clean-channel "
+                        "estimate."
+                    )
                 run_zne_clicked = st.button(
                     "Run ZNE Analysis", type="primary", key="s_zne_run"
                 )
@@ -1173,11 +1212,20 @@ elif page == "sim":
                 fig_zne.update_yaxes(title_text="QBER (%)")
                 st.plotly_chart(fig_zne, use_container_width=True)
 
+                # Was exponential requested but silently fell back to linear?
+                exp_fell_back = (
+                    zne_method == "exponential" and not zr_state.exponential["converged"]
+                )
+                fit_used_label = (
+                    "linear fit (exponential requested, fell back)"
+                    if exp_fell_back else f"{zne_method} fit"
+                )
+
                 zk1, zk2, zk3 = st.columns(3)
                 zk1.metric("Raw QBER (f=1)", f"{zr_state.qber_at_f1:.2f}%",
                            "what you'd report without ZNE")
                 zk2.metric("ZNE estimate (f=0)", f"{zr_state.recommended_estimate:.2f}%",
-                           f"{zne_method} fit")
+                           fit_used_label)
                 if zr_state.bootstrap_ci is not None:
                     bmean, blo, bhi = zr_state.bootstrap_ci
                     zk3.metric("Bootstrap 95% CI", f"[{blo:.2f}, {bhi:.2f}]%",
@@ -1185,6 +1233,39 @@ elif page == "sim":
                 else:
                     zk3.metric("Exponential converged",
                                "Yes" if zr_state.exponential["converged"] else "No")
+
+                if exp_fell_back:
+                    st.caption(
+                        "⚠️ The exponential fit didn't converge cleanly (its "
+                        "intercept uncertainty was too large relative to its "
+                        "own estimate) — the number above is the linear fit "
+                        "instead, consistent with the exponential ansatz being "
+                        "unreliable at this f-resolution."
+                    )
+
+                # Bias-reduction readout.
+                if zr_state.qber_at_f1 > 1e-9:
+                    reduction_pct = (
+                        (zr_state.qber_at_f1 - zr_state.recommended_estimate)
+                        / zr_state.qber_at_f1 * 100
+                    )
+                    if reduction_pct < 10:
+                        st.caption(
+                            f"Bias reduction here is only {reduction_pct:.1f}% — "
+                            "at low base-noise settings ZNE has little to "
+                            "correct for; this matches evaluation showing no "
+                            "net benefit at the lowest tested noise level."
+                        )
+                    else:
+                        st.caption(f"Bias reduction vs. raw QBER: {reduction_pct:.1f}%.")
+
+                st.info(
+                    "**Positioning:** report the ZNE estimate *alongside* raw "
+                    "QBER, never in place of it. The corrected estimate is "
+                    "systematically lower than raw QBER by construction — "
+                    "privacy amplification must still be sized off a "
+                    "conservative bound, not this number."
+                )
 
 
 # ═════════════════════════════════════════════════════════════════════════════
