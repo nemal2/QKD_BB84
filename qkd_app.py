@@ -487,6 +487,7 @@ elif page == "sim":
                 noise_enabled=True,
                 noise_model="amplitude_damping",
                 t1_ns=3_000,          # 3 µs — was 10 µs (gamma ~0.05%, invisible)
+                t2_ns=3_000,          # must satisfy T2 <= 2*T1; pinned to T1
                 gate_time_ns=50,
                 label="Amp.Damp",
             ),
