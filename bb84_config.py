@@ -106,19 +106,25 @@ class SimulationConfig:
 
     def __post_init__(self) -> None:
         """
-        Validate the Bloch-sphere physical constraint T2 <= 2*T1.
+        Enforce the Bloch-sphere physical constraint T2 <= 2*T1.
 
-        This is checked at configuration-creation time so an invalid
-        (t1_ns, t2_ns) pair fails immediately and explicitly, rather
-        than being silently clamped later inside QuantumChannel.
+        Auto-clamped rather than raised: T1/T2 are frequently set (or
+        derived/scaled, e.g. by bb84_zne.build_scaled_config) somewhat
+        independently, and for noise models that only use one of the
+        two (amplitude_damping uses T1 only, phase_damping uses T2
+        only) the "other" value is often just a leftover default. A
+        hard crash there is a footgun, not a useful guardrail. We still
+        surface the adjustment via a console warning so it's visible
+        during development instead of silently changing behaviour.
         """
-        if self.t2_ns > 2 * self.t1_ns:
-            raise ValueError(
-                f"Invalid config: T2 ({self.t2_ns} ns) exceeds 2*T1 "
-                f"({2 * self.t1_ns} ns). This violates the physical "
-                f"Bloch-sphere bound T2 <= 2*T1 for any real qubit. "
-                f"Reduce t2_ns or increase t1_ns."
+        max_t2 = 2 * self.t1_ns - 1e-6
+        if self.t2_ns > max_t2:
+            print(
+                f"[bb84_config] WARNING: T2 ({self.t2_ns} ns) exceeded "
+                f"2*T1 ({2 * self.t1_ns} ns); clamped T2 to {max_t2:.3f} ns "
+                f"to satisfy the Bloch-sphere bound T2 <= 2*T1."
             )
+            self.t2_ns = max_t2
 
 
 # ──────────────────────────────────────────────────────────────────────

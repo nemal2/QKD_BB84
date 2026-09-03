@@ -216,12 +216,20 @@ def build_scaled_config(
     elif base_noise_model == NoiseModelType.AMPLITUDE_DAMPING:
         kwargs["noise_model"]  = NoiseModelType.AMPLITUDE_DAMPING
         kwargs["t1_ns"]        = scale_amplitude_damping(base_t1_ns, gate_time_ns, f_scale)
+        # T2 is unused by amplitude damping's Kraus operators (same
+        # convention qkd_app.py already uses) - pin it equal to T1 so
+        # the T2 <= 2*T1 Bloch-sphere check in SimulationConfig can
+        # never fail here, no matter how far f_scale pushes T1 down.
+        kwargs["t2_ns"]        = kwargs["t1_ns"]
         kwargs["gate_time_ns"] = gate_time_ns
 
     elif base_noise_model == NoiseModelType.PHASE_DAMPING:
         kwargs["noise_model"]  = NoiseModelType.PHASE_DAMPING
-        kwargs["t1_ns"]        = 10_000.0
         kwargs["t2_ns"]        = scale_phase_damping(base_t2_ns, gate_time_ns, f_scale)
+        # T1 is unused by phase damping's Kraus operators - pin it equal
+        # to T2 (same reasoning as above) instead of the old hardcoded
+        # 10_000, which broke as soon as scaled T2 exceeded 20_000 ns.
+        kwargs["t1_ns"]        = kwargs["t2_ns"]
         kwargs["gate_time_ns"] = gate_time_ns
 
     else:
