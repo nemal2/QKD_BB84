@@ -1192,10 +1192,33 @@ elif page == "sim":
                         key="s_zne_f",
                     )
                 with zc2:
-                    zne_n_qubits = st.slider(
-                        "Qubits per point", 200, 1200, 600, 100, key="s_zne_nq"
+                    zne_match_n = st.checkbox(
+                        "Match main run's N", value=True, key="s_zne_match_n",
+                        help=(
+                            "Use the same qubit count as your last run above "
+                            f"(N={r.config.n_qubits:,}) so the f=1 point in "
+                            "this sweep is directly comparable to the "
+                            "main-panel QBER instead of being estimated from "
+                            "a different sample size."
+                        ),
                     )
-                    st.caption("Separate from the main run — keeps the sweep fast.")
+                    zne_n_qubits_manual = st.slider(
+                        "Qubits per point", 200, 1200, 600, 100,
+                        key="s_zne_nq", disabled=zne_match_n,
+                    )
+                    zne_n_qubits = r.config.n_qubits if zne_match_n else zne_n_qubits_manual
+                    if zne_match_n:
+                        st.caption(f"Locked to N={r.config.n_qubits:,} (main run).")
+                        if r.config.n_qubits > 1200:
+                            st.caption(
+                                "⚠️ Main run's N exceeds the usual sweep range "
+                                "— this will make the sweep noticeably slower."
+                            )
+                    else:
+                        st.caption(
+                            "Independent of the main run — f=1 here won't "
+                            "line up with the main-panel QBER."
+                        )
                 with zc3:
                     zne_n_seeds = st.slider("Seeds per point", 3, 10, 5, 1, key="s_zne_ns")
                 with zc4:
@@ -1251,7 +1274,8 @@ elif page == "sim":
                             st.write(
                                 f"{len(sorted(set(zne_f_scales)))} scale factors × "
                                 f"{zne_n_seeds} seeds = "
-                                f"{len(set(zne_f_scales)) * zne_n_seeds} simulations…"
+                                f"{len(set(zne_f_scales)) * zne_n_seeds} simulations "
+                                f"at N={zne_n_qubits:,} qubits/point…"
                             )
                             zne_result = run_zne_analysis(
                                 zne_base_cfg, sorted(set(zne_f_scales)),
@@ -1316,6 +1340,26 @@ elif page == "sim":
                     "linear fit (exponential requested, fell back)"
                     if exp_fell_back else f"{zne_method} fit"
                 )
+
+                _main_seed = r.config.seed if r.config.seed is not None else 0
+                if (zr_state.n_qubits == r.config.n_qubits
+                        and zr_state.base_seed == _main_seed
+                        and 1.0 in zr_state.per_f_qber):
+                    st.caption(
+                        f"✅ Matched to the main run: N={zr_state.n_qubits:,}, "
+                        f"seed={zr_state.base_seed} — one of the "
+                        f"{zr_state.n_seeds} seeds averaged into the f=1 "
+                        "point below is an exact re-run of your main-panel "
+                        "result; the rest add statistical context around it."
+                    )
+                elif zr_state.n_qubits and zr_state.n_qubits != r.config.n_qubits:
+                    st.caption(
+                        f"ℹ️ This sweep used N={zr_state.n_qubits:,} qubits/point "
+                        f"vs. N={r.config.n_qubits:,} in the main run — the f=1 "
+                        "point below isn't directly comparable to the "
+                        "main-panel QBER. Enable \"Match main run's N\" above "
+                        "and re-run for a like-for-like comparison."
+                    )
 
                 zk1, zk2, zk3 = st.columns(3)
                 zk1.metric("Raw QBER (f=1)", f"{zr_state.qber_at_f1:.2f}%",

@@ -423,6 +423,14 @@ class ZNEResult:
     qber_at_f1: float
     recommended_estimate: float
     runtime_seconds: float
+    n_qubits: int = 0
+    """Qubits-per-point actually used by this sweep (0 = unknown, for
+    results produced before this field existed)."""
+    base_seed: int = 0
+    """Seed used for the first sample at every f_scale (seed index 0).
+    Equal to base_config.seed (or 0 if that was None) at call time -
+    lets a caller check whether f=1/seed-0 exactly reproduces a given
+    SimulationConfig's own run."""
 
 
 def run_zne_analysis(
@@ -518,4 +526,6 @@ def run_zne_analysis(
         qber_at_f1=qber_at_f1,
         recommended_estimate=recommended,
         runtime_seconds=time.perf_counter() - t0,
+        n_qubits=base_config.n_qubits,
+        base_seed=base_seed,
     )
