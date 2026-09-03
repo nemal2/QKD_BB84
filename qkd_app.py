@@ -1228,9 +1228,24 @@ elif page == "sim":
                 if len(zne_f_scales) < 2:
                     st.warning("Select at least 2 noise scale factors.")
                 else:
-                    zne_base_cfg = SimulationConfig(
-                        **{**r.config.__dict__, "n_qubits": zne_n_qubits},
-                    )
+                    zne_base_dict = {**r.config.__dict__, "n_qubits": zne_n_qubits}
+                    # Defensive belt-and-braces (same reasoning as the main
+                    # run's clamp above): r.config was already valid when
+                    # the main run built it, but copying its __dict__ here
+                    # is a second, independent construction path, so if a
+                    # future noise-model branch or a stale cached module
+                    # ever produces a mismatched (t1_ns, t2_ns) pair, clamp
+                    # it instead of letting SimulationConfig raise and kill
+                    # the whole ZNE sweep.
+                    if zne_base_dict["t2_ns"] > 2 * zne_base_dict["t1_ns"]:
+                        st.warning(
+                            f"T2 ({zne_base_dict['t2_ns'] / 1000:.1f} µs) exceeded "
+                            f"the physical bound 2×T1 "
+                            f"({2 * zne_base_dict['t1_ns'] / 1000:.1f} µs) for the "
+                            f"ZNE base config — clamped to stay valid."
+                        )
+                        zne_base_dict["t2_ns"] = 2 * zne_base_dict["t1_ns"] - 1.0
+                    zne_base_cfg = SimulationConfig(**zne_base_dict)
                     try:
                         with st.status("Running ZNE sweep…", expanded=True) as _zs:
                             st.write(
@@ -1248,7 +1263,7 @@ elif page == "sim":
                                 state="complete", expanded=False,
                             )
                         st.session_state.zne_result = zne_result
-                    except ValueError as e:
+                    except (ValueError, KeyError, TypeError) as e:
                         st.error(f"ZNE error: {e}")
 
             zr_state: Optional[ZNEResult] = st.session_state.zne_result
