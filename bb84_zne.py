@@ -490,8 +490,15 @@ def run_zne_analysis(
             halfwidths.append(max(1e-3, (qr.confidence_high - qr.confidence_low) * 100 / 2))
 
         mean_q = float(np.mean(qbers_here))
-        ci_lo = float(np.percentile(qbers_here, 2.5)) if n_seeds > 1 else mean_q
-        ci_hi = float(np.percentile(qbers_here, 97.5)) if n_seeds > 1 else mean_q
+        if n_seeds > 1:
+            ci_lo = float(np.percentile(qbers_here, 2.5))
+            ci_hi = float(np.percentile(qbers_here, 97.5))
+        else:
+            # Single-run mode has no seed spread to take a percentile of -
+            # report the run's own analytic Wilson 95% CI instead of a
+            # misleading zero-width band around the point estimate.
+            ci_lo = mean_q - halfwidths[0]
+            ci_hi = mean_q + halfwidths[0]
         per_f_qber[f_scale] = (mean_q, ci_lo, ci_hi)
         per_seed_qbers[f_scale] = qbers_here
         mean_qbers.append(mean_q)
@@ -502,8 +509,12 @@ def run_zne_analysis(
     quad_a, _ = quadratic_extrapolate(f_scales, mean_qbers, weights)
 
     boot_ci = None
-    if bootstrap:
+    if bootstrap and n_seeds > 1:
         boot_ci = bootstrap_zne_intercept(per_seed_qbers, f_scales)
+    elif bootstrap:
+        print("[bb84_zne] WARNING: bootstrap requested with n_seeds=1; "
+              "there is no seed spread to resample, so skipping it rather "
+              "than returning a fake zero-width interval.")
 
     if method == "exponential" and exp_result["converged"]:
         recommended = exp_result["estimate"]

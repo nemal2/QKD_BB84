@@ -1202,25 +1202,56 @@ elif page == "sim":
                             "a different sample size."
                         ),
                     )
-                    zne_n_qubits_manual = st.slider(
-                        "Qubits per point", 200, 1200, 600, 100,
-                        key="s_zne_nq", disabled=zne_match_n,
-                    )
-                    zne_n_qubits = r.config.n_qubits if zne_match_n else zne_n_qubits_manual
                     if zne_match_n:
-                        st.caption(f"Locked to N={r.config.n_qubits:,} (main run).")
+                        zne_n_qubits = r.config.n_qubits
+                        # A disabled st.slider still shows whatever value it
+                        # was last set to (e.g. its own default of 600) since
+                        # it can't be driven to a new position without user
+                        # interaction - showing that alongside "Locked to
+                        # N=1,000" would be self-contradictory. A plain
+                        # metric has no such stale-state risk: it always
+                        # renders exactly the number actually used below.
+                        st.metric("Qubits per point", f"{zne_n_qubits:,}")
+                        st.caption(f"Locked to main run's N={r.config.n_qubits:,}.")
                         if r.config.n_qubits > 1200:
                             st.caption(
                                 "⚠️ Main run's N exceeds the usual sweep range "
                                 "— this will make the sweep noticeably slower."
                             )
                     else:
+                        zne_n_qubits = st.slider(
+                            "Qubits per point", 200, 1200, 600, 100, key="s_zne_nq",
+                        )
                         st.caption(
                             "Independent of the main run — f=1 here won't "
                             "line up with the main-panel QBER."
                         )
                 with zc3:
-                    zne_n_seeds = st.slider("Seeds per point", 3, 10, 5, 1, key="s_zne_ns")
+                    zne_precision = st.radio(
+                        "Precision per point",
+                        ["Single run", "Multiple seeds"],
+                        index=1, key="s_zne_precision",
+                        help=(
+                            "ZNE itself only needs one measurement per noise "
+                            "level - this choice is about how that "
+                            "measurement's uncertainty is estimated.\n\n"
+                            "**Single run**: 1 simulation per f-value; the "
+                            "fit is weighted by that run's own analytic "
+                            "Wilson 95% CI. Fastest, and closest to a "
+                            "textbook single-shot-per-setting ZNE sweep - "
+                            "but no empirical spread or bootstrap CI.\n\n"
+                            "**Multiple seeds**: averages several "
+                            "independent simulations per f-value, giving an "
+                            "empirical CI and enabling the bootstrap option "
+                            "below, at the cost of more simulations."
+                        ),
+                    )
+                    if zne_precision == "Single run":
+                        zne_n_seeds = 1
+                    else:
+                        zne_n_seeds = st.slider(
+                            "Seeds per point", 3, 10, 5, 1, key="s_zne_ns"
+                        )
                 with zc4:
                     zne_method = st.selectbox(
                         "Fit method", ["linear", "exponential"], key="s_zne_m",
@@ -1231,9 +1262,18 @@ elif page == "sim":
                             "when it doesn't converge cleanly."
                         ),
                     )
-                zne_bootstrap = st.checkbox(
-                    "Compute bootstrap confidence interval (slower)", key="s_zne_boot"
-                )
+                if zne_precision == "Single run":
+                    zne_bootstrap = False
+                    st.caption(
+                        "Bootstrap CI needs a spread of seeds to resample "
+                        "from - switch to \"Multiple seeds\" to enable it. "
+                        "Each point's weight here comes from its own "
+                        "Wilson 95% CI instead."
+                    )
+                else:
+                    zne_bootstrap = st.checkbox(
+                        "Compute bootstrap confidence interval (slower)", key="s_zne_boot"
+                    )
                 if r.config.eve_present:
                     st.caption(
                         "Eve's intercept-resend attack is active. The f=0 "
