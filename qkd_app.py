@@ -8,7 +8,9 @@ from __future__ import annotations
 
 import json
 import math
+import statistics
 import time
+from dataclasses import replace as _dc_replace
 from typing import Optional
 
 import pandas as pd
@@ -128,6 +130,7 @@ _defaults = {
     "comparison_results": None,
     "last_runtime": None,
     "zne_result": None,
+    "main_seed_avg": None,
 }
 for k, v in _defaults.items():
     if k not in st.session_state:
@@ -737,6 +740,31 @@ elif page == "sim":
                 "shorter than 20 bits skip reconciliation entirely."
             )
 
+        with st.expander("🎲 Average main-run QBER over multiple seeds (optional)"):
+            st.caption(
+                "The main-panel QBER above is a single simulation (one "
+                "seed) — with only ~100 sampled bits its Wilson 95% CI can "
+                "be several points wide (see the Analysis tab). This runs "
+                "the exact same config across several consecutive seeds "
+                "(seed, seed+1, seed+2, …) and reports the mean, purely as "
+                "an extra reference number — it never changes the "
+                "main-panel result, key bit sequence, or LDPC output above, "
+                "which always stay tied to your single chosen seed."
+            )
+            ma1, ma2 = st.columns([1, 1])
+            with ma1:
+                main_avg_enabled = st.checkbox(
+                    "Enable", value=False, key="s_main_avg_on",
+                    disabled=not use_seed,
+                )
+                if not use_seed:
+                    st.caption("Requires \"Fixed seed\" above (need a base seed to offset from).")
+            with ma2:
+                main_avg_n = st.slider(
+                    "Seeds to average", 2, 10, 5, 1, key="s_main_avg_n",
+                    disabled=not use_seed or not main_avg_enabled,
+                )
+
         st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
         st.divider()
 
@@ -839,6 +867,48 @@ elif page == "sim":
             st.session_state.last_runtime = elapsed
             st.session_state.zne_result = None
             r = result
+
+            # ── Optional: average QBER over multiple seeds ──────────────
+            # Purely additive - runs extra simulations at seed+1..+n-1 of
+            # the SAME config and reports their mean alongside (never
+            # instead of) the single-seed result above. r/result (and
+            # therefore the key bit sequence, LDPC panel, funnel, etc.
+            # below) are untouched - they always reflect cfg.seed only.
+            if use_seed and main_avg_enabled and main_avg_n > 1:
+                with st.status(
+                    f"Averaging QBER over {main_avg_n} seeds…", expanded=False
+                ) as _sa:
+                    avg_qbers = [result.qber_result.qber * 100]  # seed i=0, reuse - no need to rerun it
+                    for i in range(1, main_avg_n):
+                        cfg_i = _dc_replace(
+                            cfg, seed=cfg.seed + i, ldpc_enabled=False,
+                            label=f"{cfg.label} (seed {cfg.seed + i})",
+                        )
+                        st.write(f"Seed {cfg_i.seed} ({i + 1}/{main_avg_n})…")
+                        r_i = _run(cfg_i, verbose=False)
+                        avg_qbers.append(r_i.qber_result.qber * 100)
+                    _sa.update(
+                        label=f"Averaged {main_avg_n} seeds", state="complete",
+                        expanded=False,
+                    )
+                mean_q = statistics.mean(avg_qbers)
+                sem = statistics.stdev(avg_qbers) / (main_avg_n ** 0.5)
+                st.session_state.main_seed_avg = {
+                    "n_seeds": main_avg_n,
+                    "base_seed": cfg.seed,
+                    "per_seed_qbers": avg_qbers,
+                    "mean_qber": mean_q,
+                    # Normal-approximation 95% CI of the MEAN (via standard
+                    # error), not a percentile spread - appropriate here
+                    # since main_avg_n is small (2-10) and we're estimating
+                    # uncertainty of the average itself, distinct from the
+                    # per-seed CI shown in the Analysis tab.
+                    "ci_lo": max(0.0, mean_q - 1.96 * sem),
+                    "ci_hi": min(100.0, mean_q + 1.96 * sem),
+                    "single_run_qber": result.qber_result.qber * 100,
+                }
+            else:
+                st.session_state.main_seed_avg = None
         except Exception as e:
             st.error(f"Simulation error: {e}")
 
@@ -882,6 +952,18 @@ elif page == "sim":
             f"</div>",
             unsafe_allow_html=True,
         )
+
+        _msa = st.session_state.main_seed_avg
+        if _msa is not None and _msa["base_seed"] == r.config.seed:
+            st.caption(
+                f"🎲 Averaged over {_msa['n_seeds']} seeds "
+                f"({_msa['base_seed']}–{_msa['base_seed'] + _msa['n_seeds'] - 1}): "
+                f"mean QBER **{_msa['mean_qber']:.2f}%**, 95% CI of the mean "
+                f"[{_msa['ci_lo']:.2f}%, {_msa['ci_hi']:.2f}%] — vs. "
+                f"{_msa['single_run_qber']:.2f}% for this single seed above. "
+                "Reference only: the key bit sequence, LDPC panel, and "
+                "everything else below stay tied to your single chosen seed."
+            )
 
         # KPI row 1
         k1, k2, k3, k4 = st.columns(4)
