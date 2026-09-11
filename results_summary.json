@@ -1,0 +1,116 @@
+{
+  "paper_scale": true,
+  "n_qubits": 2000,
+  "n_seeds_headline": 20,
+  "n_seeds_secondary": 10,
+  "headline_mean_raw_bias_pp": 1.5197114862444696,
+  "headline_mean_zne_bias_pp": 0.45662536595079956,
+  "headline_bias_reduction_pct": 69.95315426093028,
+  "grid_density_ablation": {
+    "sparse (4 pts)": {
+      "zne_pct": 3.1034351848055297,
+      "bias_pp": 1.8965648151944703,
+      "boot_ci_width_pp": 2.2702785966967065
+    },
+    "dense (7 pts)": {
+      "zne_pct": 3.193096718491808,
+      "bias_pp": 1.806903281508192,
+      "boot_ci_width_pp": 2.398490046128851
+    }
+  },
+  "rq5_combined_noise_no_eve_intercept_pp": {
+    "old_1axis": 3.3969781660378215,
+    "new_2axis_plane": 3.5502653732728278,
+    "new_2axis_plane_plus_cross_term": 1.6562547047261176
+  },
+  "adaptive_eve_zne_bias_pp": {
+    "Static Eve (paper's model)": 0.17808829766087708,
+    "LinearScalingEve (f-mimicking)": 5.0,
+    "BasisBiasedEve (bias=0.85)": 0.3615969365213241
+  },
+  "wilcoxon_paired_test": {
+    "statistic": 2081.0,
+    "p_value": 0.16907712887390847
+  },
+  "rq5_combined_noise_ci": {
+    "n_seeds": 10,
+    "n_boot": 2000,
+    "rows": {
+      "0.0": {
+        "planar_mean": 3.623752973947358,
+        "planar_ci95": [
+          1.5766957077074844,
+          5.617615912427088
+        ],
+        "bilinear_mean": 1.667156919254545,
+        "bilinear_ci95": [
+          0.0,
+          4.102803992798091
+        ]
+      },
+      "0.1": {
+        "planar_mean": 5.537226698204826,
+        "planar_ci95": [
+          3.851143959892377,
+          7.206297135054019
+        ],
+        "bilinear_mean": 4.202836328973752,
+        "bilinear_ci95": [
+          2.0904575708655946,
+          6.636831367356074
+        ]
+      },
+      "0.2": {
+        "planar_mean": 6.859612762945202,
+        "planar_ci95": [
+          4.8896323667412664,
+          8.764171196806089
+        ],
+        "bilinear_mean": 5.255392995381949,
+        "bilinear_ci95": [
+          2.609352791717902,
+          7.887482764153813
+        ]
+      },
+      "0.3": {
+        "planar_mean": 11.280493696368925,
+        "planar_ci95": [
+          9.309697563035986,
+          13.272991419558576
+        ],
+        "bilinear_mean": 9.921884235375341,
+        "bilinear_ci95": [
+          7.480405579325951,
+          12.503441176480216
+        ]
+      }
+    }
+  },
+  "rq6_adaptive_eve_ci": {
+    "n_seeds": 10,
+    "n_boot": 2000,
+    "rows": {
+      "Static Eve (paper's model)": {
+        "mean": 0.6323728578775777,
+        "ci95": [
+          0.03160311741969033,
+          1.7839854616894402
+        ]
+      },
+      "LinearScalingEve (f-mimicking)": {
+        "mean": 4.936544292391338,
+        "ci95": [
+          4.170006995788164,
+          5.0
+        ]
+      },
+      "BasisBiasedEve (bias=0.85)": {
+        "mean": 0.6874752006796219,
+        "ci95": [
+          0.027484900580304127,
+          1.8853334021253836
+        ]
+      }
+    }
+  }
+}
