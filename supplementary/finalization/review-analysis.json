@@ -1,0 +1,3802 @@
+{
+  "status": "passed",
+  "new_stochastic_experiments": false,
+  "diagnostic_grid": {
+    "linear_four": {
+      "MAE_pp": 1.155712013771791,
+      "MC_CI_pp": [
+        1.1426627743388467,
+        1.1687612532047351
+      ],
+      "average_coverage": 0.9467083333333334,
+      "coverage_lower_bound_at_least_90": 45,
+      "cells_whose_coverage_interval_contains_90": 3
+    },
+    "gate_four": {
+      "MAE_pp": 1.1100906099476537,
+      "MC_CI_pp": [
+        1.0971205034604743,
+        1.1230607164348332
+      ],
+      "average_coverage": 0.9610833333333333,
+      "coverage_lower_bound_at_least_90": 48,
+      "cells_whose_coverage_interval_contains_90": 0
+    },
+    "gate_two": {
+      "MAE_pp": 0.5206757277072096,
+      "MC_CI_pp": [
+        0.5147394765288423,
+        0.526611978885577
+      ],
+      "average_coverage": 0.9517083333333333,
+      "coverage_lower_bound_at_least_90": 48,
+      "cells_whose_coverage_interval_contains_90": 0
+    },
+    "calibrated_BSC": {
+      "MAE_pp": 0.5443791530912956,
+      "MC_CI_pp": [
+        0.5381447370920606,
+        0.5506135690905306
+      ],
+      "average_coverage": 0.9511249999999999,
+      "coverage_lower_bound_at_least_90": 48,
+      "cells_whose_coverage_interval_contains_90": 0
+    },
+    "calibrated_gate": {
+      "MAE_pp": 0.5443791530912957,
+      "MC_CI_pp": [
+        0.5381447370920606,
+        0.5506135690905307
+      ],
+      "average_coverage": 0.9511249999999999,
+      "coverage_lower_bound_at_least_90": 48,
+      "cells_whose_coverage_interval_contains_90": 0
+    },
+    "Fiorini": {
+      "MAE_pp": 0.5741716586250221,
+      "MC_CI_pp": [
+        0.5678294380124028,
+        0.5805138792376412
+      ],
+      "average_coverage": 0.930125,
+      "coverage_lower_bound_at_least_90": 40,
+      "cells_whose_coverage_interval_contains_90": 4
+    }
+  },
+  "diagnostic_paired_difference": {
+    "two_minus_calibrated_MAE_pp": -0.023703425384086076,
+    "MC_CI_pp": [
+      -0.03003013454031389,
+      -0.017376716227858257
+    ],
+    "scope": "Paired replicate-level differences; independent fixed cells, not deployment or design uncertainty."
+  },
+  "coverage_450_of_500_wilson": [
+    0.8705780903680599,
+    0.9233224372626984
+  ],
+  "absolute_transfer": [
+    {
+      "family": "gallager",
+      "n": 1000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "fixed_pooled",
+      "frames": 2500,
+      "failures": 39,
+      "FER": 0.0156,
+      "FER_matrix_CI": [
+        0.01082322322380004,
+        0.020376776776199958
+      ],
+      "yield_mean": 0.4078228571428572,
+      "yield_mean_matrix_CI": [
+        0.4058439067641458,
+        0.40980180752156864
+      ],
+      "row_fraction": 0.501,
+      "row_fraction_matrix_CI": [
+        0.501,
+        0.501
+      ],
+      "f_EC": 1.7254810410829862,
+      "f_EC_matrix_CI": [
+        1.7254810410829862,
+        1.7254810410829862
+      ],
+      "iterations": 6.5032,
+      "iterations_matrix_CI": [
+        5.870617340405582,
+        7.135782659594417
+      ],
+      "batch_ms_per_frame": 0.12015736680477858,
+      "batch_ms_per_frame_matrix_CI": [
+        0.10558365822056205,
+        0.1347310753889951
+      ],
+      "FER_Wilson_conditional": [
+        0.011432693131379339,
+        0.02125366507727551
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 1000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "fixed_selected",
+      "frames": 2500,
+      "failures": 45,
+      "FER": 0.018,
+      "FER_matrix_CI": [
+        0.014958556772416729,
+        0.021041443227583268
+      ],
+      "yield_mean": 0.40682857142857143,
+      "yield_mean_matrix_CI": [
+        0.4055685449485727,
+        0.40808859790857016
+      ],
+      "row_fraction": 0.501,
+      "row_fraction_matrix_CI": [
+        0.501,
+        0.501
+      ],
+      "f_EC": 1.7254810410829862,
+      "f_EC_matrix_CI": [
+        1.7254810410829862,
+        1.7254810410829862
+      ],
+      "iterations": 6.791200000000001,
+      "iterations_matrix_CI": [
+        6.30682179754168,
+        7.2755782024583215
+      ],
+      "batch_ms_per_frame": 0.12721358323469759,
+      "batch_ms_per_frame_matrix_CI": [
+        0.11742114646945953,
+        0.13700601999993564
+      ],
+      "FER_Wilson_conditional": [
+        0.013479664680750843,
+        0.023999329242807444
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 1000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "pipeline_pooled",
+      "frames": 2500,
+      "failures": 465,
+      "FER": 0.18600000000000003,
+      "FER_matrix_CI": [
+        0.16888484291504408,
+        0.20311515708495598
+      ],
+      "yield_mean": 0.3237005714285714,
+      "yield_mean_matrix_CI": [
+        0.3163536410137976,
+        0.3310475018433452
+      ],
+      "row_fraction": 0.493956,
+      "row_fraction_matrix_CI": [
+        0.49098289162486897,
+        0.49692910837513105
+      ],
+      "f_EC": 1.7039690261212364,
+      "f_EC_matrix_CI": [
+        1.6948893055294243,
+        1.7130487467130484
+      ],
+      "iterations": 23.115599999999997,
+      "iterations_matrix_CI": [
+        21.583255421959407,
+        24.647944578040587
+      ],
+      "batch_ms_per_frame": 0.4171788492705673,
+      "batch_ms_per_frame_matrix_CI": [
+        0.35073395673503616,
+        0.48362374180609846
+      ],
+      "FER_Wilson_conditional": [
+        0.17123313908582008,
+        0.20173035488097926
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 1000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "pipeline_selected",
+      "frames": 2500,
+      "failures": 486,
+      "FER": 0.1944,
+      "FER_matrix_CI": [
+        0.1770699998970569,
+        0.21173000010294307
+      ],
+      "yield_mean": 0.3197291428571428,
+      "yield_mean_matrix_CI": [
+        0.3121012212595928,
+        0.32735706445469287
+      ],
+      "row_fraction": 0.49215960000000003,
+      "row_fraction_matrix_CI": [
+        0.4896627292245791,
+        0.49465647077542096
+      ],
+      "f_EC": 1.6984829125952163,
+      "f_EC_matrix_CI": [
+        1.6908575972234943,
+        1.7061082279669384
+      ],
+      "iterations": 23.8552,
+      "iterations_matrix_CI": [
+        22.23264053955986,
+        25.47775946044014
+      ],
+      "batch_ms_per_frame": 0.42519538290798664,
+      "batch_ms_per_frame_matrix_CI": [
+        0.36697952773557785,
+        0.48341123808039543
+      ],
+      "FER_Wilson_conditional": [
+        0.17936102642487836,
+        0.210376692544083
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 1000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "fixed_pooled",
+      "frames": 2500,
+      "failures": 22,
+      "FER": 0.008799999999999999,
+      "FER_matrix_CI": [
+        0.003082949618025955,
+        0.014517050381974043
+      ],
+      "yield_mean": 0.35930999999999985,
+      "yield_mean_matrix_CI": [
+        0.3572375692365342,
+        0.3613824307634655
+      ],
+      "row_fraction": 0.501,
+      "row_fraction_matrix_CI": [
+        0.501,
+        0.501
+      ],
+      "f_EC": 1.7254810410829862,
+      "f_EC_matrix_CI": [
+        1.7254810410829862,
+        1.7254810410829862
+      ],
+      "iterations": 5.672,
+      "iterations_matrix_CI": [
+        5.1579301108535285,
+        6.186069889146471
+      ],
+      "batch_ms_per_frame": 0.10998423402197659,
+      "batch_ms_per_frame_matrix_CI": [
+        0.08594014679905734,
+        0.13402832124489583
+      ],
+      "FER_Wilson_conditional": [
+        0.005818600504860344,
+        0.013288623178234742
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 1000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "fixed_selected",
+      "frames": 2500,
+      "failures": 22,
+      "FER": 0.008799999999999999,
+      "FER_matrix_CI": [
+        0.003082949618025955,
+        0.014517050381974043
+      ],
+      "yield_mean": 0.35930999999999985,
+      "yield_mean_matrix_CI": [
+        0.3572375692365342,
+        0.3613824307634655
+      ],
+      "row_fraction": 0.501,
+      "row_fraction_matrix_CI": [
+        0.501,
+        0.501
+      ],
+      "f_EC": 1.7254810410829862,
+      "f_EC_matrix_CI": [
+        1.7254810410829862,
+        1.7254810410829862
+      ],
+      "iterations": 5.699599999999999,
+      "iterations_matrix_CI": [
+        5.1454549421176035,
+        6.253745057882395
+      ],
+      "batch_ms_per_frame": 0.11176591636613012,
+      "batch_ms_per_frame_matrix_CI": [
+        0.08633716995715053,
+        0.13719466277510972
+      ],
+      "FER_Wilson_conditional": [
+        0.005818600504860344,
+        0.013288623178234742
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 1000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "pipeline_pooled",
+      "frames": 2500,
+      "failures": 214,
+      "FER": 0.08560000000000001,
+      "FER_matrix_CI": [
+        0.07624210308264041,
+        0.0949578969173596
+      ],
+      "yield_mean": 0.325543,
+      "yield_mean_matrix_CI": [
+        0.32289665453852834,
+        0.3281893454614717
+      ],
+      "row_fraction": 0.5012832,
+      "row_fraction_matrix_CI": [
+        0.49740462142116576,
+        0.5051617785788343
+      ],
+      "f_EC": 1.7263459193676494,
+      "f_EC_matrix_CI": [
+        1.7145009391833501,
+        1.7381908995519486
+      ],
+      "iterations": 13.4676,
+      "iterations_matrix_CI": [
+        12.530030376084943,
+        14.405169623915056
+      ],
+      "batch_ms_per_frame": 0.2877811163663864,
+      "batch_ms_per_frame_matrix_CI": [
+        0.24542947903486373,
+        0.3301327536979091
+      ],
+      "FER_Wilson_conditional": [
+        0.07525889188982995,
+        0.09721267467017533
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 1000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "pipeline_selected",
+      "frames": 2500,
+      "failures": 227,
+      "FER": 0.0908,
+      "FER_matrix_CI": [
+        0.08209063201866981,
+        0.0995093679813302
+      ],
+      "yield_mean": 0.32408400000000004,
+      "yield_mean_matrix_CI": [
+        0.3223025236873993,
+        0.32586547631260077
+      ],
+      "row_fraction": 0.5001492,
+      "row_fraction_matrix_CI": [
+        0.4961306003251313,
+        0.5041677996748686
+      ],
+      "f_EC": 1.7228827414905024,
+      "f_EC_matrix_CI": [
+        1.7106101440556563,
+        1.7351553389253485
+      ],
+      "iterations": 13.9252,
+      "iterations_matrix_CI": [
+        12.96489414185355,
+        14.88550585814645
+      ],
+      "batch_ms_per_frame": 0.30074805025942625,
+      "batch_ms_per_frame_matrix_CI": [
+        0.23847138110179747,
+        0.36302471941705505
+      ],
+      "FER_Wilson_conditional": [
+        0.08015603861277913,
+        0.10269957199618364
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 1000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "fixed_pooled",
+      "frames": 2500,
+      "failures": 27,
+      "FER": 0.0108,
+      "FER_matrix_CI": [
+        0.0028301032153021776,
+        0.018769896784697822
+      ],
+      "yield_mean": 0.21515099999999993,
+      "yield_mean_matrix_CI": [
+        0.21341754744932817,
+        0.21688445255067168
+      ],
+      "row_fraction": 0.501,
+      "row_fraction_matrix_CI": [
+        0.501,
+        0.501
+      ],
+      "f_EC": 1.7254810410829862,
+      "f_EC_matrix_CI": [
+        1.7254810410829862,
+        1.7254810410829862
+      ],
+      "iterations": 5.7184,
+      "iterations_matrix_CI": [
+        5.138144494183419,
+        6.298655505816581
+      ],
+      "batch_ms_per_frame": 0.10140783358365298,
+      "batch_ms_per_frame_matrix_CI": [
+        0.07556239864087427,
+        0.12725326852643168
+      ],
+      "FER_Wilson_conditional": [
+        0.007433019288849424,
+        0.015668067489998536
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 1000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "fixed_selected",
+      "frames": 2500,
+      "failures": 5,
+      "FER": 0.002,
+      "FER_matrix_CI": [
+        -0.0023012502616360613,
+        0.006301250261636061
+      ],
+      "yield_mean": 0.21706499999999992,
+      "yield_mean_matrix_CI": [
+        0.21612947806809407,
+        0.21800052193190578
+      ],
+      "row_fraction": 0.501,
+      "row_fraction_matrix_CI": [
+        0.501,
+        0.501
+      ],
+      "f_EC": 1.7254810410829862,
+      "f_EC_matrix_CI": [
+        1.7254810410829862,
+        1.7254810410829862
+      ],
+      "iterations": 3.5927999999999995,
+      "iterations_matrix_CI": [
+        3.4088190793134374,
+        3.7767809206865617
+      ],
+      "batch_ms_per_frame": 0.06401463323272764,
+      "batch_ms_per_frame_matrix_CI": [
+        0.05554352332932448,
+        0.0724857431361308
+      ],
+      "FER_Wilson_conditional": [
+        0.0008545736212346501,
+        0.0046735155363006806
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 1000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "pipeline_pooled",
+      "frames": 2500,
+      "failures": 102,
+      "FER": 0.0408,
+      "FER_matrix_CI": [
+        0.02363088012086699,
+        0.057969119879133016
+      ],
+      "yield_mean": 0.20688899999999996,
+      "yield_mean_matrix_CI": [
+        0.20327301594413583,
+        0.2105049840558641
+      ],
+      "row_fraction": 0.5025360000000001,
+      "row_fraction_matrix_CI": [
+        0.5013140322873979,
+        0.5037579677126023
+      ],
+      "f_EC": 1.7301719063557357,
+      "f_EC_matrix_CI": [
+        1.7264400795930621,
+        1.7339037331184093
+      ],
+      "iterations": 8.8212,
+      "iterations_matrix_CI": [
+        7.5240234531873025,
+        10.118376546812696
+      ],
+      "batch_ms_per_frame": 0.1822059340775013,
+      "batch_ms_per_frame_matrix_CI": [
+        0.14723011706352546,
+        0.21718175109147714
+      ],
+      "FER_Wilson_conditional": [
+        0.033723846141628544,
+        0.04928518707351247
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 1000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "pipeline_selected",
+      "frames": 2500,
+      "failures": 30,
+      "FER": 0.012,
+      "FER_matrix_CI": [
+        0.004759916956912571,
+        0.019240083043087428
+      ],
+      "yield_mean": 0.21773459999999994,
+      "yield_mean_matrix_CI": [
+        0.21622910080963917,
+        0.21924009919036072
+      ],
+      "row_fraction": 0.4945764,
+      "row_fraction_matrix_CI": [
+        0.492955145856811,
+        0.49619765414318906
+      ],
+      "f_EC": 1.7058636959228082,
+      "f_EC_matrix_CI": [
+        1.7009124688664365,
+        1.7108149229791798
+      ],
+      "iterations": 5.0287999999999995,
+      "iterations_matrix_CI": [
+        4.5509751686805995,
+        5.5066248313193995
+      ],
+      "batch_ms_per_frame": 0.11378938457928597,
+      "batch_ms_per_frame_matrix_CI": [
+        0.09591103213132648,
+        0.13166773702724546
+      ],
+      "FER_Wilson_conditional": [
+        0.0084185361146773,
+        0.017078868521622385
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 4000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "fixed_pooled",
+      "frames": 2500,
+      "failures": 110,
+      "FER": 0.044,
+      "FER_matrix_CI": [
+        0.03454376871596032,
+        0.053456231284039674
+      ],
+      "yield_mean": 0.5042014814814817,
+      "yield_mean_matrix_CI": [
+        0.4992141950561215,
+        0.5091887679068419
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.4231401153003036,
+      "f_EC_matrix_CI": [
+        1.4231401153003036,
+        1.4231401153003036
+      ],
+      "iterations": 13.005200000000002,
+      "iterations_matrix_CI": [
+        12.224560403304334,
+        13.78583959669567
+      ],
+      "batch_ms_per_frame": 1.3739483828190715,
+      "batch_ms_per_frame_matrix_CI": [
+        0.8913753796074735,
+        1.8565213860306695
+      ],
+      "FER_Wilson_conditional": [
+        0.03663579067163945,
+        0.052763423496706145
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 4000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "fixed_selected",
+      "frames": 2500,
+      "failures": 144,
+      "FER": 0.0576,
+      "FER_matrix_CI": [
+        0.04791820509132373,
+        0.06728179490867627
+      ],
+      "yield_mean": 0.4970287407407407,
+      "yield_mean_matrix_CI": [
+        0.4919224903889055,
+        0.502134991092576
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.4231401153003036,
+      "f_EC_matrix_CI": [
+        1.4231401153003036,
+        1.4231401153003036
+      ],
+      "iterations": 14.421600000000002,
+      "iterations_matrix_CI": [
+        13.563906898196146,
+        15.279293101803857
+      ],
+      "batch_ms_per_frame": 1.430248099565506,
+      "batch_ms_per_frame_matrix_CI": [
+        1.0942958990082585,
+        1.7662003001227535
+      ],
+      "FER_Wilson_conditional": [
+        0.049127680607165006,
+        0.06742980261230011
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 4000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "pipeline_pooled",
+      "frames": 2500,
+      "failures": 418,
+      "FER": 0.1672,
+      "FER_matrix_CI": [
+        0.14660184585656738,
+        0.1877981541434326
+      ],
+      "yield_mean": 0.38421688888888894,
+      "yield_mean_matrix_CI": [
+        0.37675235087137526,
+        0.3916814269064026
+      ],
+      "row_fraction": 0.4921314,
+      "row_fraction_matrix_CI": [
+        0.48656230235456427,
+        0.4977004976454357
+      ],
+      "f_EC": 1.5518072514671777,
+      "f_EC_matrix_CI": [
+        1.5347995127005596,
+        1.5688149902337958
+      ],
+      "iterations": 21.8548,
+      "iterations_matrix_CI": [
+        19.798319065998406,
+        23.911280934001596
+      ],
+      "batch_ms_per_frame": 2.0710748004261403,
+      "batch_ms_per_frame_matrix_CI": [
+        1.508742067057787,
+        2.633407533794494
+      ],
+      "FER_Wilson_conditional": [
+        0.1530855187476002,
+        0.18233566211912214
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 4000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "pipeline_selected",
+      "frames": 2500,
+      "failures": 446,
+      "FER": 0.17839999999999998,
+      "FER_matrix_CI": [
+        0.1548803797008666,
+        0.20191962029913335
+      ],
+      "yield_mean": 0.37781303703703706,
+      "yield_mean_matrix_CI": [
+        0.368637658012892,
+        0.3869884160611821
+      ],
+      "row_fraction": 0.49038899999999996,
+      "row_fraction_matrix_CI": [
+        0.4849893528312413,
+        0.49578864716875864
+      ],
+      "f_EC": 1.5464860511734024,
+      "f_EC_matrix_CI": [
+        1.5299958054774192,
+        1.5629762968693857
+      ],
+      "iterations": 22.6392,
+      "iterations_matrix_CI": [
+        20.262303134084473,
+        25.016096865915525
+      ],
+      "batch_ms_per_frame": 2.1772972002159805,
+      "batch_ms_per_frame_matrix_CI": [
+        1.5512203859554372,
+        2.803374014476524
+      ],
+      "FER_Wilson_conditional": [
+        0.16388939956411813,
+        0.19389741463882032
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 4000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "fixed_pooled",
+      "frames": 2500,
+      "failures": 58,
+      "FER": 0.0232,
+      "FER_matrix_CI": [
+        0.01868881066740192,
+        0.027711189332598078
+      ],
+      "yield_mean": 0.49677257142857156,
+      "yield_mean_matrix_CI": [
+        0.49447830942513593,
+        0.4990668334320072
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.4231401153003036,
+      "f_EC_matrix_CI": [
+        1.4231401153003036,
+        1.4231401153003036
+      ],
+      "iterations": 10.678799999999999,
+      "iterations_matrix_CI": [
+        10.131000696490146,
+        11.226599303509852
+      ],
+      "batch_ms_per_frame": 1.1281413331627845,
+      "batch_ms_per_frame_matrix_CI": [
+        0.8306886378077456,
+        1.4255940285178235
+      ],
+      "FER_Wilson_conditional": [
+        0.0179898539986374,
+        0.029873183973878354
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 4000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "fixed_selected",
+      "frames": 2500,
+      "failures": 58,
+      "FER": 0.0232,
+      "FER_matrix_CI": [
+        0.01904459746526573,
+        0.027355402534734268
+      ],
+      "yield_mean": 0.49677257142857156,
+      "yield_mean_matrix_CI": [
+        0.49465925242519243,
+        0.4988858904319507
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.4231401153003036,
+      "f_EC_matrix_CI": [
+        1.4231401153003036,
+        1.4231401153003036
+      ],
+      "iterations": 10.658399999999999,
+      "iterations_matrix_CI": [
+        10.206409062738954,
+        11.110390937261043
+      ],
+      "batch_ms_per_frame": 1.3309315499849617,
+      "batch_ms_per_frame_matrix_CI": [
+        0.957593171253539,
+        1.7042699287163843
+      ],
+      "FER_Wilson_conditional": [
+        0.0179898539986374,
+        0.029873183973878354
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 4000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "pipeline_pooled",
+      "frames": 2500,
+      "failures": 132,
+      "FER": 0.05279999999999999,
+      "FER_matrix_CI": [
+        0.04340921054917625,
+        0.062190789450823736
+      ],
+      "yield_mean": 0.43046057142857147,
+      "yield_mean_matrix_CI": [
+        0.422843355188573,
+        0.4380777876685699
+      ],
+      "row_fraction": 0.5009739,
+      "row_fraction_matrix_CI": [
+        0.4976496241352987,
+        0.5042981758647013
+      ],
+      "f_EC": 1.5788117932473127,
+      "f_EC_matrix_CI": [
+        1.568659625141345,
+        1.5889639613532804
+      ],
+      "iterations": 10.463600000000001,
+      "iterations_matrix_CI": [
+        9.698421803257789,
+        11.228778196742214
+      ],
+      "batch_ms_per_frame": 1.3158834502100945,
+      "batch_ms_per_frame_matrix_CI": [
+        0.8919662317439656,
+        1.7398006686762233
+      ],
+      "FER_Wilson_conditional": [
+        0.04469971297298948,
+        0.06227249881666874
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 4000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "pipeline_selected",
+      "frames": 2500,
+      "failures": 130,
+      "FER": 0.05199999999999999,
+      "FER_matrix_CI": [
+        0.04376373280453118,
+        0.060236267195468804
+      ],
+      "yield_mean": 0.43136514285714284,
+      "yield_mean_matrix_CI": [
+        0.424301291982299,
+        0.4384289937319867
+      ],
+      "row_fraction": 0.5004123,
+      "row_fraction_matrix_CI": [
+        0.49718114496627525,
+        0.5036434550337249
+      ],
+      "f_EC": 1.5770966956319636,
+      "f_EC_matrix_CI": [
+        1.5672289137709159,
+        1.5869644774930114
+      ],
+      "iterations": 10.4508,
+      "iterations_matrix_CI": [
+        9.733080401580148,
+        11.16851959841985
+      ],
+      "batch_ms_per_frame": 1.1800421675667168,
+      "batch_ms_per_frame_matrix_CI": [
+        0.9723432207880072,
+        1.3877411143454264
+      ],
+      "FER_Wilson_conditional": [
+        0.043963593540136035,
+        0.06141107301122104
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 4000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "fixed_pooled",
+      "frames": 2500,
+      "failures": 41,
+      "FER": 0.016399999999999998,
+      "FER_matrix_CI": [
+        0.01195768783168353,
+        0.020842312168316467
+      ],
+      "yield_mean": 0.42019392,
+      "yield_mean_matrix_CI": [
+        0.4182961642416952,
+        0.4220916757583048
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.4231401153003036,
+      "f_EC_matrix_CI": [
+        1.4231401153003036,
+        1.4231401153003036
+      ],
+      "iterations": 9.7492,
+      "iterations_matrix_CI": [
+        9.381946097593564,
+        10.116453902406436
+      ],
+      "batch_ms_per_frame": 1.1731253835372626,
+      "batch_ms_per_frame_matrix_CI": [
+        0.7740702015431451,
+        1.57218056553138
+      ],
+      "FER_Wilson_conditional": [
+        0.012112125252154429,
+        0.022171778194801567
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 4000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "fixed_selected",
+      "frames": 2500,
+      "failures": 0,
+      "FER": 0.0,
+      "FER_matrix_CI": [
+        0.0,
+        0.0
+      ],
+      "yield_mean": 0.4272,
+      "yield_mean_matrix_CI": [
+        0.4272,
+        0.4272
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.4231401153003036,
+      "f_EC_matrix_CI": [
+        1.4231401153003036,
+        1.4231401153003036
+      ],
+      "iterations": 5.0936,
+      "iterations_matrix_CI": [
+        5.049616342159053,
+        5.137583657840947
+      ],
+      "batch_ms_per_frame": 0.4845508832018822,
+      "batch_ms_per_frame_matrix_CI": [
+        0.36473581436095626,
+        0.6043659520428082
+      ],
+      "FER_Wilson_conditional": [
+        0.0,
+        0.001534226061782461
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 4000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "pipeline_pooled",
+      "frames": 2500,
+      "failures": 21,
+      "FER": 0.008400000000000001,
+      "FER_matrix_CI": [
+        0.005679650477366979,
+        0.011120349522633024
+      ],
+      "yield_mean": 0.38081472000000005,
+      "yield_mean_matrix_CI": [
+        0.379291003348462,
+        0.3823384366515381
+      ],
+      "row_fraction": 0.5032949999999999,
+      "row_fraction_matrix_CI": [
+        0.5012030057273497,
+        0.5053869942726502
+      ],
+      "f_EC": 1.5859003136799812,
+      "f_EC_matrix_CI": [
+        1.5795114703958886,
+        1.5922891569640738
+      ],
+      "iterations": 5.9928,
+      "iterations_matrix_CI": [
+        5.70116169865098,
+        6.28443830134902
+      ],
+      "batch_ms_per_frame": 0.6972571821417659,
+      "batch_ms_per_frame_matrix_CI": [
+        0.5434735182549291,
+        0.8510408460286027
+      ],
+      "FER_Wilson_conditional": [
+        0.00550072035459367,
+        0.012807730709350842
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 4000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "pipeline_selected",
+      "frames": 2500,
+      "failures": 2,
+      "FER": 0.0008,
+      "FER_matrix_CI": [
+        -0.0005601747613165113,
+        0.0021601747613165115
+      ],
+      "yield_mean": 0.3890865600000001,
+      "yield_mean_matrix_CI": [
+        0.38798623322819703,
+        0.39018688677180313
+      ],
+      "row_fraction": 0.4971744,
+      "row_fraction_matrix_CI": [
+        0.4955174768315653,
+        0.49883132316843476
+      ],
+      "f_EC": 1.5672083149896228,
+      "f_EC_matrix_CI": [
+        1.5621481565583566,
+        1.572268473420889
+      ],
+      "iterations": 4.129199999999999,
+      "iterations_matrix_CI": [
+        3.972429409463123,
+        4.285970590536875
+      ],
+      "batch_ms_per_frame": 0.40093741710297764,
+      "batch_ms_per_frame_matrix_CI": [
+        0.3094284367624068,
+        0.4924463974435485
+      ],
+      "FER_Wilson_conditional": [
+        0.00021941627657414732,
+        0.0029123550235094615
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 16000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "fixed_pooled",
+      "frames": 2500,
+      "failures": 44,
+      "FER": 0.0176,
+      "FER_matrix_CI": [
+        0.008408331177253092,
+        0.02679166882274691
+      ],
+      "yield_mean": 0.534719401869159,
+      "yield_mean_matrix_CI": [
+        0.5297163851192825,
+        0.5397224186190355
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.3864927303569483,
+      "f_EC_matrix_CI": [
+        1.3864927303569483,
+        1.3864927303569483
+      ],
+      "iterations": 10.0024,
+      "iterations_matrix_CI": [
+        9.255722280724115,
+        10.749077719275885
+      ],
+      "batch_ms_per_frame": 3.6832105663605033,
+      "batch_ms_per_frame_matrix_CI": [
+        2.8805447342793724,
+        4.4858763984416345
+      ],
+      "FER_Wilson_conditional": [
+        0.013136755907428218,
+        0.023543465396979504
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 16000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "fixed_selected",
+      "frames": 2500,
+      "failures": 48,
+      "FER": 0.019200000000000002,
+      "FER_matrix_CI": [
+        0.010852175571055767,
+        0.027547824428944236
+      ],
+      "yield_mean": 0.5338485233644861,
+      "yield_mean_matrix_CI": [
+        0.5293048103295168,
+        0.5383922363994553
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.3864927303569483,
+      "f_EC_matrix_CI": [
+        1.3864927303569483,
+        1.3864927303569483
+      ],
+      "iterations": 10.4132,
+      "iterations_matrix_CI": [
+        9.716143942374725,
+        11.110256057625275
+      ],
+      "batch_ms_per_frame": 3.712508983258158,
+      "batch_ms_per_frame_matrix_CI": [
+        2.6558638867311615,
+        4.769154079785155
+      ],
+      "FER_Wilson_conditional": [
+        0.014512188214478864,
+        0.025363123566531146
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 16000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "pipeline_pooled",
+      "frames": 2500,
+      "failures": 468,
+      "FER": 0.1872,
+      "FER_matrix_CI": [
+        0.15768076043318757,
+        0.21671923956681244
+      ],
+      "yield_mean": 0.3859789158878505,
+      "yield_mean_matrix_CI": [
+        0.3731087593928475,
+        0.3988490723828535
+      ],
+      "row_fraction": 0.48696892499999994,
+      "row_fraction_matrix_CI": [
+        0.4802980825546234,
+        0.49363976744537647
+      ],
+      "f_EC": 1.4993939324750347,
+      "f_EC_matrix_CI": [
+        1.4790215215590192,
+        1.5197663433910502
+      ],
+      "iterations": 23.049600000000005,
+      "iterations_matrix_CI": [
+        20.12904927752261,
+        25.9701507224774
+      ],
+      "batch_ms_per_frame": 7.626583416387438,
+      "batch_ms_per_frame_matrix_CI": [
+        5.178766072526077,
+        10.0744007602488
+      ],
+      "FER_Wilson_conditional": [
+        0.17239356377879506,
+        0.20296624804545604
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 16000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "pipeline_selected",
+      "frames": 2500,
+      "failures": 469,
+      "FER": 0.18760000000000002,
+      "FER_matrix_CI": [
+        0.15731765039924825,
+        0.21788234960075178
+      ],
+      "yield_mean": 0.38574123364485985,
+      "yield_mean_matrix_CI": [
+        0.37246923727249687,
+        0.39901323001722283
+      ],
+      "row_fraction": 0.48696892499999994,
+      "row_fraction_matrix_CI": [
+        0.4802980825546234,
+        0.49363976744537647
+      ],
+      "f_EC": 1.4993939324750347,
+      "f_EC_matrix_CI": [
+        1.4790215215590192,
+        1.5197663433910502
+      ],
+      "iterations": 23.141199999999998,
+      "iterations_matrix_CI": [
+        20.142684738165542,
+        26.139715261834453
+      ],
+      "batch_ms_per_frame": 8.05973055101931,
+      "batch_ms_per_frame_matrix_CI": [
+        5.63734221015492,
+        10.482118891883701
+      ],
+      "FER_Wilson_conditional": [
+        0.17278042473354813,
+        0.20337815970985348
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 16000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "fixed_pooled",
+      "frames": 2500,
+      "failures": 0,
+      "FER": 0.0,
+      "FER_matrix_CI": [
+        0.0,
+        0.0
+      ],
+      "yield_mean": 0.5392592592592591,
+      "yield_mean_matrix_CI": [
+        0.5392592592592591,
+        0.5392592592592591
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.3864927303569483,
+      "f_EC_matrix_CI": [
+        1.3864927303569483,
+        1.3864927303569483
+      ],
+      "iterations": 7.756399999999999,
+      "iterations_matrix_CI": [
+        7.684374925413241,
+        7.828425074586757
+      ],
+      "batch_ms_per_frame": 2.539778866432607,
+      "batch_ms_per_frame_matrix_CI": [
+        1.7401424740818365,
+        3.3394152587833776
+      ],
+      "FER_Wilson_conditional": [
+        0.0,
+        0.001534226061782461
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 16000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "fixed_selected",
+      "frames": 2500,
+      "failures": 0,
+      "FER": 0.0,
+      "FER_matrix_CI": [
+        0.0,
+        0.0
+      ],
+      "yield_mean": 0.5392592592592591,
+      "yield_mean_matrix_CI": [
+        0.5392592592592591,
+        0.5392592592592591
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.3864927303569483,
+      "f_EC_matrix_CI": [
+        1.3864927303569483,
+        1.3864927303569483
+      ],
+      "iterations": 7.7592,
+      "iterations_matrix_CI": [
+        7.694595278343891,
+        7.823804721656109
+      ],
+      "batch_ms_per_frame": 2.9219632831402125,
+      "batch_ms_per_frame_matrix_CI": [
+        1.7597479611391147,
+        4.08417860514131
+      ],
+      "FER_Wilson_conditional": [
+        0.0,
+        0.001534226061782461
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 16000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "pipeline_pooled",
+      "frames": 2500,
+      "failures": 163,
+      "FER": 0.06520000000000001,
+      "FER_matrix_CI": [
+        0.057833258668032086,
+        0.07256674133196793
+      ],
+      "yield_mean": 0.4531518518518518,
+      "yield_mean_matrix_CI": [
+        0.4506395535474477,
+        0.4556641501562559
+      ],
+      "row_fraction": 0.497741775,
+      "row_fraction_matrix_CI": [
+        0.49431743816888096,
+        0.501166111831119
+      ],
+      "f_EC": 1.53229366421562,
+      "f_EC_matrix_CI": [
+        1.5218359150468093,
+        1.5427514133844307
+      ],
+      "iterations": 11.811200000000001,
+      "iterations_matrix_CI": [
+        11.160322621942123,
+        12.462077378057879
+      ],
+      "batch_ms_per_frame": 4.247650517709554,
+      "batch_ms_per_frame_matrix_CI": [
+        2.7679379608017243,
+        5.727363074617383
+      ],
+      "FER_Wilson_conditional": [
+        0.05617406954557236,
+        0.07556009343775366
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 16000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "pipeline_selected",
+      "frames": 2500,
+      "failures": 150,
+      "FER": 0.06,
+      "FER_matrix_CI": [
+        0.0510462335751574,
+        0.0689537664248426
+      ],
+      "yield_mean": 0.4548682222222221,
+      "yield_mean_matrix_CI": [
+        0.45110950728841115,
+        0.4586269371560331
+      ],
+      "row_fraction": 0.499043625,
+      "row_fraction_matrix_CI": [
+        0.49602805977834685,
+        0.5020591902216531
+      ],
+      "f_EC": 1.5362694473896625,
+      "f_EC_matrix_CI": [
+        1.5270600657646862,
+        1.5454788290146388
+      ],
+      "iterations": 11.338000000000001,
+      "iterations_matrix_CI": [
+        10.535879290939617,
+        12.140120709060385
+      ],
+      "batch_ms_per_frame": 4.036475782375783,
+      "batch_ms_per_frame_matrix_CI": [
+        2.70569929423134,
+        5.367252270520226
+      ],
+      "FER_Wilson_conditional": [
+        0.05134842796547018,
+        0.07000169096889838
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 16000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "fixed_pooled",
+      "frames": 2500,
+      "failures": 0,
+      "FER": 0.0,
+      "FER_matrix_CI": [
+        0.0,
+        0.0
+      ],
+      "yield_mean": 0.5138823529411763,
+      "yield_mean_matrix_CI": [
+        0.5138823529411763,
+        0.5138823529411763
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.3864927303569483,
+      "f_EC_matrix_CI": [
+        1.3864927303569483,
+        1.3864927303569483
+      ],
+      "iterations": 7.6251999999999995,
+      "iterations_matrix_CI": [
+        7.570324631855456,
+        7.680075368144543
+      ],
+      "batch_ms_per_frame": 2.723370516812429,
+      "batch_ms_per_frame_matrix_CI": [
+        1.7952798931360157,
+        3.651461140488842
+      ],
+      "FER_Wilson_conditional": [
+        0.0,
+        0.001534226061782461
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 16000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "fixed_selected",
+      "frames": 2500,
+      "failures": 0,
+      "FER": 0.0,
+      "FER_matrix_CI": [
+        0.0,
+        0.0
+      ],
+      "yield_mean": 0.5138823529411763,
+      "yield_mean_matrix_CI": [
+        0.5138823529411763,
+        0.5138823529411763
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.3864927303569483,
+      "f_EC_matrix_CI": [
+        1.3864927303569483,
+        1.3864927303569483
+      ],
+      "iterations": 5.2804,
+      "iterations_matrix_CI": [
+        5.253978510440319,
+        5.306821489559681
+      ],
+      "batch_ms_per_frame": 1.909149849647656,
+      "batch_ms_per_frame_matrix_CI": [
+        1.2138856532109188,
+        2.6044140460843934
+      ],
+      "FER_Wilson_conditional": [
+        0.0,
+        0.001534226061782461
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 16000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "pipeline_pooled",
+      "frames": 2500,
+      "failures": 15,
+      "FER": 0.006,
+      "FER_matrix_CI": [
+        0.00295855677241673,
+        0.00904144322758327
+      ],
+      "yield_mean": 0.46240207058823535,
+      "yield_mean_matrix_CI": [
+        0.46088091226695793,
+        0.46392322890951276
+      ],
+      "row_fraction": 0.501121425,
+      "row_fraction_matrix_CI": [
+        0.5004031473153866,
+        0.5018397026846134
+      ],
+      "f_EC": 1.5426149420926045,
+      "f_EC_matrix_CI": [
+        1.540421358858917,
+        1.544808525326292
+      ],
+      "iterations": 5.8912,
+      "iterations_matrix_CI": [
+        5.58183074973398,
+        6.200569250266021
+      ],
+      "batch_ms_per_frame": 2.107633466133848,
+      "batch_ms_per_frame_matrix_CI": [
+        1.4290008844476074,
+        2.7862660478200882
+      ],
+      "FER_Wilson_conditional": [
+        0.003639486876172801,
+        0.009876328472868269
+      ]
+    },
+    {
+      "family": "gallager",
+      "n": 16000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "pipeline_selected",
+      "frames": 2500,
+      "failures": 0,
+      "FER": 0.0,
+      "FER_matrix_CI": [
+        0.0,
+        0.0
+      ],
+      "yield_mean": 0.47312597647058824,
+      "yield_mean_matrix_CI": [
+        0.472070019648058,
+        0.4741819332931185
+      ],
+      "row_fraction": 0.49330365,
+      "row_fraction_matrix_CI": [
+        0.4921816958760616,
+        0.4944256041239384
+      ],
+      "f_EC": 1.5187398579404763,
+      "f_EC_matrix_CI": [
+        1.5153134675514133,
+        1.5221662483295393
+      ],
+      "iterations": 4.379600000000001,
+      "iterations_matrix_CI": [
+        4.3390448891754,
+        4.420155110824601
+      ],
+      "batch_ms_per_frame": 1.5992813494056464,
+      "batch_ms_per_frame_matrix_CI": [
+        1.2327336638778013,
+        1.9658290349334915
+      ],
+      "FER_Wilson_conditional": [
+        0.0,
+        0.001534226061782461
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 1000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "fixed_pooled",
+      "frames": 2500,
+      "failures": 88,
+      "FER": 0.0352,
+      "FER_matrix_CI": [
+        0.0282644423501507,
+        0.0421355576498493
+      ],
+      "yield_mean": 0.44656457142857126,
+      "yield_mean_matrix_CI": [
+        0.443354399030641,
+        0.4497747438265015
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.5697296550737256,
+      "f_EC_matrix_CI": [
+        1.5697296550737256,
+        1.5697296550737256
+      ],
+      "iterations": 9.7384,
+      "iterations_matrix_CI": [
+        9.118867147399182,
+        10.357932852600818
+      ],
+      "batch_ms_per_frame": 0.23598955045454204,
+      "batch_ms_per_frame_matrix_CI": [
+        0.20546227226283315,
+        0.2665168286462509
+      ],
+      "FER_Wilson_conditional": [
+        0.028659673685343147,
+        0.043166542861689826
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 1000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "fixed_selected",
+      "frames": 2500,
+      "failures": 94,
+      "FER": 0.0376,
+      "FER_matrix_CI": [
+        0.02910571133810637,
+        0.046094288661893634
+      ],
+      "yield_mean": 0.4454537142857141,
+      "yield_mean_matrix_CI": [
+        0.4415220721050662,
+        0.449385356466362
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.5697296550737256,
+      "f_EC_matrix_CI": [
+        1.5697296550737256,
+        1.5697296550737256
+      ],
+      "iterations": 10.1212,
+      "iterations_matrix_CI": [
+        9.396798708426278,
+        10.845601291573722
+      ],
+      "batch_ms_per_frame": 0.26371551686897876,
+      "batch_ms_per_frame_matrix_CI": [
+        0.2154495814018462,
+        0.3119814523361113
+      ],
+      "FER_Wilson_conditional": [
+        0.030824697817848523,
+        0.045794154444087895
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 1000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "pipeline_pooled",
+      "frames": 2500,
+      "failures": 545,
+      "FER": 0.21799999999999997,
+      "FER_matrix_CI": [
+        0.2026917381249805,
+        0.23330826187501943
+      ],
+      "yield_mean": 0.3352114285714286,
+      "yield_mean_matrix_CI": [
+        0.3273104350014366,
+        0.3431124221414206
+      ],
+      "row_fraction": 0.45465999999999995,
+      "row_fraction_matrix_CI": [
+        0.4521098990284013,
+        0.4572101009715986
+      ],
+      "f_EC": 1.5839610562267286,
+      "f_EC_matrix_CI": [
+        1.5761731785641786,
+        1.5917489338892785
+      ],
+      "iterations": 26.901999999999997,
+      "iterations_matrix_CI": [
+        25.519166436711213,
+        28.28483356328878
+      ],
+      "batch_ms_per_frame": 0.813175549171865,
+      "batch_ms_per_frame_matrix_CI": [
+        0.6420290366583786,
+        0.9843220616853513
+      ],
+      "FER_Wilson_conditional": [
+        0.20225439752825572,
+        0.23461090597058956
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 1000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "pipeline_selected",
+      "frames": 2500,
+      "failures": 552,
+      "FER": 0.22079999999999997,
+      "FER_matrix_CI": [
+        0.19932244283576317,
+        0.24227755716423677
+      ],
+      "yield_mean": 0.3333630476190476,
+      "yield_mean_matrix_CI": [
+        0.32343765593350393,
+        0.3432884393045913
+      ],
+      "row_fraction": 0.45526,
+      "row_fraction_matrix_CI": [
+        0.45224579830605555,
+        0.45827420169394445
+      ],
+      "f_EC": 1.5857934254738963,
+      "f_EC_matrix_CI": [
+        1.576588207992655,
+        1.5949986429551377
+      ],
+      "iterations": 26.977200000000003,
+      "iterations_matrix_CI": [
+        25.046446738650424,
+        28.907953261349583
+      ],
+      "batch_ms_per_frame": 1.617502449033782,
+      "batch_ms_per_frame_matrix_CI": [
+        -0.7290782391079411,
+        3.964083137175505
+      ],
+      "FER_Wilson_conditional": [
+        0.2049758781864533,
+        0.23748083364644595
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 1000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "fixed_pooled",
+      "frames": 2500,
+      "failures": 45,
+      "FER": 0.018,
+      "FER_matrix_CI": [
+        0.006220541031134657,
+        0.02977945896886534
+      ],
+      "yield_mean": 0.3977100000000002,
+      "yield_mean_matrix_CI": [
+        0.3929393191176097,
+        0.40248068088239064
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.5697296550737256,
+      "f_EC_matrix_CI": [
+        1.5697296550737256,
+        1.5697296550737256
+      ],
+      "iterations": 7.5120000000000005,
+      "iterations_matrix_CI": [
+        6.876503313582328,
+        8.147496686417673
+      ],
+      "batch_ms_per_frame": 0.24429105035960674,
+      "batch_ms_per_frame_matrix_CI": [
+        0.08018856540990207,
+        0.40839353530931144
+      ],
+      "FER_Wilson_conditional": [
+        0.013479664680750843,
+        0.023999329242807444
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 1000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "fixed_selected",
+      "frames": 2500,
+      "failures": 44,
+      "FER": 0.017599999999999998,
+      "FER_matrix_CI": [
+        0.005638708424438388,
+        0.02956129157556161
+      ],
+      "yield_mean": 0.39787200000000017,
+      "yield_mean_matrix_CI": [
+        0.39302767691189766,
+        0.4027163230881027
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.5697296550737256,
+      "f_EC_matrix_CI": [
+        1.5697296550737256,
+        1.5697296550737256
+      ],
+      "iterations": 7.475999999999999,
+      "iterations_matrix_CI": [
+        6.79856332494178,
+        8.153436675058218
+      ],
+      "batch_ms_per_frame": 0.20515493326820433,
+      "batch_ms_per_frame_matrix_CI": [
+        0.15304936361337892,
+        0.2572605029230297
+      ],
+      "FER_Wilson_conditional": [
+        0.013136755907428218,
+        0.023543465396979504
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 1000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "pipeline_pooled",
+      "frames": 2500,
+      "failures": 234,
+      "FER": 0.09359999999999999,
+      "FER_matrix_CI": [
+        0.07718371802510383,
+        0.11001628197489614
+      ],
+      "yield_mean": 0.3496586666666667,
+      "yield_mean_matrix_CI": [
+        0.3427205329898869,
+        0.35659680034344643
+      ],
+      "row_fraction": 0.46387999999999996,
+      "row_fraction_matrix_CI": [
+        0.45989563198220457,
+        0.46786436801779535
+      ],
+      "f_EC": 1.6121184636582069,
+      "f_EC_matrix_CI": [
+        1.5999504079495284,
+        1.6242865193668854
+      ],
+      "iterations": 14.751999999999999,
+      "iterations_matrix_CI": [
+        13.564117502793103,
+        15.939882497206895
+      ],
+      "batch_ms_per_frame": 0.5108863015193492,
+      "batch_ms_per_frame_matrix_CI": [
+        0.441358835672949,
+        0.5804137673657495
+      ],
+      "FER_Wilson_conditional": [
+        0.0827976164960922,
+        0.1056494024469246
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 1000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "pipeline_selected",
+      "frames": 2500,
+      "failures": 235,
+      "FER": 0.094,
+      "FER_matrix_CI": [
+        0.07500619313150012,
+        0.11299380686849989
+      ],
+      "yield_mean": 0.35148000000000007,
+      "yield_mean_matrix_CI": [
+        0.3434926945271676,
+        0.35946730547283257
+      ],
+      "row_fraction": 0.46166,
+      "row_fraction_matrix_CI": [
+        0.456682801053212,
+        0.466637198946788
+      ],
+      "f_EC": 1.6053386974436858,
+      "f_EC_matrix_CI": [
+        1.5901385869651357,
+        1.620538807922236
+      ],
+      "iterations": 14.919199999999998,
+      "iterations_matrix_CI": [
+        13.50187918881418,
+        16.336520811185817
+      ],
+      "batch_ms_per_frame": 0.47821666807867586,
+      "batch_ms_per_frame_matrix_CI": [
+        0.4196552590259778,
+        0.5367780771313739
+      ],
+      "FER_Wilson_conditional": [
+        0.08317523979919231,
+        0.10607055176297506
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 1000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "fixed_pooled",
+      "frames": 2500,
+      "failures": 47,
+      "FER": 0.0188,
+      "FER_matrix_CI": [
+        -0.00016131102456591953,
+        0.037761311024565924
+      ],
+      "yield_mean": 0.2384315999999999,
+      "yield_mean_matrix_CI": [
+        0.2338240014210304,
+        0.2430391985789694
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.5697296550737256,
+      "f_EC_matrix_CI": [
+        1.5697296550737256,
+        1.5697296550737256
+      ],
+      "iterations": 7.271600000000001,
+      "iterations_matrix_CI": [
+        6.043275582235056,
+        8.499924417764946
+      ],
+      "batch_ms_per_frame": 0.17174428361468017,
+      "batch_ms_per_frame_matrix_CI": [
+        0.14948046385462874,
+        0.1940081033747316
+      ],
+      "FER_Wilson_conditional": [
+        0.014167400463518647,
+        0.024909138698340796
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 1000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "fixed_selected",
+      "frames": 2500,
+      "failures": 8,
+      "FER": 0.0032,
+      "FER_matrix_CI": [
+        -0.002517050381974044,
+        0.008917050381974044
+      ],
+      "yield_mean": 0.24222239999999995,
+      "yield_mean_matrix_CI": [
+        0.24083315675718026,
+        0.24361164324281964
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.5697296550737256,
+      "f_EC_matrix_CI": [
+        1.5697296550737256,
+        1.5697296550737256
+      ],
+      "iterations": 4.71,
+      "iterations_matrix_CI": [
+        4.284766788324942,
+        5.135233211675058
+      ],
+      "batch_ms_per_frame": 0.12008755002170801,
+      "batch_ms_per_frame_matrix_CI": [
+        0.0802364292032495,
+        0.15993867084016652
+      ],
+      "FER_Wilson_conditional": [
+        0.0016223814822816404,
+        0.006302025532705414
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 1000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "pipeline_pooled",
+      "frames": 2500,
+      "failures": 74,
+      "FER": 0.029599999999999998,
+      "FER_matrix_CI": [
+        0.022488830821202482,
+        0.03671116917879751
+      ],
+      "yield_mean": 0.22483719999999993,
+      "yield_mean_matrix_CI": [
+        0.22299768528405287,
+        0.226676714715947
+      ],
+      "row_fraction": 0.47084000000000004,
+      "row_fraction_matrix_CI": [
+        0.46989193444877175,
+        0.4717880655512283
+      ],
+      "f_EC": 1.633373946925353,
+      "f_EC_matrix_CI": [
+        1.6304786033247365,
+        1.6362692905259695
+      ],
+      "iterations": 8.0352,
+      "iterations_matrix_CI": [
+        7.553208490004192,
+        8.517191509995808
+      ],
+      "batch_ms_per_frame": 0.22947946670465172,
+      "batch_ms_per_frame_matrix_CI": [
+        0.19729244434199283,
+        0.2616664890673106
+      ],
+      "FER_Wilson_conditional": [
+        0.023644146890246787,
+        0.03699925298867815
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 1000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "pipeline_selected",
+      "frames": 2500,
+      "failures": 103,
+      "FER": 0.0412,
+      "FER_matrix_CI": [
+        0.022238688975434073,
+        0.06016131102456593
+      ],
+      "yield_mean": 0.23972839999999995,
+      "yield_mean_matrix_CI": [
+        0.23499759713896498,
+        0.24445920286103492
+      ],
+      "row_fraction": 0.43426,
+      "row_fraction_matrix_CI": [
+        0.4330226894577171,
+        0.43549731054228286
+      ],
+      "f_EC": 1.5216605018230243,
+      "f_EC_matrix_CI": [
+        1.5178818188448984,
+        1.5254391848011501
+      ],
+      "iterations": 9.1708,
+      "iterations_matrix_CI": [
+        7.467833857945117,
+        10.873766142054883
+      ],
+      "batch_ms_per_frame": 0.27258788379840554,
+      "batch_ms_per_frame_matrix_CI": [
+        0.21137276457956045,
+        0.33380300301725063
+      ],
+      "FER_Wilson_conditional": [
+        0.03408716853660736,
+        0.049720637297684236
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 4000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "fixed_pooled",
+      "frames": 2500,
+      "failures": 40,
+      "FER": 0.015999999999999997,
+      "FER_matrix_CI": [
+        -0.001647361158426553,
+        0.03364736115842655
+      ],
+      "yield_mean": 0.518968888888889,
+      "yield_mean_matrix_CI": [
+        0.5096615398927411,
+        0.528276237885037
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.4231401153003036,
+      "f_EC_matrix_CI": [
+        1.4231401153003036,
+        1.4231401153003036
+      ],
+      "iterations": 7.7488,
+      "iterations_matrix_CI": [
+        6.844937517463721,
+        8.652662482536279
+      ],
+      "batch_ms_per_frame": 1.1493686168454587,
+      "batch_ms_per_frame_matrix_CI": [
+        0.760448984101962,
+        1.5382882495889554
+      ],
+      "FER_Wilson_conditional": [
+        0.011772026357560073,
+        0.02171310447024535
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 4000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "fixed_selected",
+      "frames": 2500,
+      "failures": 39,
+      "FER": 0.0156,
+      "FER_matrix_CI": [
+        -0.0011877380773820563,
+        0.03238773807738206
+      ],
+      "yield_mean": 0.5191798518518519,
+      "yield_mean_matrix_CI": [
+        0.5103258744362252,
+        0.5280338292674785
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.4231401153003036,
+      "f_EC_matrix_CI": [
+        1.4231401153003036,
+        1.4231401153003036
+      ],
+      "iterations": 7.815600000000001,
+      "iterations_matrix_CI": [
+        6.956651343384741,
+        8.67454865661526
+      ],
+      "batch_ms_per_frame": 1.377008066792041,
+      "batch_ms_per_frame_matrix_CI": [
+        0.5428198213288934,
+        2.2111963122551885
+      ],
+      "FER_Wilson_conditional": [
+        0.011432693131379339,
+        0.02125366507727551
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 4000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "pipeline_pooled",
+      "frames": 2500,
+      "failures": 481,
+      "FER": 0.1924,
+      "FER_matrix_CI": [
+        0.16131373227863977,
+        0.2234862677213602
+      ],
+      "yield_mean": 0.3899638518518519,
+      "yield_mean_matrix_CI": [
+        0.37635373964961555,
+        0.40357396405408824
+      ],
+      "row_fraction": 0.46294,
+      "row_fraction_matrix_CI": [
+        0.4558785442920675,
+        0.47000145570793256
+      ],
+      "f_EC": 1.462658212064222,
+      "f_EC_matrix_CI": [
+        1.4410928882651337,
+        1.4842235358633102
+      ],
+      "iterations": 24.4468,
+      "iterations_matrix_CI": [
+        21.653320021875352,
+        27.240279978124647
+      ],
+      "batch_ms_per_frame": 4.431671083765105,
+      "batch_ms_per_frame_matrix_CI": [
+        2.813922894478294,
+        6.049419273051916
+      ],
+      "FER_Wilson_conditional": [
+        0.17742478586683988,
+        0.20831907000636865
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 4000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "pipeline_selected",
+      "frames": 2500,
+      "failures": 489,
+      "FER": 0.1956,
+      "FER_matrix_CI": [
+        0.16108263414494606,
+        0.23011736585505393
+      ],
+      "yield_mean": 0.40160948148148157,
+      "yield_mean_matrix_CI": [
+        0.38519814150176784,
+        0.4180208214611953
+      ],
+      "row_fraction": 0.4493600000000001,
+      "row_fraction_matrix_CI": [
+        0.4438646021853629,
+        0.4548553978146373
+      ],
+      "f_EC": 1.4211855881033248,
+      "f_EC_matrix_CI": [
+        1.4044029248425012,
+        1.4379682513641485
+      ],
+      "iterations": 25.066000000000003,
+      "iterations_matrix_CI": [
+        22.15406680914774,
+        27.977933190852266
+      ],
+      "batch_ms_per_frame": 4.642536981636658,
+      "batch_ms_per_frame_matrix_CI": [
+        3.125822902463061,
+        6.159251060810255
+      ],
+      "FER_Wilson_conditional": [
+        0.18052307371876666,
+        0.21161096310764646
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 4000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "fixed_pooled",
+      "frames": 2500,
+      "failures": 29,
+      "FER": 0.0116,
+      "FER_matrix_CI": [
+        -0.008297641357784085,
+        0.03149764135778409
+      ],
+      "yield_mean": 0.5026720000000001,
+      "yield_mean_matrix_CI": [
+        0.4925526281094699,
+        0.5127913718905304
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.4231401153003036,
+      "f_EC_matrix_CI": [
+        1.4231401153003036,
+        1.4231401153003036
+      ],
+      "iterations": 6.68,
+      "iterations_matrix_CI": [
+        5.891708607760697,
+        7.468291392239302
+      ],
+      "batch_ms_per_frame": 0.8577149503864347,
+      "batch_ms_per_frame_matrix_CI": [
+        0.6550833759751495,
+        1.06034652479772
+      ],
+      "FER_Wilson_conditional": [
+        0.008088793583036907,
+        0.0166098384341122
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 4000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "fixed_selected",
+      "frames": 2500,
+      "failures": 27,
+      "FER": 0.0108,
+      "FER_matrix_CI": [
+        -0.0077503105344889495,
+        0.02935031053448895
+      ],
+      "yield_mean": 0.5030788571428573,
+      "yield_mean_matrix_CI": [
+        0.4936446992138886,
+        0.5125130150718259
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.4231401153003036,
+      "f_EC_matrix_CI": [
+        1.4231401153003036,
+        1.4231401153003036
+      ],
+      "iterations": 6.644799999999999,
+      "iterations_matrix_CI": [
+        5.880562920211929,
+        7.409037079788069
+      ],
+      "batch_ms_per_frame": 0.9594296171795577,
+      "batch_ms_per_frame_matrix_CI": [
+        0.7778110151287956,
+        1.1410482192303197
+      ],
+      "FER_Wilson_conditional": [
+        0.007433019288849424,
+        0.015668067489998536
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 4000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "pipeline_pooled",
+      "frames": 2500,
+      "failures": 131,
+      "FER": 0.0524,
+      "FER_matrix_CI": [
+        0.0421009229282837,
+        0.0626990770717163
+      ],
+      "yield_mean": 0.4638270476190476,
+      "yield_mean_matrix_CI": [
+        0.4567254879414701,
+        0.47092860729662506
+      ],
+      "row_fraction": 0.46464,
+      "row_fraction_matrix_CI": [
+        0.46159906372187065,
+        0.46768093627812934
+      ],
+      "f_EC": 1.4678499249311974,
+      "f_EC_matrix_CI": [
+        1.4585630614001288,
+        1.477136788462266
+      ],
+      "iterations": 11.112,
+      "iterations_matrix_CI": [
+        10.204218780065057,
+        12.019781219934943
+      ],
+      "batch_ms_per_frame": 2.064683683589101,
+      "batch_ms_per_frame_matrix_CI": [
+        1.4858507102319094,
+        2.6435166569462925
+      ],
+      "FER_Wilson_conditional": [
+        0.04433158321425581,
+        0.06184185595625185
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 4000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "pipeline_selected",
+      "frames": 2500,
+      "failures": 150,
+      "FER": 0.06,
+      "FER_matrix_CI": [
+        0.04783422708966691,
+        0.07216577291033308
+      ],
+      "yield_mean": 0.46436190476190475,
+      "yield_mean_matrix_CI": [
+        0.4566497518252086,
+        0.4720740576986009
+      ],
+      "row_fraction": 0.45924000000000004,
+      "row_fraction_matrix_CI": [
+        0.4561079041027673,
+        0.46237209589723277
+      ],
+      "f_EC": 1.4513586017066875,
+      "f_EC_matrix_CI": [
+        1.4417933413712383,
+        1.4609238620421368
+      ],
+      "iterations": 11.892,
+      "iterations_matrix_CI": [
+        10.750974964865717,
+        13.033025035134282
+      ],
+      "batch_ms_per_frame": 2.112177349627018,
+      "batch_ms_per_frame_matrix_CI": [
+        1.7484553511534298,
+        2.475899348100606
+      ],
+      "FER_Wilson_conditional": [
+        0.05134842796547018,
+        0.07000169096889838
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 4000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "fixed_pooled",
+      "frames": 2500,
+      "failures": 23,
+      "FER": 0.0092,
+      "FER_matrix_CI": [
+        -0.007606095368899862,
+        0.026006095368899862
+      ],
+      "yield_mean": 0.42326976,
+      "yield_mean_matrix_CI": [
+        0.41609019605840597,
+        0.430449323941594
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.4231401153003036,
+      "f_EC_matrix_CI": [
+        1.4231401153003036,
+        1.4231401153003036
+      ],
+      "iterations": 6.579599999999999,
+      "iterations_matrix_CI": [
+        5.825517509428279,
+        7.33368249057172
+      ],
+      "batch_ms_per_frame": 0.9039615668356419,
+      "batch_ms_per_frame_matrix_CI": [
+        0.6635563681323641,
+        1.1443667655389196
+      ],
+      "FER_Wilson_conditional": [
+        0.006138285961438823,
+        0.013767710340806842
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 4000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "fixed_selected",
+      "frames": 2500,
+      "failures": 12,
+      "FER": 0.0048000000000000004,
+      "FER_matrix_CI": [
+        -0.004084624336632939,
+        0.01368462433663294
+      ],
+      "yield_mean": 0.42514944000000005,
+      "yield_mean_matrix_CI": [
+        0.4213539284833904,
+        0.42894495151660966
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.4231401153003036,
+      "f_EC_matrix_CI": [
+        1.4231401153003036,
+        1.4231401153003036
+      ],
+      "iterations": 5.1823999999999995,
+      "iterations_matrix_CI": [
+        4.7683673306380445,
+        5.596432669361954
+      ],
+      "batch_ms_per_frame": 0.6562361668795347,
+      "batch_ms_per_frame_matrix_CI": [
+        0.46784128242670475,
+        0.8446310513323646
+      ],
+      "FER_Wilson_conditional": [
+        0.0027479602251500425,
+        0.008371537266439306
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 4000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "pipeline_pooled",
+      "frames": 2500,
+      "failures": 25,
+      "FER": 0.01,
+      "FER_matrix_CI": [
+        6.668801436988947e-05,
+        0.01993331198563011
+      ],
+      "yield_mean": 0.402336,
+      "yield_mean_matrix_CI": [
+        0.39881674882319906,
+        0.405855251176801
+      ],
+      "row_fraction": 0.4757199999999999,
+      "row_fraction_matrix_CI": [
+        0.4742033390653222,
+        0.47723666093467765
+      ],
+      "f_EC": 1.5016876770288956,
+      "f_EC_matrix_CI": [
+        1.497055872270422,
+        1.5063194817873693
+      ],
+      "iterations": 6.1248,
+      "iterations_matrix_CI": [
+        5.651126422009534,
+        6.5984735779904655
+      ],
+      "batch_ms_per_frame": 1.0408110168296845,
+      "batch_ms_per_frame_matrix_CI": [
+        0.6487099650098405,
+        1.4329120686495285
+      ],
+      "FER_Wilson_conditional": [
+        0.006782640222825534,
+        0.014720901317721276
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 4000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "pipeline_selected",
+      "frames": 2500,
+      "failures": 18,
+      "FER": 0.0072,
+      "FER_matrix_CI": [
+        0.0017593009547339543,
+        0.012640699045266046
+      ],
+      "yield_mean": 0.43785216,
+      "yield_mean_matrix_CI": [
+        0.43570098089361703,
+        0.44000333910638295
+      ],
+      "row_fraction": 0.43242,
+      "row_fraction_matrix_CI": [
+        0.43103066731323525,
+        0.4338093326867648
+      ],
+      "f_EC": 1.369451696358288,
+      "f_EC_matrix_CI": [
+        1.3652087455427666,
+        1.3736946471738092
+      ],
+      "iterations": 6.294,
+      "iterations_matrix_CI": [
+        5.913600675670771,
+        6.6743993243292286
+      ],
+      "batch_ms_per_frame": 0.9336218670941889,
+      "batch_ms_per_frame_matrix_CI": [
+        0.7354862519692551,
+        1.1317574822191228
+      ],
+      "FER_Wilson_conditional": [
+        0.004559225412620101,
+        0.011352907793872689
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 16000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "fixed_pooled",
+      "frames": 2500,
+      "failures": 33,
+      "FER": 0.0132,
+      "FER_matrix_CI": [
+        0.005230103215302177,
+        0.02116989678469782
+      ],
+      "yield_mean": 0.5371143177570095,
+      "yield_mean_matrix_CI": [
+        0.5327763103856001,
+        0.5414523251284188
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.3864927303569483,
+      "f_EC_matrix_CI": [
+        1.3864927303569483,
+        1.3864927303569483
+      ],
+      "iterations": 8.2884,
+      "iterations_matrix_CI": [
+        7.6167564087915105,
+        8.960043591208487
+      ],
+      "batch_ms_per_frame": 3.629838749952614,
+      "batch_ms_per_frame_matrix_CI": [
+        2.51037972000602,
+        4.749297779899209
+      ],
+      "FER_Wilson_conditional": [
+        0.00941450400272468,
+        0.018479218491026725
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 16000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "fixed_selected",
+      "frames": 2500,
+      "failures": 33,
+      "FER": 0.0132,
+      "FER_matrix_CI": [
+        0.0038092105491762604,
+        0.02259078945082374
+      ],
+      "yield_mean": 0.5371143177570095,
+      "yield_mean_matrix_CI": [
+        0.5320029198353649,
+        0.5422257156786541
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.3864927303569483,
+      "f_EC_matrix_CI": [
+        1.3864927303569483,
+        1.3864927303569483
+      ],
+      "iterations": 8.3508,
+      "iterations_matrix_CI": [
+        7.659050276084992,
+        9.042549723915007
+      ],
+      "batch_ms_per_frame": 3.6316977500449865,
+      "batch_ms_per_frame_matrix_CI": [
+        2.7572685834721598,
+        4.506126916617813
+      ],
+      "FER_Wilson_conditional": [
+        0.00941450400272468,
+        0.018479218491026725
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 16000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "pipeline_pooled",
+      "frames": 2500,
+      "failures": 477,
+      "FER": 0.19080000000000003,
+      "FER_matrix_CI": [
+        0.16025405617794275,
+        0.2213459438220573
+      ],
+      "yield_mean": 0.41091907788161997,
+      "yield_mean_matrix_CI": [
+        0.39658870679577474,
+        0.4252494489674652
+      ],
+      "row_fraction": 0.45632,
+      "row_fraction_matrix_CI": [
+        0.4492909314423816,
+        0.4633490685576184
+      ],
+      "f_EC": 1.4057936864271157,
+      "f_EC_matrix_CI": [
+        1.3843272713250925,
+        1.4272601015291388
+      ],
+      "iterations": 24.5272,
+      "iterations_matrix_CI": [
+        21.40562085159906,
+        27.64877914840094
+      ],
+      "batch_ms_per_frame": 14.417075748508797,
+      "batch_ms_per_frame_matrix_CI": [
+        8.016380350873671,
+        20.817771146143922
+      ],
+      "FER_Wilson_conditional": [
+        0.17587625215999636,
+        0.20667251323660984
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 16000,
+      "asymmetry": 0,
+      "sample": 50,
+      "method": "pipeline_selected",
+      "frames": 2500,
+      "failures": 485,
+      "FER": 0.194,
+      "FER_matrix_CI": [
+        0.16026876285231606,
+        0.22773123714768395
+      ],
+      "yield_mean": 0.4200832398753895,
+      "yield_mean_matrix_CI": [
+        0.40318425639435795,
+        0.436982223356421
+      ],
+      "row_fraction": 0.44003999999999993,
+      "row_fraction_matrix_CI": [
+        0.4330941133930623,
+        0.44698588660693755
+      ],
+      "f_EC": 1.356075400853963,
+      "f_EC_matrix_CI": [
+        1.3348630191658515,
+        1.3772877825420746
+      ],
+      "iterations": 24.9912,
+      "iterations_matrix_CI": [
+        21.826050339435398,
+        28.1563496605646
+      ],
+      "batch_ms_per_frame": 15.01954109845683,
+      "batch_ms_per_frame_matrix_CI": [
+        9.046061464192018,
+        20.993020732721643
+      ],
+      "FER_Wilson_conditional": [
+        0.17897372766245884,
+        0.20996521868735202
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 16000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "fixed_pooled",
+      "frames": 2500,
+      "failures": 10,
+      "FER": 0.004,
+      "FER_matrix_CI": [
+        -0.0071057804207911735,
+        0.015105780420791174
+      ],
+      "yield_mean": 0.5371022222222221,
+      "yield_mean_matrix_CI": [
+        0.5311133272990103,
+        0.543091117145434
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.3864927303569483,
+      "f_EC_matrix_CI": [
+        1.3864927303569483,
+        1.3864927303569483
+      ],
+      "iterations": 7.066,
+      "iterations_matrix_CI": [
+        6.471449060508431,
+        7.660550939491569
+      ],
+      "batch_ms_per_frame": 3.2526676003821193,
+      "batch_ms_per_frame_matrix_CI": [
+        1.6896530536521968,
+        4.815682147112042
+      ],
+      "FER_Wilson_conditional": [
+        0.0021741940918635163,
+        0.0073477581614246855
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 16000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "fixed_selected",
+      "frames": 2500,
+      "failures": 10,
+      "FER": 0.004,
+      "FER_matrix_CI": [
+        -0.0071057804207911735,
+        0.015105780420791174
+      ],
+      "yield_mean": 0.5371022222222221,
+      "yield_mean_matrix_CI": [
+        0.5311133272990103,
+        0.543091117145434
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.3864927303569483,
+      "f_EC_matrix_CI": [
+        1.3864927303569483,
+        1.3864927303569483
+      ],
+      "iterations": 7.0672,
+      "iterations_matrix_CI": [
+        6.46895345166712,
+        7.66544654833288
+      ],
+      "batch_ms_per_frame": 3.542962699569762,
+      "batch_ms_per_frame_matrix_CI": [
+        1.8961627646265717,
+        5.189762634512952
+      ],
+      "FER_Wilson_conditional": [
+        0.0021741940918635163,
+        0.0073477581614246855
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 16000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "pipeline_pooled",
+      "frames": 2500,
+      "failures": 107,
+      "FER": 0.0428,
+      "FER_matrix_CI": [
+        0.029944129717072034,
+        0.05565587028292796
+      ],
+      "yield_mean": 0.49640612345679014,
+      "yield_mean_matrix_CI": [
+        0.48748017534960053,
+        0.5053320715639797
+      ],
+      "row_fraction": 0.46563999999999994,
+      "row_fraction_matrix_CI": [
+        0.46311572427037545,
+        0.46816427572962444
+      ],
+      "f_EC": 1.4342564887331215,
+      "f_EC_matrix_CI": [
+        1.4265474800358948,
+        1.4419654974303482
+      ],
+      "iterations": 10.7236,
+      "iterations_matrix_CI": [
+        9.606238441086186,
+        11.840961558913813
+      ],
+      "batch_ms_per_frame": 6.576260099839419,
+      "batch_ms_per_frame_matrix_CI": [
+        3.91474011172191,
+        9.237780087956928
+      ],
+      "FER_Wilson_conditional": [
+        0.03554239995292588,
+        0.051460496357968
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 16000,
+      "asymmetry": 0.25,
+      "sample": 200,
+      "method": "pipeline_selected",
+      "frames": 2500,
+      "failures": 149,
+      "FER": 0.0596,
+      "FER_matrix_CI": [
+        0.04816589923605191,
+        0.07103410076394809
+      ],
+      "yield_mean": 0.49578113580246913,
+      "yield_mean_matrix_CI": [
+        0.4888243559005518,
+        0.5027379157043865
+      ],
+      "row_fraction": 0.45514,
+      "row_fraction_matrix_CI": [
+        0.4517445540668997,
+        0.4585354459331003
+      ],
+      "f_EC": 1.4021900269076855,
+      "f_EC_matrix_CI": [
+        1.3918205090606288,
+        1.412559544754742
+      ],
+      "iterations": 12.721599999999999,
+      "iterations_matrix_CI": [
+        11.6467902249179,
+        13.796409775082097
+      ],
+      "batch_ms_per_frame": 7.886498682154342,
+      "batch_ms_per_frame_matrix_CI": [
+        5.354877073067177,
+        10.418120291241507
+      ],
+      "FER_Wilson_conditional": [
+        0.05097800726500311,
+        0.06957333905021489
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 16000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "fixed_pooled",
+      "frames": 2500,
+      "failures": 8,
+      "FER": 0.0032,
+      "FER_matrix_CI": [
+        -0.0056846243366329395,
+        0.012084624336632939
+      ],
+      "yield_mean": 0.5122379294117646,
+      "yield_mean_matrix_CI": [
+        0.5076722777526573,
+        0.5168035810708719
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.3864927303569483,
+      "f_EC_matrix_CI": [
+        1.3864927303569483,
+        1.3864927303569483
+      ],
+      "iterations": 7.039999999999999,
+      "iterations_matrix_CI": [
+        6.311730457276603,
+        7.768269542723395
+      ],
+      "batch_ms_per_frame": 3.780329766031355,
+      "batch_ms_per_frame_matrix_CI": [
+        2.0311290134256472,
+        5.5295305186370625
+      ],
+      "FER_Wilson_conditional": [
+        0.0016223814822816404,
+        0.006302025532705414
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 16000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "fixed_selected",
+      "frames": 2500,
+      "failures": 4,
+      "FER": 0.0016,
+      "FER_matrix_CI": [
+        -0.0028423121683164698,
+        0.0060423121683164695
+      ],
+      "yield_mean": 0.5130601411764706,
+      "yield_mean_matrix_CI": [
+        0.510777315346917,
+        0.5153429670060242
+      ],
+      "row_fraction": 0.45,
+      "row_fraction_matrix_CI": [
+        0.45,
+        0.45
+      ],
+      "f_EC": 1.3864927303569483,
+      "f_EC_matrix_CI": [
+        1.3864927303569483,
+        1.3864927303569483
+      ],
+      "iterations": 5.680000000000001,
+      "iterations_matrix_CI": [
+        5.25763343095835,
+        6.102366569041651
+      ],
+      "batch_ms_per_frame": 2.8028045491315425,
+      "batch_ms_per_frame_matrix_CI": [
+        1.4081176044298507,
+        4.197491493833234
+      ],
+      "FER_Wilson_conditional": [
+        0.0006223792017700386,
+        0.0041069373366147185
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 16000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "pipeline_pooled",
+      "frames": 2500,
+      "failures": 5,
+      "FER": 0.002,
+      "FER_matrix_CI": [
+        0.0002440219338298345,
+        0.003755978066170166
+      ],
+      "yield_mean": 0.4929204705882353,
+      "yield_mean_matrix_CI": [
+        0.4915451464856973,
+        0.4942957946907733
+      ],
+      "row_fraction": 0.4710599999999999,
+      "row_fraction_matrix_CI": [
+        0.4702865718908903,
+        0.47183342810910955
+      ],
+      "f_EC": 1.4508088909325372,
+      "f_EC_matrix_CI": [
+        1.4484468811291578,
+        1.4531709007359166
+      ],
+      "iterations": 6.469199999999999,
+      "iterations_matrix_CI": [
+        6.333368541618169,
+        6.605031458381829
+      ],
+      "batch_ms_per_frame": 3.344073700392619,
+      "batch_ms_per_frame_matrix_CI": [
+        2.1626628902607123,
+        4.525484510524525
+      ],
+      "FER_Wilson_conditional": [
+        0.0008545736212346501,
+        0.0046735155363006806
+      ]
+    },
+    {
+      "family": "irregular",
+      "n": 16000,
+      "asymmetry": 0.75,
+      "sample": 1000,
+      "method": "pipeline_selected",
+      "frames": 2500,
+      "failures": 12,
+      "FER": 0.0048000000000000004,
+      "FER_matrix_CI": [
+        0.0002888106674019198,
+        0.009311189332598082
+      ],
+      "yield_mean": 0.5344557176470588,
+      "yield_mean_matrix_CI": [
+        0.5311502870123667,
+        0.5377611482817509
+      ],
+      "row_fraction": 0.42519999999999997,
+      "row_fraction_matrix_CI": [
+        0.4238034729512785,
+        0.4265965270487214
+      ],
+      "f_EC": 1.3107548014740136,
+      "f_EC_matrix_CI": [
+        1.3064898794458215,
+        1.3150197235022056
+      ],
+      "iterations": 7.0008,
+      "iterations_matrix_CI": [
+        6.591673690968719,
+        7.409926309031281
+      ],
+      "batch_ms_per_frame": 4.000212965719402,
+      "batch_ms_per_frame_matrix_CI": [
+        2.535757730633688,
+        5.464668200805115
+      ],
+      "FER_Wilson_conditional": [
+        0.0027479602251500425,
+        0.008371537266439306
+      ]
+    }
+  ],
+  "clipping": {
+    "confirmation": {
+      "pooled": {
+        "frames": 37500,
+        "bits": 37500000,
+        "upper_frames": 0,
+        "upper_bits": 0,
+        "lower_frames": 0,
+        "lower_bits": 0,
+        "maximum_raw_prior": 0.28431372549019607
+      },
+      "separate": {
+        "frames": 37500,
+        "bits": 37500000,
+        "upper_frames": 0,
+        "upper_bits": 0,
+        "lower_frames": 0,
+        "lower_bits": 0,
+        "maximum_raw_prior": 0.4352380952380952
+      },
+      "shrink": {
+        "frames": 37500,
+        "bits": 37500000,
+        "upper_frames": 0,
+        "upper_bits": 0,
+        "lower_frames": 0,
+        "lower_bits": 0,
+        "maximum_raw_prior": 0.4086423505572442
+      },
+      "selected": {
+        "frames": 37500,
+        "bits": 37500000,
+        "upper_frames": 0,
+        "upper_bits": 0,
+        "lower_frames": 0,
+        "lower_bits": 0,
+        "maximum_raw_prior": 0.3154901960784314
+      }
+    },
+    "physical": {
+      "pooled": {
+        "frames": 25000,
+        "bits": 25000000,
+        "upper_frames": 0,
+        "upper_bits": 0,
+        "lower_frames": 0,
+        "lower_bits": 0,
+        "maximum_raw_prior": 0.13681592039800994
+      },
+      "separate": {
+        "frames": 25000,
+        "bits": 25000000,
+        "upper_frames": 0,
+        "upper_bits": 0,
+        "lower_frames": 0,
+        "lower_bits": 0,
+        "maximum_raw_prior": 0.21186567164179104
+      },
+      "shrink": {
+        "frames": 25000,
+        "bits": 25000000,
+        "upper_frames": 0,
+        "upper_bits": 0,
+        "lower_frames": 0,
+        "lower_bits": 0,
+        "maximum_raw_prior": 0.20534974381822232
+      },
+      "selected": {
+        "frames": 25000,
+        "bits": 25000000,
+        "upper_frames": 0,
+        "upper_bits": 0,
+        "lower_frames": 0,
+        "lower_bits": 0,
+        "maximum_raw_prior": 0.19061567164179105
+      },
+      "transition": {
+        "frames": 25000,
+        "bits": 25000000,
+        "upper_frames": 0,
+        "upper_bits": 0,
+        "lower_frames": 0,
+        "lower_bits": 0,
+        "maximum_raw_prior": 0.2571884984025559
+      }
+    }
+  },
+  "input_sha256": {
+    "extensions/analyse.py": "2dbb58536273136c0787d4d98ad4bc43ef055c23ad81a801d360507699bba97d",
+    "extensions/common.py": "89d34c154514b54e501150fe983e027c4700d169217432642c502f7d95f6cd09",
+    "extensions/results/confirm_q0_a0_s0_frames.npz": "ea9ee49f05b8b8ca5e4353b9dd8f742845b6947b77acaea63a13f7743a7802ed",
+    "extensions/results/confirm_q0_a0_s1_frames.npz": "3c9db05140615957a34c6a74f48567e5c0ef7606e50106689a3410e5ffcd3302",
+    "extensions/results/confirm_q0_a0_s2_frames.npz": "6ab26b5f07c31b17eeeb5e0172632ada1bb99592c699a032397ea36d2f374d9d",
+    "extensions/results/confirm_q0_a0_s3_frames.npz": "af8d89bc400c2bd3cb2edc3688dc5232042ee4bfb234811034dffe697b863e0c",
+    "extensions/results/confirm_q0_a0_s4_frames.npz": "66a7dd38ceb56aad0d94e28414a5b0103e9cde7f1bd86986d382e695122ebc5e",
+    "extensions/results/confirm_q0_a1_s0_frames.npz": "f81c3f2e3e3200eb59bef8317d1a7c16e354cef708ccc250bf26f57fcc5e656b",
+    "extensions/results/confirm_q0_a1_s1_frames.npz": "81035e0cf854f8a6312259b4165754ed6c49f770a8bc85fd89e263da80946646",
+    "extensions/results/confirm_q0_a1_s2_frames.npz": "94bdf6c2d1567335aad6ba6f40c1c3ed8a898022cc4391311afae87fa3d743c8",
+    "extensions/results/confirm_q0_a1_s3_frames.npz": "c71b5b9e256f4e819f95f4bc6eed028f730d865b2629f72528b69521aa2431d8",
+    "extensions/results/confirm_q0_a1_s4_frames.npz": "3a8d3a2e8728f4f756ade2d25d2e46c6bc90ce7cfa332e6656e22d627935cf4a",
+    "extensions/results/confirm_q0_a2_s0_frames.npz": "401be00e7d33c3d2f7626dcbee97115e0949c82097828c6436988553dacc07de",
+    "extensions/results/confirm_q0_a2_s1_frames.npz": "564f2e5e4f29834e76e7a797570962d4eebc6b1bc146e82105ff0cfe8a57c311",
+    "extensions/results/confirm_q0_a2_s2_frames.npz": "a90b0845c7be12e1504bac6f35a4bab8a852ca56204bcd1e9b51c7f4a8a8aeb7",
+    "extensions/results/confirm_q0_a2_s3_frames.npz": "b1cc605f5f32ee7dddb8d7ac3ebec921b8f3f0964b299f67ca2f766a2c5e0014",
+    "extensions/results/confirm_q0_a2_s4_frames.npz": "156253c0c8c7f7b142a17a3dc422506d292d0ee36b300db31cfc510e3ee758cd",
+    "extensions/results/confirm_q0_a3_s0_frames.npz": "3502950fb4e62e74eceff901cb11c51f7f443884340f6fb9cc454cc978ff4fc5",
+    "extensions/results/confirm_q0_a3_s1_frames.npz": "66b37175ab0c68ffe1d94645e72963593611bc2d85247598919dc6cbb898c827",
+    "extensions/results/confirm_q0_a3_s2_frames.npz": "ad915fbf4165d70d2644b897ab950ca8f3aa6c0cb379af62f7c5b7e2482589c4",
+    "extensions/results/confirm_q0_a3_s3_frames.npz": "75499f2d35e4e8162384eca3125ff5ed3af6ea3067d08930d26e820149e8b7a2",
+    "extensions/results/confirm_q0_a3_s4_frames.npz": "c44904c5749ff2ce557bb0bfd8a957b2fd4bc6ff62f74b59aa2b75fe00b9944d",
+    "extensions/results/confirm_q0_a4_s0_frames.npz": "0ad85e3a1ace4a5b2c8ac18c4c9c3cc88336948c925a0e6dc7b0211f877d5ae6",
+    "extensions/results/confirm_q0_a4_s1_frames.npz": "975cfc5cf1e2fec5178a07be2f81cdfda1814cba5952601471a3abe7d448a2d0",
+    "extensions/results/confirm_q0_a4_s2_frames.npz": "8523142c6b16921380a9e109b4e4577c47d341bec37d5cc5e0eb5480d292a002",
+    "extensions/results/confirm_q0_a4_s3_frames.npz": "eae2ba4f776a502187200c2a20ddeac187ceead005ad0fb11d2fe9158688ffc9",
+    "extensions/results/confirm_q0_a4_s4_frames.npz": "9f0496026d4722d0a6350bd680baca3986626fc80d6f4804fdcb6a40d6a64142",
+    "extensions/results/confirm_q1_a0_s0_frames.npz": "38345882d166f39db7238484000a61d04472f8cdd56f80f35737a06adef09c2b",
+    "extensions/results/confirm_q1_a0_s1_frames.npz": "67c07249e1238d41f0cb41c2299a9acad646022851f43cdd0444b1995152d038",
+    "extensions/results/confirm_q1_a0_s2_frames.npz": "a91957e5466f6b5083a0f8df25efccb91a0f4b3345b11ae9c0690315f1f8890e",
+    "extensions/results/confirm_q1_a0_s3_frames.npz": "966e17605b7c0786ea749217d4861ddd7192f2038edf3d33e492bd98cb4d621d",
+    "extensions/results/confirm_q1_a0_s4_frames.npz": "a6f418f8a7d5dca1daa8d654f2954639315eec737c7d9ca205ea63f7a3cba995",
+    "extensions/results/confirm_q1_a1_s0_frames.npz": "f73eaf994276c12b189363fa991240bca78c12b05cdb6abcf5504ac5af12b706",
+    "extensions/results/confirm_q1_a1_s1_frames.npz": "75c66e88b9e33db813b6913d094834f87281569c35e016825ab086eaf44670d9",
+    "extensions/results/confirm_q1_a1_s2_frames.npz": "f790b535b8894fdf639ca5d08a803372ddd8dd330806c27e5d8a29d449f53adf",
+    "extensions/results/confirm_q1_a1_s3_frames.npz": "094193e3cb82e7ceeddc414ab4c8de8356862e45110f861200b77b4ba921c308",
+    "extensions/results/confirm_q1_a1_s4_frames.npz": "1a3359cbd9e2c384e6c5cd3a452aeeb5a59c7d0f61ec63a04847850934c186a1",
+    "extensions/results/confirm_q1_a2_s0_frames.npz": "efef2387d883a42eb74a54edeede4ee937da5f4586db4920652e4f2e64c1e9e0",
+    "extensions/results/confirm_q1_a2_s1_frames.npz": "f789c59d29c2bce7be0c234d1b566c46a82f3865a245472d1de55cd8b2049539",
+    "extensions/results/confirm_q1_a2_s2_frames.npz": "f4cb1f3fcab296234de32e5be43dd9d882b9275ff9af6a0527f1063d70277bea",
+    "extensions/results/confirm_q1_a2_s3_frames.npz": "1fa22a947534894b98ae474e72a81d9dd522db1d2779ad700664d5c28c7fb0ea",
+    "extensions/results/confirm_q1_a2_s4_frames.npz": "95efede1426ec1e9e41f80abce4bb8fb85977d9ec8654a8c7e1892ea2ab47527",
+    "extensions/results/confirm_q1_a3_s0_frames.npz": "cb07b516a6bd6fc11637ab0d1f94148c9b42e039586468d3d57153bd4382ad43",
+    "extensions/results/confirm_q1_a3_s1_frames.npz": "cb1442ce6b00a0d094a8a17804c8ad8e80d5086ef8398c0ba1e28fa1865a1dd5",
+    "extensions/results/confirm_q1_a3_s2_frames.npz": "62a3ce84730fa6bb6d2265cf8378852445a5f95b93b517798dc4e07c44a26af7",
+    "extensions/results/confirm_q1_a3_s3_frames.npz": "e419b09a418cdeae3eeb44c904aaff7624af10fc2c0a7bf2013a6be0ac5da81f",
+    "extensions/results/confirm_q1_a3_s4_frames.npz": "5c52ad9dadae46f9cd36e0df565938db6c8fe64fd691d11150c47771cc9a5fe4",
+    "extensions/results/confirm_q1_a4_s0_frames.npz": "32cd27406afaa888ea9d6ee7c3693c47a9b7fea313b41885cd1fe1a1ae0bdb5b",
+    "extensions/results/confirm_q1_a4_s1_frames.npz": "4717075d5b558a656d9b5f158cb1ac465e5b41d76b45c980b090e8780cc162df",
+    "extensions/results/confirm_q1_a4_s2_frames.npz": "21067ee3dde98a8fc4214aa1798fc5f70e60bd9a3dcf2d404b6f3bc2c41f1988",
+    "extensions/results/confirm_q1_a4_s3_frames.npz": "b51cb9f6e5069afc931c21ceb0e1ff6da541ea9c7b2828cb2359c2127054f55d",
+    "extensions/results/confirm_q1_a4_s4_frames.npz": "67674b09aa3afcbb93bf6a0a0f7b96e4dcb73583efb97cde2ce8005e37f309c3",
+    "extensions/results/confirm_q2_a0_s0_frames.npz": "2a3ef4615076a356bb8675dc204111aad7f67f977ef5e24d6abf5adb5cedbd9f",
+    "extensions/results/confirm_q2_a0_s1_frames.npz": "329aa19bd367bbbf31f75156fd1957a2b6727ece6cfc875f488cf44edf59c8b0",
+    "extensions/results/confirm_q2_a0_s2_frames.npz": "03645ab89befed9a9c46a3150c6f161c874741554137639767a365e055fa775b",
+    "extensions/results/confirm_q2_a0_s3_frames.npz": "decca8affc9ab3057bdff056cb33944f74dbf1cfa821d1776222885f4d1fec4d",
+    "extensions/results/confirm_q2_a0_s4_frames.npz": "d4c362fcf88b9c7fa0ee81d4f5159b2a6fb0dfd54cf83702bc57bb78469dcdbe",
+    "extensions/results/confirm_q2_a1_s0_frames.npz": "06bd715b6ca7ebabc55721e60bcd1ee8d43ca8e1b6328f1b73f36295ba3bb612",
+    "extensions/results/confirm_q2_a1_s1_frames.npz": "cd76113f7d5f9836ff14dfccc9c3e296ffc4e6a58f079c31b69feba8c1754ce5",
+    "extensions/results/confirm_q2_a1_s2_frames.npz": "a8fe0267e485b7fa309fda3d39dabfa03403a644ccdfea77f2c3f030df5111c0",
+    "extensions/results/confirm_q2_a1_s3_frames.npz": "41793d98ffc2ed285a0ba28c0c568a422af6c43f9a3cf6d9debbe03333fa039e",
+    "extensions/results/confirm_q2_a1_s4_frames.npz": "03019e1facbce62c0bf6fd84ab64057edc3203b1b31f8995eeb761f6bbc70dec",
+    "extensions/results/confirm_q2_a2_s0_frames.npz": "fe069f172bbdbe6ca2778ca64a9f7b4d348d083699aaa8991101f0644230390d",
+    "extensions/results/confirm_q2_a2_s1_frames.npz": "6bc92649d2d62c3bcb0f54fed754b479acd263ffbaeaabe9637a1efed2f428ac",
+    "extensions/results/confirm_q2_a2_s2_frames.npz": "1d485d082503d00f83a9a209829227a10543e2b3c089d08d035712161c1178fd",
+    "extensions/results/confirm_q2_a2_s3_frames.npz": "62c18788ed9907330114d20c429bbe1f3ff2846d97965f766cec4946e0d90a71",
+    "extensions/results/confirm_q2_a2_s4_frames.npz": "872fb190fd0e6566a96334e6b33acc4b1bd76e36e9271a984edbf44f3ec5f628",
+    "extensions/results/confirm_q2_a3_s0_frames.npz": "29f40030f1deb61c8d79412a64c664a2c4976d0abb78a0de27b5c45c3d059495",
+    "extensions/results/confirm_q2_a3_s1_frames.npz": "79fb0b9eb87ca444cf0fa6122ecc5d7609e2601f7a54319684d6163be0e6a9d7",
+    "extensions/results/confirm_q2_a3_s2_frames.npz": "e6b75f0c354919099d01dbe80e631291ad2677bcff32a429f937564445d8e077",
+    "extensions/results/confirm_q2_a3_s3_frames.npz": "0e00e1d6fa985b362f18e732859ac624d8ce4b9bc454caf2a082d969eca057a8",
+    "extensions/results/confirm_q2_a3_s4_frames.npz": "d8e2c16e6464b92d983f88771712ec5c2a26d10b8b232f1e42cab68a1586a9be",
+    "extensions/results/confirm_q2_a4_s0_frames.npz": "1ecd0554fa29d60c79a5face5ad827716769640441668e0260d826b8136484ad",
+    "extensions/results/confirm_q2_a4_s1_frames.npz": "96aa16f7fc22590661c0b610155ca49aa4b976ebb1b386921ac5a5634492d79d",
+    "extensions/results/confirm_q2_a4_s2_frames.npz": "4dd157ca6d3a48c74ac73bc115efb9a2ec94c65b9267c1aa70dd6b359c90438f",
+    "extensions/results/confirm_q2_a4_s3_frames.npz": "99076277f6f2d3de0f1069f88ccd224ac841d288f2853f611c36eb1c576718c5",
+    "extensions/results/confirm_q2_a4_s4_frames.npz": "fbba03a9d566c9eb2385a7adfe2c723733faa3a13f406c0cb30c700f719cbf77",
+    "extensions/results/diagnostic_p0_r0_b0.npz": "361cb9841bbee2b7eadb967ce6394f493fd6f420256b13297c0ae5488bd09f19",
+    "extensions/results/diagnostic_p0_r0_b1.npz": "7de559cf45a6eb69efec597a2c4b1edd43252b7ea95bf5a31f483c326094657a",
+    "extensions/results/diagnostic_p0_r0_b2.npz": "e6c0fddbddec357570a06c822cb90d0f6d89a3a02677434e1b5abd78919057d6",
+    "extensions/results/diagnostic_p0_r1_b0.npz": "189bfb7ac1d879ac7144387f5052866eb411038b2313490c4eef8fa367c0a8dd",
+    "extensions/results/diagnostic_p0_r1_b1.npz": "9430279423dc0a76e7c90b7101f0c03b77f91bdec12ec4e9d048f18c5b046e0a",
+    "extensions/results/diagnostic_p0_r1_b2.npz": "ac2047673861e9afa7e742ed44d58cbb4e93dd7552d43eb68a5d159718d6d53d",
+    "extensions/results/diagnostic_p0_r2_b0.npz": "83a681ecda452f642b14c7ae4c30f0c5b7ea75e03c38f765a197529bb8854c58",
+    "extensions/results/diagnostic_p0_r2_b1.npz": "bab47c46d0b2d065d96fe9d618e06ae8137a3945fd6e2edeea48e1cf1e71cec2",
+    "extensions/results/diagnostic_p0_r2_b2.npz": "d8355e6457136dd75f14eeb32b31ee258709eec59f7bc67cd37bb9fba5bf69a2",
+    "extensions/results/diagnostic_p0_r3_b0.npz": "61b5eb76efb89d8aba5d722f822f43269bef382b4c1bbfb9568bac3f55047c87",
+    "extensions/results/diagnostic_p0_r3_b1.npz": "48bee36ec660f202a0d7319640b7cf1fe8f3fc299598d50052d83b2b2af68415",
+    "extensions/results/diagnostic_p0_r3_b2.npz": "27f778b84cf5ac55b59ca0da4ff9666a5161703ff97445637e5a9e748923931f",
+    "extensions/results/diagnostic_p1_r0_b0.npz": "121cbc222a6dace2ab6dda1b1b01d418711f32580e8305790a013ce50471e4cf",
+    "extensions/results/diagnostic_p1_r0_b1.npz": "16be70de53377b8996914c7f5bb7ef6fb667e5c934b847c70ecbf9f74535fe93",
+    "extensions/results/diagnostic_p1_r0_b2.npz": "8c98c41bbcaf8b94e657180c0469c5f0395ea783ea118b34a66978218ac44cad",
+    "extensions/results/diagnostic_p1_r1_b0.npz": "6afb08aeb18d49ea20ae828378709911b391879fa7072b8cc23d00537d32966b",
+    "extensions/results/diagnostic_p1_r1_b1.npz": "21de35ca6ae92da970074d630a41ee600f6b87fe466d81114bc3021da5e3cc99",
+    "extensions/results/diagnostic_p1_r1_b2.npz": "2d7cd1b94de3af0295f93b385dc3937737f4d00af967e2b498e387a414292270",
+    "extensions/results/diagnostic_p1_r2_b0.npz": "f792e4bfd953361dbb1f32b602b3c0fa67a463372b75f44f8b49839e61831a30",
+    "extensions/results/diagnostic_p1_r2_b1.npz": "4da45e3129f4b248a05bd82456ce8e352d7881f2887385f24f204c0a40aa4de0",
+    "extensions/results/diagnostic_p1_r2_b2.npz": "3f7979f1b5815b104ec06351849cfd69e56bf46ac87350c8368818d23840faea",
+    "extensions/results/diagnostic_p1_r3_b0.npz": "ceda43abbe9f9443155c35645eac8406d40b0f16e609ceb8c656af1b364b3c25",
+    "extensions/results/diagnostic_p1_r3_b1.npz": "e18b3de20de88104189700626cff124150ed0623f537654b6b751b1d62f9a6d2",
+    "extensions/results/diagnostic_p1_r3_b2.npz": "eadc8690c261e21b0a45fa5a5ad3d01640885b397a5760ec3be805db7e486c38",
+    "extensions/results/diagnostic_p2_r0_b0.npz": "4a229ecd8302d8f66bb8dcaa758114ee0177a318fb6cedec9334479a87d72027",
+    "extensions/results/diagnostic_p2_r0_b1.npz": "1111d4ca9203e46635a4145fc792c73e5b588bfb2182f62aa98f5f32453e3621",
+    "extensions/results/diagnostic_p2_r0_b2.npz": "c75ff6f0d4dad9a0d37bf7f7773662670d7f1ddc04f74d81c3947946df61e54e",
+    "extensions/results/diagnostic_p2_r1_b0.npz": "1046eda31b2682faa88fc57c2839c422378f3f936c2fb96cd7e9ab22f1f2e30f",
+    "extensions/results/diagnostic_p2_r1_b1.npz": "09d21678cb89b2d839dd11e0df3d605b9bca53fb0792f416bdc0264df59471e3",
+    "extensions/results/diagnostic_p2_r1_b2.npz": "22121e6ae54075df09d204b90d8e9b24837e30505bcdcc6a01165235f536541a",
+    "extensions/results/diagnostic_p2_r2_b0.npz": "96ace55d67ea751b487773fca0e3432846f5751c403e7e9b9690439b9738f17a",
+    "extensions/results/diagnostic_p2_r2_b1.npz": "5cc07ed0bb6d57a861503cecab510a66a877eef4dd3a2b3eebafe3c346560276",
+    "extensions/results/diagnostic_p2_r2_b2.npz": "0883db1680304f5239a0ea36694f6fc82b1be45812c9ddd554e2f790c3f759f5",
+    "extensions/results/diagnostic_p2_r3_b0.npz": "bb1cb053708ab43c2ad5c657794931a6cf563f74b7f59317fa0324c86cb4dd34",
+    "extensions/results/diagnostic_p2_r3_b1.npz": "d9efa096687873300b67543d5e15d7225929dce3ca60658dbd0d07cb7747666a",
+    "extensions/results/diagnostic_p2_r3_b2.npz": "87f7c48e9eafda3fee4cfb89c3b2fc8de00e61a8ac7ac58c2312d7ce84a1419d",
+    "extensions/results/diagnostic_p3_r0_b0.npz": "a0bd900dde02e3d70d222c9886a3a86f00df12781c452b688d028965c2e40804",
+    "extensions/results/diagnostic_p3_r0_b1.npz": "960927dee465463729804ccdd1a16d891d21a98b16cb7eb26a34b17d5980ecc5",
+    "extensions/results/diagnostic_p3_r0_b2.npz": "2fb61a8663cad68cd7632c8363b9ae47df6df476989df7f884b610d2550918f1",
+    "extensions/results/diagnostic_p3_r1_b0.npz": "f8008dedf0c9b4ec1a8ac0f2c41df9d8046d830d0bbf3a884e7bc19f41ef9849",
+    "extensions/results/diagnostic_p3_r1_b1.npz": "234a7f49bfb9a23027d1005e70fa0588fa85821921828456af6ff6a684c38345",
+    "extensions/results/diagnostic_p3_r1_b2.npz": "c90bc59fb37afefd4e2acc367a5ee079d0a96b66a4b19a8dfb5ce72ccf01853c",
+    "extensions/results/diagnostic_p3_r2_b0.npz": "6d55ab3d9fcc12eef684121a79729c57aa188d2acf7156504d04d693ff587d82",
+    "extensions/results/diagnostic_p3_r2_b1.npz": "e35093c88479a0bebe70568538a45b72b8c8a4329d90083f6bd6c5938d77304d",
+    "extensions/results/diagnostic_p3_r2_b2.npz": "25b261c0a63029d2e6fdee6007bb58a637ad9e3b226aa2ef0739eebc38c1f622",
+    "extensions/results/diagnostic_p3_r3_b0.npz": "df168fadb28c5570c3054acc6da091ebc42b2124a6eafbb91686d5b9d237a8a8",
+    "extensions/results/diagnostic_p3_r3_b1.npz": "65e303cb560ebe204c95d41eee26d62a5ad65def5a00f98efd840659b1d3b2ee",
+    "extensions/results/diagnostic_p3_r3_b2.npz": "d484d8e4c7069c6d7ac136fd07ff4d7b46ee79086dc2d22305a5c0a6446bda3e",
+    "extensions/results/frozen_rule.json": "c67cfcf0a4b5e34c50b009257e893f2e16b1269f5af86381594b7847d8d04996",
+    "extensions/results/physical_gallager_k211_gate_dependent_fixed_frames.npz": "467dc3a14ec7b7c923985eed58e1d730bb5de39c0ddc2fbb478b8f7195ebdc3b",
+    "extensions/results/physical_gallager_k211_gate_dependent_matched_frames.npz": "50a5e5864a1199880e19bbf225cfe32f320fbc347da554098ee3679eb804981a",
+    "extensions/results/physical_gallager_k211_homogeneous_fixed_frames.npz": "b3e3384d6363f3549f22261ee5d322794a5428b1df12c87ea58ae61e6773a8aa",
+    "extensions/results/physical_gallager_k211_homogeneous_matched_frames.npz": "92c6b815c5a2177cadee9ed7f98fc717c9e4e00eb2ec336455ee07d22b0e76d1",
+    "extensions/results/physical_gallager_k211_pauli_fixed_frames.npz": "1db0ae944cf67d8de43c5e3b4aa60d1deef649eeb9cdda82f61aa757ceb5113f",
+    "extensions/results/physical_gallager_k211_pauli_matched_frames.npz": "0099a1681882c6f9b4fc9734a2cfeefd6ca312c4ba7e41103251b924a519f4bc",
+    "extensions/results/physical_gallager_k211_readout_fixed_frames.npz": "eac99290d0a849d0c546587cf556699d81f4f70fc7c1ff986e67193893321565",
+    "extensions/results/physical_gallager_k211_readout_matched_frames.npz": "0883f6d26b420b246681f111267ae454b50ff7f084fd2010d2ab0a32ee19b167",
+    "extensions/results/physical_gallager_k211_thermal_fixed_frames.npz": "a2473ed3fda62f8cae2c327b98fbc184cfe5945469ef8b59aaec6fa48f6d8c84",
+    "extensions/results/physical_gallager_k211_thermal_matched_frames.npz": "891a63e026b0877900b495d7675e314f65cb968dd6457d598a2942190d34b7f2",
+    "extensions/results/physical_gallager_k223_gate_dependent_fixed_frames.npz": "2609c318438a71d6fce7d9b4d4b29f7d8e2cf476e99498653b6a138f5249611a",
+    "extensions/results/physical_gallager_k223_gate_dependent_matched_frames.npz": "9a7d7399f827922e042cd84209a3db371be6d0792c6d8d532c3b499aa4b8bfff",
+    "extensions/results/physical_gallager_k223_homogeneous_fixed_frames.npz": "8f4ea37ef5f5eafd17aec9637309b3418c5edc7568cc7b1d8bb68b5704c969d3",
+    "extensions/results/physical_gallager_k223_homogeneous_matched_frames.npz": "242e5d039197a03d3a74687294044027ac6c6dd57f4a4872eb78cc629b51509f",
+    "extensions/results/physical_gallager_k223_pauli_fixed_frames.npz": "ae3f950fb2572be5c1b6b3c2ba6abf03eabaf8d0184bfaa1372a7db33d9deb20",
+    "extensions/results/physical_gallager_k223_pauli_matched_frames.npz": "224a2c2e9a3b6a7d893e66c53f71ac1005e60c43d820f34b2a39e5cae6b33390",
+    "extensions/results/physical_gallager_k223_readout_fixed_frames.npz": "588ae9ada85b50a2dbcd34f484771af961d099fcd09d292a38ca11b8cbafe07b",
+    "extensions/results/physical_gallager_k223_readout_matched_frames.npz": "5141c1ff8112fe8d9308b7709522df1b10be53a03be620e5aeaca076e1493817",
+    "extensions/results/physical_gallager_k223_thermal_fixed_frames.npz": "0423df2c38cc305916eaf5269793fb4a9a1e9987790de7f21de487930707027f",
+    "extensions/results/physical_gallager_k223_thermal_matched_frames.npz": "be819daeb2877fe4176e2e9e374dcca87917f421ee45e7f3b08fb082fa44ae37",
+    "extensions/results/physical_gallager_k227_gate_dependent_fixed_frames.npz": "b4bde7241058965d344f4ccd559c18f1d5034014bcaef2988cc5ceb64d24c5bb",
+    "extensions/results/physical_gallager_k227_gate_dependent_matched_frames.npz": "d41dfecde1e15fc59c4832b5b0b63abe3ad8d7d33b120dcba2b1083fa7bd3dd5",
+    "extensions/results/physical_gallager_k227_homogeneous_fixed_frames.npz": "1dcaa38a4ef7652f2ba348cb725b22d7dd7ba7785ba7ad11962e7525718043bc",
+    "extensions/results/physical_gallager_k227_homogeneous_matched_frames.npz": "9a9920a5b5a7dbefc249ab5ef861555d8d74f435ec194ff94ce1a0ef0c3d7986",
+    "extensions/results/physical_gallager_k227_pauli_fixed_frames.npz": "0727bb9d6c2ea4bd2f84a980bef0493d120528f8e8e15893f7e790346f3462e6",
+    "extensions/results/physical_gallager_k227_pauli_matched_frames.npz": "36fa3ca1b2099389204e18dd8ea665a9e9713108a9923a217f5e5a1097cbd158",
+    "extensions/results/physical_gallager_k227_readout_fixed_frames.npz": "39019f037c24bb76a99ad277e8d9ea189fe88ccd81cf2de9863efcc8270c0497",
+    "extensions/results/physical_gallager_k227_readout_matched_frames.npz": "1701388096e8d80e8ca55091b45c1e29c4847c4f9c5c816490cfe0ebcfe2fd4a",
+    "extensions/results/physical_gallager_k227_thermal_fixed_frames.npz": "d8d079845279f53b59078c40e1f42a37b115029610bb3d5f3cd47e177fc7eaad",
+    "extensions/results/physical_gallager_k227_thermal_matched_frames.npz": "900ce3cacd943ba1256a13d36beabf4d8e2406790f20c8c36829092eff010b74",
+    "extensions/results/physical_gallager_k229_gate_dependent_fixed_frames.npz": "91b7f0fa53b9006e5b5a6c381a9e821ca10014159a66a177f3dc15a1fa8c5405",
+    "extensions/results/physical_gallager_k229_gate_dependent_matched_frames.npz": "805e6533921790f3c004af2c3d46a4c39c22cc07963573d3c7566d33bdf21a29",
+    "extensions/results/physical_gallager_k229_homogeneous_fixed_frames.npz": "6c08ce84a468e9f1b96787df141ffe8891dbe3fdc0ab21e0ff47427de6bc839d",
+    "extensions/results/physical_gallager_k229_homogeneous_matched_frames.npz": "d10b824ba04dacfb90e0939b38e61f79a2d984c1b5d1839430b78e68aeee3a6e",
+    "extensions/results/physical_gallager_k229_pauli_fixed_frames.npz": "43b82148ce6a10248cbade03ddd0d11e74f1f939709303330ec6d7040f5a8ab8",
+    "extensions/results/physical_gallager_k229_pauli_matched_frames.npz": "ed9e3a5e1e73a4f59a2a074e484685291b1c4b0f4d90f778aa5f33bf8d21f1f4",
+    "extensions/results/physical_gallager_k229_readout_fixed_frames.npz": "88980e16ab323ba0520c9ab5d7abc4f1cee32109e7b3322be4305019b7987617",
+    "extensions/results/physical_gallager_k229_readout_matched_frames.npz": "a4696cf072f5f3cb9068ee5c3ffef9e08bc523702b4f3bb6b4041bb45fd4321e",
+    "extensions/results/physical_gallager_k229_thermal_fixed_frames.npz": "2af89359dd37ea38afa7ba8264ca3f3a1595fff85d2f460bd4df383935b16108",
+    "extensions/results/physical_gallager_k229_thermal_matched_frames.npz": "a3915244e05e1fc49822583d53b6c7cdd2f68e36dbc4134c098e6d8190366fd0",
+    "extensions/results/physical_gallager_k233_gate_dependent_fixed_frames.npz": "ee1ab7659d76e294cbc262535c634366d4dd769d204a15d91a8d3ac27eeba6cc",
+    "extensions/results/physical_gallager_k233_gate_dependent_matched_frames.npz": "50b4dcf511175922bc8ee6029bb77d9585fab92105eafd01ae199c3208cfc5f8",
+    "extensions/results/physical_gallager_k233_homogeneous_fixed_frames.npz": "be331e98c8b3d0380efd507802e00c9cc7cdc8cbc30d405aeecabf7d0ae90437",
+    "extensions/results/physical_gallager_k233_homogeneous_matched_frames.npz": "1557b5b4c5194c6ea40f4f4eb23795cbd30625265b17effce8575d5dc583134b",
+    "extensions/results/physical_gallager_k233_pauli_fixed_frames.npz": "ff996587bd7252e5c3afc4029b43af6954fa087e6db3c9e73dcd24916df4c710",
+    "extensions/results/physical_gallager_k233_pauli_matched_frames.npz": "25ed18cc69b2055878a40cd9c31cf3a8658ba11ad7f7438cecea8c64f03dcbe6",
+    "extensions/results/physical_gallager_k233_readout_fixed_frames.npz": "dd84c4ffc9abf612fd5231a97d720e15dd81404dc7d666eabb7daeebe0ae96bb",
+    "extensions/results/physical_gallager_k233_readout_matched_frames.npz": "a2912fc7d7d66b4e1b2f16cde0cf68643a78e154ad8d6cabfcefb526d2e063e6",
+    "extensions/results/physical_gallager_k233_thermal_fixed_frames.npz": "7ad00a51c99fbb0959ee112d7b6dfcbe47a786993608d2e7b67c2eb80e9144a1",
+    "extensions/results/physical_gallager_k233_thermal_matched_frames.npz": "29c8241787ca086f2a1644e950aaf43edfd9d8ed5e65a81ae8d178988619ed3d",
+    "extensions/results/transfer_gallager_n1000_k211_c0_evaluation.npz": "f0254478bab954ab22592e43c9154910afa94b1bb91422979b9ae7d3af33d4ac",
+    "extensions/results/transfer_gallager_n1000_k211_c0_pipeline_pooled.npz": "1b13062fa4c110d4bad85f32b7bf83187da8507aa6790393099e7396d8c6d43b",
+    "extensions/results/transfer_gallager_n1000_k211_c0_pipeline_selected.npz": "85780aec5248bd2c36287eb4e4c89a75f70ba80318fb8d672320cecb75058d8c",
+    "extensions/results/transfer_gallager_n1000_k211_c0_timing.json": "48c93367e4820ecd9c12cc2d1cc89e1f90f8c26cc6d3311a779dcd17df63a7a5",
+    "extensions/results/transfer_gallager_n1000_k211_c1_evaluation.npz": "90b006ef103269c83dfac1b67bac98421aef195061b21b93f8ca2218b9bb841e",
+    "extensions/results/transfer_gallager_n1000_k211_c1_pipeline_pooled.npz": "cd54ab327669d499b89b949c4923c2a57e32eb19ce1133e2f9c3204f370cd191",
+    "extensions/results/transfer_gallager_n1000_k211_c1_pipeline_selected.npz": "966f76d35f9635fc5943f063e4440751236b8de724e1e613634e6a4b41c6fe98",
+    "extensions/results/transfer_gallager_n1000_k211_c1_timing.json": "6815cd600f8801e4c6b94f0e1d8689303f5c521d24a3bc035362603af7c15715",
+    "extensions/results/transfer_gallager_n1000_k211_c2_evaluation.npz": "2f444f0bde967462e2aae5106169a796d956280c711c3de9e61b718d4cf55f9d",
+    "extensions/results/transfer_gallager_n1000_k211_c2_pipeline_pooled.npz": "2d02f7738cb0f0ac92a43b3b54d0e373dc7104e6b2cac07d8cdd8dc219d573c3",
+    "extensions/results/transfer_gallager_n1000_k211_c2_pipeline_selected.npz": "4d9112575aed382d9533bf4173e933fe6341d88992d560107a5f13325c0f56bf",
+    "extensions/results/transfer_gallager_n1000_k211_c2_timing.json": "77f2cc307988cfe2c9f88780be001c454a0a2456f2b659820349016e93360249",
+    "extensions/results/transfer_gallager_n1000_k223_c0_evaluation.npz": "f3ccb44477a007dc5cad5d3a7da7cfa74ea2afbfb3c1a516fe8b208df483b629",
+    "extensions/results/transfer_gallager_n1000_k223_c0_pipeline_pooled.npz": "0ba356a69ee1e6e4390c2b95880079961cb0609a254523892c86d747cc709183",
+    "extensions/results/transfer_gallager_n1000_k223_c0_pipeline_selected.npz": "da80f78e13583a0cc26bcbe02f24263f00031eb964dabc524d26aa5e5ebeee77",
+    "extensions/results/transfer_gallager_n1000_k223_c0_timing.json": "472825c7b43ca2237525fba3c91401b21c50cb8194d486da71f43bb699c3726c",
+    "extensions/results/transfer_gallager_n1000_k223_c1_evaluation.npz": "254716f5912f7c968a3c3630935e517730d26e4bdeee0e61b4409bad666b12c6",
+    "extensions/results/transfer_gallager_n1000_k223_c1_pipeline_pooled.npz": "0bb78c7268ac5e482a466d76af7f00e7688a189fee3bdd6d937d27c45fef49e0",
+    "extensions/results/transfer_gallager_n1000_k223_c1_pipeline_selected.npz": "c70f80c45470e2685e4c6c09fa4dc6e3510c688ef234f392727b2a5fe7407eb7",
+    "extensions/results/transfer_gallager_n1000_k223_c1_timing.json": "440d93ceaa253e31dae66b6df697ce5ec0d0dc49cf7b23be9c21176adae28738",
+    "extensions/results/transfer_gallager_n1000_k223_c2_evaluation.npz": "40d777079fb81b81fe9f900f63fa19ff000366b50be0edf8313512db17bf29f0",
+    "extensions/results/transfer_gallager_n1000_k223_c2_pipeline_pooled.npz": "4a2488f06f0496d56bf77a3bca3a60517edc183a385b2687c83fe665845dbce7",
+    "extensions/results/transfer_gallager_n1000_k223_c2_pipeline_selected.npz": "98447e230a330b29a0bd7f9484407277ae961ef8448072c62c001df3d2ccd449",
+    "extensions/results/transfer_gallager_n1000_k223_c2_timing.json": "86929cfa6325256f4aea0b05585bd048a47ffa739b407da06ee198ee31737ad4",
+    "extensions/results/transfer_gallager_n1000_k227_c0_evaluation.npz": "a16132eb6ef148d02e58df9098fb738dae8ffe0ea908f99a8d27dbd7d142f3cb",
+    "extensions/results/transfer_gallager_n1000_k227_c0_pipeline_pooled.npz": "a738bf0bc7377a2704aded86b5226586e5162874c9750bb4a6b6c4fdf646476e",
+    "extensions/results/transfer_gallager_n1000_k227_c0_pipeline_selected.npz": "2829dc8d50ea4ca27420e2a50ba2c0480a4d8022fad91d03765dcb9f918d7102",
+    "extensions/results/transfer_gallager_n1000_k227_c0_timing.json": "721248f3dfee22c5ee697c53a9230e0ec4fb61c7801686b9f994a495679ceff1",
+    "extensions/results/transfer_gallager_n1000_k227_c1_evaluation.npz": "70736baf28821f19c9034cf2140f4087d7da7bf926f642cee11f0335ac6173d8",
+    "extensions/results/transfer_gallager_n1000_k227_c1_pipeline_pooled.npz": "a81f2ca35e07f989c056d77f15694eb87530c4feb083a4b8ea57181690d50bd3",
+    "extensions/results/transfer_gallager_n1000_k227_c1_pipeline_selected.npz": "5e3816e5878f18066c5211bbaabfe46dfdcaa09005bbc238d9fcc335b033fdcd",
+    "extensions/results/transfer_gallager_n1000_k227_c1_timing.json": "6236a56e9abca276f9acbf843ebf45afa7ff48b57f69ca8127770dac09fe22e7",
+    "extensions/results/transfer_gallager_n1000_k227_c2_evaluation.npz": "b5294ef9be0d8c0a0e1bedbf097658431a23521e6a341d41302210ba153ec3bb",
+    "extensions/results/transfer_gallager_n1000_k227_c2_pipeline_pooled.npz": "0adf51cedbd16c454443b5957cfb76f2f53ab290ceda9d7efa0fd7d564640fdc",
+    "extensions/results/transfer_gallager_n1000_k227_c2_pipeline_selected.npz": "adbde51c1988ed3701074e6734e9aa3923d1191723239dab8095fa029ae5dc7a",
+    "extensions/results/transfer_gallager_n1000_k227_c2_timing.json": "0498f20c2edd51b51317fc3131b6117a3d55cca66143704a1341ab8846a04c94",
+    "extensions/results/transfer_gallager_n1000_k229_c0_evaluation.npz": "d4bfd4ae320a46dfa504b0d6ba058328a626d7fb9d7eacb5a189f25c0c2a1514",
+    "extensions/results/transfer_gallager_n1000_k229_c0_pipeline_pooled.npz": "d1da1ad78df5e2156bd31c3eefcc9829f5398e124fddfa793d2f71c3865af89a",
+    "extensions/results/transfer_gallager_n1000_k229_c0_pipeline_selected.npz": "13a0e5104ee01f8001a0e2875195a6899702466f295ce08ad0e2d2634e155087",
+    "extensions/results/transfer_gallager_n1000_k229_c0_timing.json": "9aef74ccf8959ae50a32ecde8ff45881f4cb52e7ce442c16e24ac5cec9e1176c",
+    "extensions/results/transfer_gallager_n1000_k229_c1_evaluation.npz": "ccb1592c7dbca70a5de269e848c5c85fa9c0719022cc2936213ce9c395e3fd8e",
+    "extensions/results/transfer_gallager_n1000_k229_c1_pipeline_pooled.npz": "6f305ef8c254b8d8faea7342d66c2cb6c1ed06e4c4c2b07b2754c1a2d20385bf",
+    "extensions/results/transfer_gallager_n1000_k229_c1_pipeline_selected.npz": "7a0c31ce7b9b214fc8ba75b6c10b55b7509293293ba40b51c0d76172079a1b15",
+    "extensions/results/transfer_gallager_n1000_k229_c1_timing.json": "2721c48779991a05b3957b3563142ea3e101f8925b8362307d0325a73e0f3ec8",
+    "extensions/results/transfer_gallager_n1000_k229_c2_evaluation.npz": "407376190603c89f534ca2d33016e4761cb7699fce986717a6d80baa190afd60",
+    "extensions/results/transfer_gallager_n1000_k229_c2_pipeline_pooled.npz": "2c620fccf69a63c468d780d6d756b1e4ae23bfeb96c05d758049b5c453a08b5b",
+    "extensions/results/transfer_gallager_n1000_k229_c2_pipeline_selected.npz": "83111fa9f1c9d2a511f5843c92da35ae347dd376c053868f6d61f543f4f45be1",
+    "extensions/results/transfer_gallager_n1000_k229_c2_timing.json": "46f04720273c33ef5c17792711433690f2b077033d73919a6f47c0e583ae37e0",
+    "extensions/results/transfer_gallager_n1000_k233_c0_evaluation.npz": "2e42374b59cf8fefbaec23d137d089e5b54c188ecd771073a49b2bd85a5082fe",
+    "extensions/results/transfer_gallager_n1000_k233_c0_pipeline_pooled.npz": "1d33196ac003d56c85b89abb16303c60c16a7b4f8cb8ee7d0b5d4f9117c4addb",
+    "extensions/results/transfer_gallager_n1000_k233_c0_pipeline_selected.npz": "4f9e47186e2e6faf9a57179cc06cb767c2fddf09ff0abed9da1d2b94901af7f6",
+    "extensions/results/transfer_gallager_n1000_k233_c0_timing.json": "de55a19b134020f52fe4610d7400d158e6822417eb9260aad6f35868e82e9665",
+    "extensions/results/transfer_gallager_n1000_k233_c1_evaluation.npz": "fd0134af47b7876102cb70b012086876f17e0aa95e43184f91be6fa7ea6a9713",
+    "extensions/results/transfer_gallager_n1000_k233_c1_pipeline_pooled.npz": "5a3fe47b05fb687738557c4a05c66005b447e062c6625dadeb49ce6965665bea",
+    "extensions/results/transfer_gallager_n1000_k233_c1_pipeline_selected.npz": "349d221c610f3ccab2e69852a8558930a4faaddf191c756d219f0e0caeb0b55a",
+    "extensions/results/transfer_gallager_n1000_k233_c1_timing.json": "4f575debcc0583b0a063a04454f3ccdf9b5aee448d867337b99f8d8d3e1c4d59",
+    "extensions/results/transfer_gallager_n1000_k233_c2_evaluation.npz": "6e1fdc7a94f18e406a473d80c33e3de5c50c290f6b8905742cae45071cacff9f",
+    "extensions/results/transfer_gallager_n1000_k233_c2_pipeline_pooled.npz": "15d06a21c51c393853c9dbe7e3795e76e656e0d2adfff24a9e3c56ec43e27656",
+    "extensions/results/transfer_gallager_n1000_k233_c2_pipeline_selected.npz": "1ae7276b1633d33dab4618cbbf6d91a6a0bf8430825b45337152ff7ef4354ba0",
+    "extensions/results/transfer_gallager_n1000_k233_c2_timing.json": "f3652ecda31cf6263ad734a953db762526395fff1ba31eab2d047966791c55f1",
+    "extensions/results/transfer_gallager_n16000_k211_c0_evaluation.npz": "ab0dd36ed7655522a674e1d51f84db326ac326484dbe1b2a3e29f9d70c64b3fb",
+    "extensions/results/transfer_gallager_n16000_k211_c0_pipeline_pooled.npz": "b752a08400a63f868905a544e810d1cdd255e95dae544667c7c6b43f0d77082c",
+    "extensions/results/transfer_gallager_n16000_k211_c0_pipeline_selected.npz": "6f234e8c940c7cb6ba2f025be6433326de0dc0f65cb0f99f97b40036fd1783f9",
+    "extensions/results/transfer_gallager_n16000_k211_c0_timing.json": "3b3d983b15ed7c4e4bcf5532f07d429847e41ac4bb0cfe8963249b98b4aa567b",
+    "extensions/results/transfer_gallager_n16000_k211_c1_evaluation.npz": "8925313de45b05ec56053779df516f94fc02c5594111c024ce932d4538ba4f85",
+    "extensions/results/transfer_gallager_n16000_k211_c1_pipeline_pooled.npz": "1616e01f4cc910a9a007a41feac41ea7b5afa99895b188925608256123b2ab54",
+    "extensions/results/transfer_gallager_n16000_k211_c1_pipeline_selected.npz": "6ce749280d8dcf824a224eba5f07a23e129e2624fc4728c60f9344c815860eab",
+    "extensions/results/transfer_gallager_n16000_k211_c1_timing.json": "170ce98e451f2b0ce02a09ba8f379487717b215c49f4ac12476a731f36fb1a29",
+    "extensions/results/transfer_gallager_n16000_k211_c2_evaluation.npz": "8b24ea4cbf2801548030039e00ca0767bd8b184c5378983a1624cfa67d398f98",
+    "extensions/results/transfer_gallager_n16000_k211_c2_pipeline_pooled.npz": "ddaa3920aff77183218dafdda43ba20d8202d79a6a22682f7b99d6746596b380",
+    "extensions/results/transfer_gallager_n16000_k211_c2_pipeline_selected.npz": "78a5b5844cf10c7e6840304c84b59b7d6abce999f5c873da650d78d40f85bdc5",
+    "extensions/results/transfer_gallager_n16000_k211_c2_timing.json": "584d9ed4349b48ecbf0bbd31381d3fb7b789670f300fdb601f7a2b8b430297c2",
+    "extensions/results/transfer_gallager_n16000_k223_c0_evaluation.npz": "b6a863cd2750fdd143712202824597827de1e0c632dd65960cdf998eb48522bc",
+    "extensions/results/transfer_gallager_n16000_k223_c0_pipeline_pooled.npz": "41397b80b48ab069c46d95a222d19b765e7801f10e4ac45596a75413bdbe3b0c",
+    "extensions/results/transfer_gallager_n16000_k223_c0_pipeline_selected.npz": "63fdd916b21aecdb018ac62a10d72a59242e98f65c6695f0abadc0c568b38994",
+    "extensions/results/transfer_gallager_n16000_k223_c0_timing.json": "a9a410cf895fd0e71a2be4bb0a8b042e504c26083e7adba9f91632396a343124",
+    "extensions/results/transfer_gallager_n16000_k223_c1_evaluation.npz": "62fdf2e4ea3ca5f5a7d7097567efe482ea9af6045a3ce10559fbf8744ac734cc",
+    "extensions/results/transfer_gallager_n16000_k223_c1_pipeline_pooled.npz": "5f582724184ea20689883830f2a9f24f4878892607ff4d4312c7a21816ff04cb",
+    "extensions/results/transfer_gallager_n16000_k223_c1_pipeline_selected.npz": "6c8c38cfe8845dd3dc9e3600249af93495aed4f7292062d3e0b0ececade9c0f0",
+    "extensions/results/transfer_gallager_n16000_k223_c1_timing.json": "2c7c61460190a43096be6ed19f2ff45a38ea19c2341a5ca88dc8d39b7c34280d",
+    "extensions/results/transfer_gallager_n16000_k223_c2_evaluation.npz": "7a026f80a91cd79ef83b870ba4517b97971a17b4953cb7d244f326185fdb7114",
+    "extensions/results/transfer_gallager_n16000_k223_c2_pipeline_pooled.npz": "38a07cd2a9793a6af667948d8a771c4ab80c1b50c153a4bbe3f01f4afbc6f6cd",
+    "extensions/results/transfer_gallager_n16000_k223_c2_pipeline_selected.npz": "33f8760c10f684289b90625ea865d153dbad5663cdfa653af261462c1f6087be",
+    "extensions/results/transfer_gallager_n16000_k223_c2_timing.json": "869aee1c8f8c27f9c103e6e84e2253977c0788b2960f80aa16127353ff0318f0",
+    "extensions/results/transfer_gallager_n16000_k227_c0_evaluation.npz": "15a4a0160c5eb4c831f52bd32c0fcfebe88b1a6e8c60e5e0ad7ba0b7275dcc2c",
+    "extensions/results/transfer_gallager_n16000_k227_c0_pipeline_pooled.npz": "112360964fd413ca32c3da928fdfe9a5df8bf51676873663edfc66f440925363",
+    "extensions/results/transfer_gallager_n16000_k227_c0_pipeline_selected.npz": "3daf5a59cf3bbdbf35ce234c1f41d6a05fde7b5b2f4b18f4514898ab73f287e2",
+    "extensions/results/transfer_gallager_n16000_k227_c0_timing.json": "cf8b8b603b94bee230b9219fd8d0eea387923c35560ab0113a66864421508615",
+    "extensions/results/transfer_gallager_n16000_k227_c1_evaluation.npz": "b117119e2587a0bef74a267c4563d316a89ee76021deb34af0680a1af8ec929b",
+    "extensions/results/transfer_gallager_n16000_k227_c1_pipeline_pooled.npz": "14485224190b0bad78b10f28fb1e8974a8df4f09f0fe8c43835979ff3a110b3b",
+    "extensions/results/transfer_gallager_n16000_k227_c1_pipeline_selected.npz": "6a36ed83175da7a9c8d09b802b9e6a22ed9f1ecc77fd90c699cdc610cfa3488c",
+    "extensions/results/transfer_gallager_n16000_k227_c1_timing.json": "fe87324d2605ef0cf1208107a1b1ab7a8a19c8d4d0baeecf0aa530890feeca59",
+    "extensions/results/transfer_gallager_n16000_k227_c2_evaluation.npz": "ca9f85d9f183f844314c2abc2613b3815032eb4c33fd12913089d6a086c6c763",
+    "extensions/results/transfer_gallager_n16000_k227_c2_pipeline_pooled.npz": "fe4b2868e55d7b59654de3121163480dcf02a80b0b3325450f7ac9b65bd3caa1",
+    "extensions/results/transfer_gallager_n16000_k227_c2_pipeline_selected.npz": "259afae8b0e7d1ba638d7dd53a91a166ff7845748574b715d396e89551f460bf",
+    "extensions/results/transfer_gallager_n16000_k227_c2_timing.json": "2245cfa162d03fe3341b28fba224e6c7a563143222c69979d299fc66e622b8b4",
+    "extensions/results/transfer_gallager_n16000_k229_c0_evaluation.npz": "38592eba5206a1a4595fd741c0fa4384ba3d27408a0a0fee535be9c9bbed7211",
+    "extensions/results/transfer_gallager_n16000_k229_c0_pipeline_pooled.npz": "c8eeb73d81e3ef4dca809ae0f5fa457123a18d027c8c38464a7389695626b794",
+    "extensions/results/transfer_gallager_n16000_k229_c0_pipeline_selected.npz": "92cfaf7bce03616991856acd5c7c758f34ddc5cbf5c10b4c66dac3e884c317ad",
+    "extensions/results/transfer_gallager_n16000_k229_c0_timing.json": "b2adad21162af4ff7dfbe030f25e7da8e31d1682d04813bc42edcf9dfa80f54f",
+    "extensions/results/transfer_gallager_n16000_k229_c1_evaluation.npz": "d5dd20251bded2267e088bddd91baff19c5aec2a7214e38ac62ad821c7835352",
+    "extensions/results/transfer_gallager_n16000_k229_c1_pipeline_pooled.npz": "bf916856a41235f55976578ce3045f8b6041202297529b0bbafdffc4f6ee5b50",
+    "extensions/results/transfer_gallager_n16000_k229_c1_pipeline_selected.npz": "16c7fe7629903a15305ddcf4f7353aec01261af24e149a7c5f55d22a1ff7e8ae",
+    "extensions/results/transfer_gallager_n16000_k229_c1_timing.json": "483389be3b06c211d3cf3d8bbf1b27a1455086eea88d1e03be9c2dabc1c58999",
+    "extensions/results/transfer_gallager_n16000_k229_c2_evaluation.npz": "be73d3ab248922b65c0a6b5615500154f93f69a56bc2e5a5e9c6236d06265c1b",
+    "extensions/results/transfer_gallager_n16000_k229_c2_pipeline_pooled.npz": "7a278ea09ef20fec4309c19295d78bef9ff18db5ccf353b676bf5965ec0cf09b",
+    "extensions/results/transfer_gallager_n16000_k229_c2_pipeline_selected.npz": "ea99e5a4b86e4e39ce15a23f8b37249a1176f8eeb44ff40be5c0754e54b8c480",
+    "extensions/results/transfer_gallager_n16000_k229_c2_timing.json": "fe473b72023449911ef2f06758e04bd95fe1a12de28e7064d21a09f6d0e1b590",
+    "extensions/results/transfer_gallager_n16000_k233_c0_evaluation.npz": "b199d93e06309c8f71deb9e2081220b412428589a1651c3ab259306799861234",
+    "extensions/results/transfer_gallager_n16000_k233_c0_pipeline_pooled.npz": "36bf135a72a398f0c09bc344c1c2e9eae1848692bc6a74406e780ed6cfdbf0ef",
+    "extensions/results/transfer_gallager_n16000_k233_c0_pipeline_selected.npz": "25f4d9c659c80879ff30b4f8234a61950276caf5cf8c9d3d6312626415644a44",
+    "extensions/results/transfer_gallager_n16000_k233_c0_timing.json": "a659997d5df7a6ca0b94be899693b992488378b6d2f83019151b1d1d86c81443",
+    "extensions/results/transfer_gallager_n16000_k233_c1_evaluation.npz": "bc5d0ba008f7c882b50d434ec563680384402e224438a0e3e367d7260a6a9a08",
+    "extensions/results/transfer_gallager_n16000_k233_c1_pipeline_pooled.npz": "7ebbe816686a789ad16b69b54d5eb950746e4fdd658fca2b8a8a8260faff758a",
+    "extensions/results/transfer_gallager_n16000_k233_c1_pipeline_selected.npz": "bbf47674c0a8ceaffe0d3140b59d329981e001c9ccc825b4f47fafd26ca54a3b",
+    "extensions/results/transfer_gallager_n16000_k233_c1_timing.json": "813e530208248e4091695e898fb7ac8070a5e460873eea671329d85e5eefed52",
+    "extensions/results/transfer_gallager_n16000_k233_c2_evaluation.npz": "fbb8a2e9c0da90d613d3af5be46e3b66bf47288ca2a1fa0e03e4e71b095f645b",
+    "extensions/results/transfer_gallager_n16000_k233_c2_pipeline_pooled.npz": "e286849aba2e3d439044330e5d7664b046814f411411d813d19d288103c3804a",
+    "extensions/results/transfer_gallager_n16000_k233_c2_pipeline_selected.npz": "8bc4633c9c7719a00efef65c060de1fad8bae23339fc74ec46d9dcbde4278e2d",
+    "extensions/results/transfer_gallager_n16000_k233_c2_timing.json": "4a99f04247552900f2e00cd6c61db6b95b52f8f9be4c1a7cf89a576aa32b1404",
+    "extensions/results/transfer_gallager_n4000_k211_c0_evaluation.npz": "a40542ef116ddc37412f41542ec48d195441e6e755777923a54209b6e4eb48e3",
+    "extensions/results/transfer_gallager_n4000_k211_c0_pipeline_pooled.npz": "483d2c0e20277f979aa98d48e193aa8ae0c4abcf6df49d20efc969ddfd5c3ee6",
+    "extensions/results/transfer_gallager_n4000_k211_c0_pipeline_selected.npz": "32d2cc8ec6faf7cba98cef088d7800cca71aa2c460d1e616d2ebae9e73bb293b",
+    "extensions/results/transfer_gallager_n4000_k211_c0_timing.json": "e67d94a869346eb0187794a5cc23e7a0c0d42bc873b2855597c3c5243041584d",
+    "extensions/results/transfer_gallager_n4000_k211_c1_evaluation.npz": "da1b08e903f1f3a7f4fe61af0811874c0bd840f72606895a365232b0ccf536af",
+    "extensions/results/transfer_gallager_n4000_k211_c1_pipeline_pooled.npz": "89137997476c8eae2c2a1884e33aaaef637274e564d47d12496878fb892d9c85",
+    "extensions/results/transfer_gallager_n4000_k211_c1_pipeline_selected.npz": "692e7042475e4a8a5c3f57ae429952e2b1825669dacd99d5a8d72c4fda96f4d8",
+    "extensions/results/transfer_gallager_n4000_k211_c1_timing.json": "8eb1099073cea6ec65bd20ebc91356607d76114cc43d756ea3d337613f0cf282",
+    "extensions/results/transfer_gallager_n4000_k211_c2_evaluation.npz": "65fe50f36f100cd6d03b4bd5b64bab2eead6a0aabd910a498e4081cf24952b45",
+    "extensions/results/transfer_gallager_n4000_k211_c2_pipeline_pooled.npz": "2731639461674e52edf61e6eb2f7caf76b4a5068f221ff4ec9ac6ecb8e0ee3b9",
+    "extensions/results/transfer_gallager_n4000_k211_c2_pipeline_selected.npz": "39fb6e16fa394526286f74005a319de178992e17c5412aeaf4cb50b91c6919b0",
+    "extensions/results/transfer_gallager_n4000_k211_c2_timing.json": "a9a6eaf03166516bc7653d01a50dbf4b2a3cc2edf9d81c4c35b5e7e4ffc3918d",
+    "extensions/results/transfer_gallager_n4000_k223_c0_evaluation.npz": "6d351470431f99ec7919568794a87a74040a8eea5325b699e4df0a08069efd65",
+    "extensions/results/transfer_gallager_n4000_k223_c0_pipeline_pooled.npz": "3b8def8b2a640c3fd02f0c1e2aabb52bef778192718701f8f7140367e6d2211e",
+    "extensions/results/transfer_gallager_n4000_k223_c0_pipeline_selected.npz": "efbbe0577d7769136637246c76bf14aad3549bf7812c3dc8fb5a315f1310d25f",
+    "extensions/results/transfer_gallager_n4000_k223_c0_timing.json": "5f0e3cdaeb999bbcf3a925aa3866e7a0f65131edd3aa2786d955128f0be55bbb",
+    "extensions/results/transfer_gallager_n4000_k223_c1_evaluation.npz": "1786c8f8a93ddb0a6891abc244e6b835840468edaccc12a588c455c204c2841e",
+    "extensions/results/transfer_gallager_n4000_k223_c1_pipeline_pooled.npz": "879d2a920630f75b6239f24e72d7bce74d07e1605542963750bb9a626d094646",
+    "extensions/results/transfer_gallager_n4000_k223_c1_pipeline_selected.npz": "bd1c3daf8eb74c2bad4f97fa79099d551dd9d23a7cc18ce10866728a4b311834",
+    "extensions/results/transfer_gallager_n4000_k223_c1_timing.json": "8c8cf39d4f2964d673a8229b2907ad934a65a3e4aca5193a53a3cf280919e636",
+    "extensions/results/transfer_gallager_n4000_k223_c2_evaluation.npz": "cba2d4d5d26e1f52fcc908512faedae3633e35d98262c4c9088e58df45ced7b1",
+    "extensions/results/transfer_gallager_n4000_k223_c2_pipeline_pooled.npz": "2f25cc39eac38608940b39c49d81037fbd7252c2f6e2d4568f697fd31406b65c",
+    "extensions/results/transfer_gallager_n4000_k223_c2_pipeline_selected.npz": "483bcfeebab09e67672e1f9c212c1bfa1291fb301a901d7e19fe7b4351cfbaf6",
+    "extensions/results/transfer_gallager_n4000_k223_c2_timing.json": "5ef3d0ee97e88d44916b2f92a9f7717df5e1613b636138081ba00158d436423c",
+    "extensions/results/transfer_gallager_n4000_k227_c0_evaluation.npz": "a0407689ef43e43bcb3b842615ae1df115df501422ae4967188e3f622d5453b5",
+    "extensions/results/transfer_gallager_n4000_k227_c0_pipeline_pooled.npz": "a48d78d63a3970c78e4949ea3948334354ffbf4c9a7ef670e2c90cccf9d4755d",
+    "extensions/results/transfer_gallager_n4000_k227_c0_pipeline_selected.npz": "7e9fb98002b7213a36d080531ee41776e1507801e60126bd2a3626d412e9d033",
+    "extensions/results/transfer_gallager_n4000_k227_c0_timing.json": "6ee58bed30575f95fee1989194da8b89c9ca2c480a61a8746cc471df10982530",
+    "extensions/results/transfer_gallager_n4000_k227_c1_evaluation.npz": "e4709c644f48e1431ee43a425a7e98b9269d70eced942a1f0a7e3b2f7b32e7f4",
+    "extensions/results/transfer_gallager_n4000_k227_c1_pipeline_pooled.npz": "0d51fb6413bb23585cbf6aed7ee683961063737a3c528b977d343b272364e8a2",
+    "extensions/results/transfer_gallager_n4000_k227_c1_pipeline_selected.npz": "4108723bcbdc5dbbe6c931ca160665119ebb23adf973ed46a844f46ad0cb683a",
+    "extensions/results/transfer_gallager_n4000_k227_c1_timing.json": "bc137bb6904e375d77e58c278ca174d2657d2283f704d1e167e4f5f914572b03",
+    "extensions/results/transfer_gallager_n4000_k227_c2_evaluation.npz": "6409cae3b3e08093500ee880239bffee03e82c0e47a3d22b13d8d01ed92360a0",
+    "extensions/results/transfer_gallager_n4000_k227_c2_pipeline_pooled.npz": "e91de786475bbf97a1a06d700938fa77c3bf56ad7ee43727e5880965d647ce08",
+    "extensions/results/transfer_gallager_n4000_k227_c2_pipeline_selected.npz": "83e78957d83a22c745fca3fde7cd0c061d0fa152fbbaf184a88ec123c4966f9e",
+    "extensions/results/transfer_gallager_n4000_k227_c2_timing.json": "c0317fec0d6f3a2544f49348d889a5f9de1da68a6fcb6b0275bc2a79fcd1f7de",
+    "extensions/results/transfer_gallager_n4000_k229_c0_evaluation.npz": "eaaabf28837f8d6a054f9809445e90a64b26538e330a3383f0bc213058c44353",
+    "extensions/results/transfer_gallager_n4000_k229_c0_pipeline_pooled.npz": "b0c7149f3ee9acdafa7bda1f6c5c5fd69955ae246ac6bc01fffc8d673c888376",
+    "extensions/results/transfer_gallager_n4000_k229_c0_pipeline_selected.npz": "c82d25203135fbd2b86c685cf2a1ca53e1822bffe7d9b78c00ed8c2ed22314e1",
+    "extensions/results/transfer_gallager_n4000_k229_c0_timing.json": "3cc30aafe5de241de93dc37b099b759ca75666c8fbb22bc3c5a61d59c2280e95",
+    "extensions/results/transfer_gallager_n4000_k229_c1_evaluation.npz": "428ba982aad46d7529bb3089e49566d698e798a0842d12d204ab45d6ee4762dc",
+    "extensions/results/transfer_gallager_n4000_k229_c1_pipeline_pooled.npz": "b358c3a17eaea680bdcf7971a06b3b6d59253289c10da97c165ee55ed24a7500",
+    "extensions/results/transfer_gallager_n4000_k229_c1_pipeline_selected.npz": "3c2eee761df2e3db60cb770895dcc236c223794a9a371ffbbaa3f25ccf5ef9b8",
+    "extensions/results/transfer_gallager_n4000_k229_c1_timing.json": "a1df4b769145e500632886f4cd74c84a2f0c863f118061942e87a556c2e32133",
+    "extensions/results/transfer_gallager_n4000_k229_c2_evaluation.npz": "28ae1653b9362e827ed5c5b66ae4c41ee381afa9597649c6e65afca4839cd29a",
+    "extensions/results/transfer_gallager_n4000_k229_c2_pipeline_pooled.npz": "50e38d3e29c8c83c24880548b1d6d79c6dff040772ff29c68575de6a66dd7d1f",
+    "extensions/results/transfer_gallager_n4000_k229_c2_pipeline_selected.npz": "cd0ff04a96e2a2bfc7257d3c4aa35681ee999aa0c9b84b4c2346de1f302a4ca9",
+    "extensions/results/transfer_gallager_n4000_k229_c2_timing.json": "c00b2346873aa4eb752d446abc29c99be5ebdca89fa95c8d6f8a16a55ae98f57",
+    "extensions/results/transfer_gallager_n4000_k233_c0_evaluation.npz": "b0cbbc47b52bc3c6dd5f317f0db3ed63a091bfd87afc65b41c22173e4f3fac46",
+    "extensions/results/transfer_gallager_n4000_k233_c0_pipeline_pooled.npz": "08bdff065481da9efbe46c5b346069fd00e04ce88f0a4f7d273374e6023949b3",
+    "extensions/results/transfer_gallager_n4000_k233_c0_pipeline_selected.npz": "e34d52bc06bff02a23555375c4f9782a653df4c6ebf4c69326ed01660489762e",
+    "extensions/results/transfer_gallager_n4000_k233_c0_timing.json": "ad529ea1d9bb64fad0649b683d55fb86b137b13cd9516e04d9dafd0d4f5c60bb",
+    "extensions/results/transfer_gallager_n4000_k233_c1_evaluation.npz": "5b6a04b7c3c5f004967bd33c7dfbc1780da0b0b61e0b480ceff5d8a836f41154",
+    "extensions/results/transfer_gallager_n4000_k233_c1_pipeline_pooled.npz": "455d41986642b0a5c4e975374c3c96c63847803e9e324cb468a3e89c646a2820",
+    "extensions/results/transfer_gallager_n4000_k233_c1_pipeline_selected.npz": "401f91122b5fe31a455f553af8471dbae238a16a8ec53216558dea5ca0a266f0",
+    "extensions/results/transfer_gallager_n4000_k233_c1_timing.json": "e16251ff5c0576c48de0341835a8341796174f56dcf4ea47e73ff5c4c4d40bd1",
+    "extensions/results/transfer_gallager_n4000_k233_c2_evaluation.npz": "68dad5e9ea2840bd664d912a3c9041aa580e2215ee167d73bb7396045f88e86f",
+    "extensions/results/transfer_gallager_n4000_k233_c2_pipeline_pooled.npz": "b9d0f12d1ae41adf661816b63ecad165a64cc1cc50f4bfb5505a14ddf1f432cd",
+    "extensions/results/transfer_gallager_n4000_k233_c2_pipeline_selected.npz": "0d54ca94cbc3bc1e61c8aeaa6d53973c840efeb7dc44ad87db83ac16107a965a",
+    "extensions/results/transfer_gallager_n4000_k233_c2_timing.json": "8baefdaa9fc7bf77a4b12532b72b8aa31e5c8f9efa3aeb83b28119d28e5890bb",
+    "extensions/results/transfer_irregular_n1000_k211_c0_evaluation.npz": "d431da5d98984884af58221f571078bec69bd679953f870689519c19a27f625a",
+    "extensions/results/transfer_irregular_n1000_k211_c0_pipeline_pooled.npz": "7724a63f61ebfe49cf03452335f43e8342d0fbe85d7270e620a98530faabec30",
+    "extensions/results/transfer_irregular_n1000_k211_c0_pipeline_selected.npz": "97161fafef1cfdc5958bf66183be8d1486cdfe081fd0d9f828b6125623bc8abc",
+    "extensions/results/transfer_irregular_n1000_k211_c0_timing.json": "459b51d5ed892371b8768b3977520d4eced7d39bc9d902a8091f96e1cc2481eb",
+    "extensions/results/transfer_irregular_n1000_k211_c1_evaluation.npz": "232e96ef0bf349f298d0d7f50cabc902b04efdcdf1f77872500efa0fbd0f45d9",
+    "extensions/results/transfer_irregular_n1000_k211_c1_pipeline_pooled.npz": "fd8b071073c61b7377cce50e0d497c8678a48c66ff8bb90ed97dc571be2fa186",
+    "extensions/results/transfer_irregular_n1000_k211_c1_pipeline_selected.npz": "e747e9af96130c1dfc74ddab06e18ba7a5550306db39535069ada79a0bd5c915",
+    "extensions/results/transfer_irregular_n1000_k211_c1_timing.json": "91deb21da20cd327dc15501882043a3a92d97757d6b8ab0ac7b05fe4aa56bf2d",
+    "extensions/results/transfer_irregular_n1000_k211_c2_evaluation.npz": "94881d209e2ac477b61c10192319fd096b44ea6e9468d4b6233f450d696d0297",
+    "extensions/results/transfer_irregular_n1000_k211_c2_pipeline_pooled.npz": "b9ab80d95f547a9226e7065d1563c9fea4bbf1e1d9b6282bb35c3fa2e9486e16",
+    "extensions/results/transfer_irregular_n1000_k211_c2_pipeline_selected.npz": "40fdbb0e49ec4b070bfbc107986849c76f5abeebd86285d00938233e56cb3b6e",
+    "extensions/results/transfer_irregular_n1000_k211_c2_timing.json": "2cb5f8a891ef3173879a5628de35dd1d201b5e24d8bf6aa749af45f4040cdb46",
+    "extensions/results/transfer_irregular_n1000_k223_c0_evaluation.npz": "11fe61dc836e89a8a6b616d13bb6876c1a741783d7ae50b760d2fbec1715d70c",
+    "extensions/results/transfer_irregular_n1000_k223_c0_pipeline_pooled.npz": "e336a255d02161001177563fae3d87d8e7901630c6cc2ecbcaf4e7135376b80c",
+    "extensions/results/transfer_irregular_n1000_k223_c0_pipeline_selected.npz": "20e0cc2a134a3a0c3d9bd77c471c2070c66bd159f3e949b24129189fff965e2a",
+    "extensions/results/transfer_irregular_n1000_k223_c0_timing.json": "9ef248e2cbfc2bd5246fd580df51332f6a6fec8bb89cd6498fe298ace302fe2e",
+    "extensions/results/transfer_irregular_n1000_k223_c1_evaluation.npz": "391f1014be9efbc71a86b7f5c3583cc326e63f90624df33a72c92e895ba46455",
+    "extensions/results/transfer_irregular_n1000_k223_c1_pipeline_pooled.npz": "f2612a84543351734d0d5a4750d3bec444e7d32e61947f3cd48319e1a216345d",
+    "extensions/results/transfer_irregular_n1000_k223_c1_pipeline_selected.npz": "3b234ee008db788aa0df63621e34f2739a5abf7f5767ca6e86e7422853bec467",
+    "extensions/results/transfer_irregular_n1000_k223_c1_timing.json": "4bdb3ec97970cf0b7d561f0f9d4b3a56ae4cc4195f5bf8b6a49ab3a83ca853c8",
+    "extensions/results/transfer_irregular_n1000_k223_c2_evaluation.npz": "98fe66932763b1c0b2cf8920749399dc3f10430cb77fa04a5466f94207afa88b",
+    "extensions/results/transfer_irregular_n1000_k223_c2_pipeline_pooled.npz": "86af681b7118d8f5e812125b5ecd95e52d82bbcbf61dac35354c6b3f5f629aa7",
+    "extensions/results/transfer_irregular_n1000_k223_c2_pipeline_selected.npz": "f82b382a48f0509c23784e023a23deb698b604017dfee7c4ea6e02b1301126e6",
+    "extensions/results/transfer_irregular_n1000_k223_c2_timing.json": "1536ad98dde09b5de749a8168f6e2c1bc911c9c2a5f290e24badeef944db649e",
+    "extensions/results/transfer_irregular_n1000_k227_c0_evaluation.npz": "e2072d3f7bf34364a41f2d6ebed00a8ce5061d72f61ea61f44001f68cb78d841",
+    "extensions/results/transfer_irregular_n1000_k227_c0_pipeline_pooled.npz": "08d43ccbf93784982d52a87d3555b56e9b4c23262c4650fb2b1d2dc55a43c062",
+    "extensions/results/transfer_irregular_n1000_k227_c0_pipeline_selected.npz": "fed1830c3217d1b101d3c5dda2dcc262f844f719da61d709e256612c98cc198b",
+    "extensions/results/transfer_irregular_n1000_k227_c0_timing.json": "b08ba480b99f034c90d03e7e045cfdac78ec69f5007192e465610bb00f6a3507",
+    "extensions/results/transfer_irregular_n1000_k227_c1_evaluation.npz": "2b7fb908a6739f642f89a4b4d15efe03b9f9fac72712d842d7db0f128f87623d",
+    "extensions/results/transfer_irregular_n1000_k227_c1_pipeline_pooled.npz": "62908475a8688919f46303011a0a60ebd424020f5ba0318e0b01a3a2c718f4d9",
+    "extensions/results/transfer_irregular_n1000_k227_c1_pipeline_selected.npz": "465f4e1c30e518b741e7727bbfcfc0cecd67148a6fa3593d721cd32f2fd8b5f9",
+    "extensions/results/transfer_irregular_n1000_k227_c1_timing.json": "ad98ef6d0cf9594665867a10d4c91ebc791259f301683bf57cbe2c4ec439ef96",
+    "extensions/results/transfer_irregular_n1000_k227_c2_evaluation.npz": "7a2301cc33c1a8975de3b66ffd34aa9379bda5b4e3b479e0e2cada0bdbecb6e3",
+    "extensions/results/transfer_irregular_n1000_k227_c2_pipeline_pooled.npz": "983abb46007226d445baef0171b3afed07d6e379884eb755288aae84f6481df7",
+    "extensions/results/transfer_irregular_n1000_k227_c2_pipeline_selected.npz": "3b1b946015382c9ed5b5966f55fa01a466999da34b32baec6f02c3cc91a46ce5",
+    "extensions/results/transfer_irregular_n1000_k227_c2_timing.json": "a4f00b24898327f7cac50679a0352a2a57e7416238c0038c1df1c9d59099f80e",
+    "extensions/results/transfer_irregular_n1000_k229_c0_evaluation.npz": "4f9c4412bc73d37cd85092ed4ccf5f4a4579278093d22f71e909ab52e216bbb4",
+    "extensions/results/transfer_irregular_n1000_k229_c0_pipeline_pooled.npz": "2dc36afac18e10bc2d524ea76feae372cc0e9446e5e90b976edf6ee19d6d9f06",
+    "extensions/results/transfer_irregular_n1000_k229_c0_pipeline_selected.npz": "93599996efc5b102f21cf6b92e06ad7e32b576203ecd2ee41f315579cf35589f",
+    "extensions/results/transfer_irregular_n1000_k229_c0_timing.json": "8989073eeb9bba81cc5f9bd94d8b39973eb1778016db7ca4929f7e2e0b944e7e",
+    "extensions/results/transfer_irregular_n1000_k229_c1_evaluation.npz": "54852aac854aa37cc8f9a3a70947bd09b4d3765ce293b0a9de12d59f0be13a2e",
+    "extensions/results/transfer_irregular_n1000_k229_c1_pipeline_pooled.npz": "3905d303eda91d8d2e0f5c848fbb38355990069d3004404dee52d83924a5fa25",
+    "extensions/results/transfer_irregular_n1000_k229_c1_pipeline_selected.npz": "99f6a09e4ae8819be836380efec5886db32a5b8175955e94437b19abe848b4a8",
+    "extensions/results/transfer_irregular_n1000_k229_c1_timing.json": "11189bc7da14d164b704e662ea3dc75f9261dd117acbc9c946e1c07c284614c4",
+    "extensions/results/transfer_irregular_n1000_k229_c2_evaluation.npz": "88c79887266909be8a4af50ca52139c2b0c8eb90252fef21249870e15629447a",
+    "extensions/results/transfer_irregular_n1000_k229_c2_pipeline_pooled.npz": "327471c2dc85dc6cc0ef48f2009d2ca1d4dc6a042a9abf3bab23d87931b3ca59",
+    "extensions/results/transfer_irregular_n1000_k229_c2_pipeline_selected.npz": "6d073146123b5587a58afcab55486fe0ea7cbdceb6c625b891723385096b5f91",
+    "extensions/results/transfer_irregular_n1000_k229_c2_timing.json": "dfe22efef37f53fa974af28c7b7a7587396fca451620555269e8a0835d6fb31e",
+    "extensions/results/transfer_irregular_n1000_k233_c0_evaluation.npz": "e2c28782d2e0162ffe5cd98629877b887522b72ea59c7cce7d4abfe74c20fbf6",
+    "extensions/results/transfer_irregular_n1000_k233_c0_pipeline_pooled.npz": "ce22f26b651fa8a49d0559839e46015e1ea4091ed52a34bf9648ed09ab702ddb",
+    "extensions/results/transfer_irregular_n1000_k233_c0_pipeline_selected.npz": "1dc5c3dc1267416e13b381616423ca567e2e0279b08edfbbb7e22a8751bd58a4",
+    "extensions/results/transfer_irregular_n1000_k233_c0_timing.json": "6e13448fba07a7d0c5d6927fed300bf5950b2f3b6a684893ed1ba5b87f75c11c",
+    "extensions/results/transfer_irregular_n1000_k233_c1_evaluation.npz": "0e80ebb6c05275a5a553bb3015034b61f9a92cdede9ef9e77c3bf7db6b35a273",
+    "extensions/results/transfer_irregular_n1000_k233_c1_pipeline_pooled.npz": "7fc9908da7e1edb2ed3162b3c345ebd1a5a7853d6d792549475b30ced86a1184",
+    "extensions/results/transfer_irregular_n1000_k233_c1_pipeline_selected.npz": "3f19989097d92c811c6e23a86f1fdbb70dd6a4ec519caffd2e7dcdccf3d90dd7",
+    "extensions/results/transfer_irregular_n1000_k233_c1_timing.json": "ca8d142110a63ad7669bed5a387e3120d0428e0aee5cd9bf097f2aed77dc3f54",
+    "extensions/results/transfer_irregular_n1000_k233_c2_evaluation.npz": "774706810b4efe124e162012310ea525dfa748360dc6519ac60aacd9cbb270e3",
+    "extensions/results/transfer_irregular_n1000_k233_c2_pipeline_pooled.npz": "a9bd703a686ef67ceafc1fb9c35948f976701a150aa7cbe964bd100b58a46807",
+    "extensions/results/transfer_irregular_n1000_k233_c2_pipeline_selected.npz": "973640914e01bbc07c2c3dee18c810e3efa44120c9e4ce07a2757f2ea187efce",
+    "extensions/results/transfer_irregular_n1000_k233_c2_timing.json": "7236727ebd466a6c45b51a73ae898a42d18d5447065a53e5ffbef4c746867da2",
+    "extensions/results/transfer_irregular_n16000_k211_c0_evaluation.npz": "b725df878dff55936739b4ef36502a73cc4d9263e495d1a1af04f3d7465ce8be",
+    "extensions/results/transfer_irregular_n16000_k211_c0_pipeline_pooled.npz": "1f459526c30cc35d4c2cdea9131b5e4e49d3ea8d1276b59d689c71cb96cc887e",
+    "extensions/results/transfer_irregular_n16000_k211_c0_pipeline_selected.npz": "5aebbee4349cc2795ba5e84c3f03cb7ea6c95c8273d9741f8e4c8d9a6ce80cd2",
+    "extensions/results/transfer_irregular_n16000_k211_c0_timing.json": "2615e1daaa5ba34686280c7933a82344f91dda4fd6fa28bdb22dc4f32839bc41",
+    "extensions/results/transfer_irregular_n16000_k211_c1_evaluation.npz": "63c0a2520f4e299254feb7cce1eff2db79509270cd8d151bbefcee3250a5a921",
+    "extensions/results/transfer_irregular_n16000_k211_c1_pipeline_pooled.npz": "6d704f2bc741a7cbbc10db1eb84c0e558e33b8ee5e9ccdc9a1174a8ed544b112",
+    "extensions/results/transfer_irregular_n16000_k211_c1_pipeline_selected.npz": "a1beca77bf4d8c50750e0b5e9939b30f75ef7a1be62d5a51d6839668f19fbbdb",
+    "extensions/results/transfer_irregular_n16000_k211_c1_timing.json": "f159ebbb251cb14ffb6c36a8cde0ff9472db1fa29b2c688b6d6e750105ef1d22",
+    "extensions/results/transfer_irregular_n16000_k211_c2_evaluation.npz": "4b84ce686e06b51d7fce351a9690082e4621cdaa058363ad0add8556e853edcc",
+    "extensions/results/transfer_irregular_n16000_k211_c2_pipeline_pooled.npz": "7d1d84eb00f2d9872be705f194aed9bac814ff4fc82b150d4d6eb61f492159b5",
+    "extensions/results/transfer_irregular_n16000_k211_c2_pipeline_selected.npz": "9f289ac31fe0565dcb209b80c760dcc42a06206eaeb8f5b0e108684ed1504a69",
+    "extensions/results/transfer_irregular_n16000_k211_c2_timing.json": "343ef397afd85c0c9d7ff6275cac330a12802c7488108953db95359815822967",
+    "extensions/results/transfer_irregular_n16000_k223_c0_evaluation.npz": "60efd2ea55c4c40d5630ca9176b6e5b4975b9b186f818ef9b51b97fb7b2ba886",
+    "extensions/results/transfer_irregular_n16000_k223_c0_pipeline_pooled.npz": "b85aa0b7778a5fcb5ce8280513690aee5533e9884c93f9aac0049149ba435eaf",
+    "extensions/results/transfer_irregular_n16000_k223_c0_pipeline_selected.npz": "48888817ba66abaa4084acb43cbf142827d539c8f8e25b57e0ad036f130874dd",
+    "extensions/results/transfer_irregular_n16000_k223_c0_timing.json": "3c48bd1fd01cb907d531f5830054227098fda56d5e17cb908b9f05e0226214ea",
+    "extensions/results/transfer_irregular_n16000_k223_c1_evaluation.npz": "80c57195c05903dfdd1521601ae7893966330dcf6552ab5e0676fe1b438ddb1c",
+    "extensions/results/transfer_irregular_n16000_k223_c1_pipeline_pooled.npz": "4c11b79883e0a9043cfb66ff64a75552108ae5a0218761e42911b282c72bacca",
+    "extensions/results/transfer_irregular_n16000_k223_c1_pipeline_selected.npz": "46ef4537acb420911bb931df536cb2e0705466f27bbc30855575321477b0b02f",
+    "extensions/results/transfer_irregular_n16000_k223_c1_timing.json": "3375e39ebd68442dc52fcf283d0fc9b4a166f4cc94d78d7683377323201679b4",
+    "extensions/results/transfer_irregular_n16000_k223_c2_evaluation.npz": "7ab208da3a4d2deb50155a26c500d612b35c07a4b4185737a2e6eae611389173",
+    "extensions/results/transfer_irregular_n16000_k223_c2_pipeline_pooled.npz": "40c732a07a6a0cee06aa3e02cf4e85a70b935fe35c3f54f00304c6478fb26755",
+    "extensions/results/transfer_irregular_n16000_k223_c2_pipeline_selected.npz": "232dcdf8c876418cce0b25edde55498607133411aa0b67749307fc9b054259d6",
+    "extensions/results/transfer_irregular_n16000_k223_c2_timing.json": "30bc8df4f49761fe94508aeb1d61e62d349a2d5b7f52a8025b7e79698292ea67",
+    "extensions/results/transfer_irregular_n16000_k227_c0_evaluation.npz": "071a0354673b85c1687055839d14d7922be6b0341ba8830ca4563ba1b61001d8",
+    "extensions/results/transfer_irregular_n16000_k227_c0_pipeline_pooled.npz": "85369a3ee9593e7b2027072a77bfb64788e912ab96b8be2a367c5fe7302d6631",
+    "extensions/results/transfer_irregular_n16000_k227_c0_pipeline_selected.npz": "945886923c58bef13aa513ec4bba7b70a7a995c5ed034d8bef366a4ceda8c955",
+    "extensions/results/transfer_irregular_n16000_k227_c0_timing.json": "066121502a4115d3f21a1d81b292c1975e2302000f978f298a2604d291c6b5d0",
+    "extensions/results/transfer_irregular_n16000_k227_c1_evaluation.npz": "265e717bff06497cb295fa99f84e49ea958b8c0c7d87bc01356888707b1fa35d",
+    "extensions/results/transfer_irregular_n16000_k227_c1_pipeline_pooled.npz": "c38a54fbe75067f43800377e01dbd3372ee7c3e4eb3743c57f991d28ec138d10",
+    "extensions/results/transfer_irregular_n16000_k227_c1_pipeline_selected.npz": "65074a42a188b3a91469e8a32f5a79a50db3196610a00773c652d52481ff511c",
+    "extensions/results/transfer_irregular_n16000_k227_c1_timing.json": "a7ab61e5fb46ef38082263f153a8fb8478b8b4836a3ea0e018f56d881de5002d",
+    "extensions/results/transfer_irregular_n16000_k227_c2_evaluation.npz": "e614f7cc026c81d2dc078391681458fc2fc819797c3180df781da234a92654dc",
+    "extensions/results/transfer_irregular_n16000_k227_c2_pipeline_pooled.npz": "cf50579369ef988de3b727b595e166f05913f2535322138493bf2dc33cf0dae4",
+    "extensions/results/transfer_irregular_n16000_k227_c2_pipeline_selected.npz": "96c1016ec10b40a66a95a7bc3409a6a281410058ac1370621de35e4fcf864b9c",
+    "extensions/results/transfer_irregular_n16000_k227_c2_timing.json": "04d498344a25283d288a3fc81e1788854cd6929e66e1f4395b6361b8f45ab1ad",
+    "extensions/results/transfer_irregular_n16000_k229_c0_evaluation.npz": "8dd1a4057f50a2fe77aba70d80b24f7b6d934686c81630eb2bf927501bc8112c",
+    "extensions/results/transfer_irregular_n16000_k229_c0_pipeline_pooled.npz": "3c265ab65a9521658d2337668587cdbe31c590fee81bc545c396ec07dad6aedc",
+    "extensions/results/transfer_irregular_n16000_k229_c0_pipeline_selected.npz": "df3c7d447c98f4569c982f960fccf94b214268885157f9f7c7b608f2a9958a57",
+    "extensions/results/transfer_irregular_n16000_k229_c0_timing.json": "6998956ac1e838ebbfdb1c75672479e413fc02105ec38067abb10d08d570f4f7",
+    "extensions/results/transfer_irregular_n16000_k229_c1_evaluation.npz": "43bd47daf871cb1d71b472973f1df09ccdb63991c78aa9fd742375d60f1a3304",
+    "extensions/results/transfer_irregular_n16000_k229_c1_pipeline_pooled.npz": "810d738a0b14bb6a3a7ac5cde50b5dafe1118830dbea57e25d4aeb1416452b6b",
+    "extensions/results/transfer_irregular_n16000_k229_c1_pipeline_selected.npz": "628c92f2f901d1c27e12b93ed5ed0a985a7bb9e2f0a40a6379b9bd7a7e855b35",
+    "extensions/results/transfer_irregular_n16000_k229_c1_timing.json": "7fd47d960c80ddfc82f5cf868b5cb6b0f616fba6cafb0ca6b185941f1e103011",
+    "extensions/results/transfer_irregular_n16000_k229_c2_evaluation.npz": "5101f3c1c3c009530ea8f63eb05b50c33a0578577be4242e3c579a37e6a64fa9",
+    "extensions/results/transfer_irregular_n16000_k229_c2_pipeline_pooled.npz": "bcbca789b5c4b240d3c10e427374f98bb34bd1148a9a919898f4c4dd769b0a07",
+    "extensions/results/transfer_irregular_n16000_k229_c2_pipeline_selected.npz": "640b870cfd87a36c954b09688b8bac57cb11a21521cc832c2316c55b44b9f456",
+    "extensions/results/transfer_irregular_n16000_k229_c2_timing.json": "985fe42c3b5896b513f4176fafcc11d9fc5ccb3afdedae59960ef2ab99eee3a5",
+    "extensions/results/transfer_irregular_n16000_k233_c0_evaluation.npz": "532a20af601ca5e1754fa0487ccf40f522f51ed63d57d182d7b2734995e36390",
+    "extensions/results/transfer_irregular_n16000_k233_c0_pipeline_pooled.npz": "87d76f281386084e85ec2a78d0c127afdb584495c5fa88657473ffee9f9ae9ac",
+    "extensions/results/transfer_irregular_n16000_k233_c0_pipeline_selected.npz": "ea798d8e904bbc7bc4985ec0dd14a7442f9c5714c930908c3e5964f4ae52760d",
+    "extensions/results/transfer_irregular_n16000_k233_c0_timing.json": "cff04b42be4995a2ca740ed622c3e0ab4962348a635ddc8147bcecb51924542c",
+    "extensions/results/transfer_irregular_n16000_k233_c1_evaluation.npz": "5d25ed076adb30d4b89722393f95e2745867984b537b79c7ae8c7606c16af41a",
+    "extensions/results/transfer_irregular_n16000_k233_c1_pipeline_pooled.npz": "8bedd0ee19e4793c45e7bcc5cb4880b96a97d834ae9a57783de98e84e3007c26",
+    "extensions/results/transfer_irregular_n16000_k233_c1_pipeline_selected.npz": "2a536279ea8d6ccbe2fa8ee7b4a6b6540e1f23d7de05dd61cbae01d6c5896c76",
+    "extensions/results/transfer_irregular_n16000_k233_c1_timing.json": "4e595019e838469295ac0398ce444289d633f925851a4783d119e6218410dcb3",
+    "extensions/results/transfer_irregular_n16000_k233_c2_evaluation.npz": "9da34b009cc0be6c12ff9fd1cceebbfebc79b816fcf99a7e0d1c0cc04896bd0f",
+    "extensions/results/transfer_irregular_n16000_k233_c2_pipeline_pooled.npz": "d43bc1cac65121658dbbd8693a89fe9586d86513a25da91ebca762dc87dfa0d5",
+    "extensions/results/transfer_irregular_n16000_k233_c2_pipeline_selected.npz": "b48ccc52dcff0b8f704212c15cf411c33daeea438230d67784fb0279ffbfdcd0",
+    "extensions/results/transfer_irregular_n16000_k233_c2_timing.json": "16299dbce95b032d061187c3b651589062fc21f04d362ebea965f4b69d40223d",
+    "extensions/results/transfer_irregular_n4000_k211_c0_evaluation.npz": "378d7b0c6d3b865658c72fe4b9c9a226d3fb918125f321e79076dca34c1180bf",
+    "extensions/results/transfer_irregular_n4000_k211_c0_pipeline_pooled.npz": "a1dbe738bc6e4920f61ebfa8efd5e4150f782fbe354c6267a9c809f0a082a6b9",
+    "extensions/results/transfer_irregular_n4000_k211_c0_pipeline_selected.npz": "753e050a83c1497a7109402149f144ca44363f459095967b13ce09a0e739e4d2",
+    "extensions/results/transfer_irregular_n4000_k211_c0_timing.json": "42ead63f6194b3cacd93ba7f41397d5df057fb9366079f4c540ac5a5bcc2c8af",
+    "extensions/results/transfer_irregular_n4000_k211_c1_evaluation.npz": "6139fce3ccf1e16cc40739528de09769cad2f514aae73dd660f785163c8cc9ba",
+    "extensions/results/transfer_irregular_n4000_k211_c1_pipeline_pooled.npz": "579717a56f2b5efafa6d592934aee654a1e429743769140d98fa0d6452f87e79",
+    "extensions/results/transfer_irregular_n4000_k211_c1_pipeline_selected.npz": "6a9b9a4ab844f2ebe9b34499e9343079b668e5ff087314429680e5a80ce9166c",
+    "extensions/results/transfer_irregular_n4000_k211_c1_timing.json": "c9987a882cbe1b6f82bbc51de97922048526ccd4d0ee1cd00970227d3212b649",
+    "extensions/results/transfer_irregular_n4000_k211_c2_evaluation.npz": "ac71dad41b0cd849f031f46cf9aea0c590ab3955761c378711615a7ee79e2297",
+    "extensions/results/transfer_irregular_n4000_k211_c2_pipeline_pooled.npz": "4b4469da8cbb1ac448292a6e0e90045a9fc26209c1ae83ce1472f3df1244af3f",
+    "extensions/results/transfer_irregular_n4000_k211_c2_pipeline_selected.npz": "2fc5e1b9454b047646c72f5ccb510582c23133e2ee2ca6b49712a7c277892ae8",
+    "extensions/results/transfer_irregular_n4000_k211_c2_timing.json": "3993d8fabe8ca0b2a858848d9f163afcea7801537e27d7010ba2862c14ff727b",
+    "extensions/results/transfer_irregular_n4000_k223_c0_evaluation.npz": "d24fed938e1db0e54508ffc9cc20476dd8ec0ac5e1d143ef71f00c0525ae010b",
+    "extensions/results/transfer_irregular_n4000_k223_c0_pipeline_pooled.npz": "69dbd9279e78545dfc729ddd80a32857c93f4db20b485e70a3d0093caded2caa",
+    "extensions/results/transfer_irregular_n4000_k223_c0_pipeline_selected.npz": "a414ac92459c02bfe7aa8f9f341683d9e6a798e7a599da626a4a948598250b0c",
+    "extensions/results/transfer_irregular_n4000_k223_c0_timing.json": "382ebb265b63c590b5eaced678951b1c58777f9e56db8fc02aca7069b4028505",
+    "extensions/results/transfer_irregular_n4000_k223_c1_evaluation.npz": "95b77830d36828bf756c9209eccd6c93362de554ef14072399b9c0248cb23ad9",
+    "extensions/results/transfer_irregular_n4000_k223_c1_pipeline_pooled.npz": "fa2f37628d9346046cb1861d3c12037d9780060480b0efe50c17433340d1fc43",
+    "extensions/results/transfer_irregular_n4000_k223_c1_pipeline_selected.npz": "ecfe4cb09e5819bdd58157213ac22c83b7ed2c0dd715ccdaea4de51d4382b589",
+    "extensions/results/transfer_irregular_n4000_k223_c1_timing.json": "807f75f2b1e53c6c3d1bc0869cd6bf76da565ec1838da8a00360384810f1e494",
+    "extensions/results/transfer_irregular_n4000_k223_c2_evaluation.npz": "95b30dc43a59fd981c0a09e96c7c7de63a1f26685ab373553325819d0dfb5a05",
+    "extensions/results/transfer_irregular_n4000_k223_c2_pipeline_pooled.npz": "94586621b50da3ca2746373b90e1de4958cd9955d7579fb331d392cdd0c1e393",
+    "extensions/results/transfer_irregular_n4000_k223_c2_pipeline_selected.npz": "3184eccb79077e3764d1ce55c75fe1b94a462a5e1b40de7cfe9d8f3374fc4744",
+    "extensions/results/transfer_irregular_n4000_k223_c2_timing.json": "743560ea1b9653b3ae81263a006369318b2c8391757a7ba53fd58782fcba79cc",
+    "extensions/results/transfer_irregular_n4000_k227_c0_evaluation.npz": "9cb69f0d429a44641d5b406b5d8975c74fb98dc12e948d8ed00edaab3198f76a",
+    "extensions/results/transfer_irregular_n4000_k227_c0_pipeline_pooled.npz": "7b691287f2a5e1604930fc1ebcbcfff8648695b0b0c3b05e8a8a831dd65653ad",
+    "extensions/results/transfer_irregular_n4000_k227_c0_pipeline_selected.npz": "4f02cf5443b84f0ce6bdaa13755e0b0ee114a40df6dc6a61d689da1e2d04aa0a",
+    "extensions/results/transfer_irregular_n4000_k227_c0_timing.json": "8b11ffba7b77af0cd14be0e3867e394dd707b33018fe57535301fd6b0869ad3b",
+    "extensions/results/transfer_irregular_n4000_k227_c1_evaluation.npz": "e3f77fd8780ca6998fc52dadb147abe22383bd8b82ee608c140210ceca7f3a1a",
+    "extensions/results/transfer_irregular_n4000_k227_c1_pipeline_pooled.npz": "36c6a0c9d3398546a790e874cb0c42af3be0773f989dca778d94b76629d18693",
+    "extensions/results/transfer_irregular_n4000_k227_c1_pipeline_selected.npz": "35235093375dd07123276cd7e6ca1484585b3f526210b36cca0612c9fc3216b9",
+    "extensions/results/transfer_irregular_n4000_k227_c1_timing.json": "b5ad8b93bf3d3fa47ff1d5403046917047de382d3df05ca0255b18b2dc0b03a6",
+    "extensions/results/transfer_irregular_n4000_k227_c2_evaluation.npz": "23396badf734ac8e9e02ebb68f85c05ab132470e2324a351513d6b57ff64ece3",
+    "extensions/results/transfer_irregular_n4000_k227_c2_pipeline_pooled.npz": "106b70d6cccb7598a7060db8bfbe532d5e45a5edbdbd6de169639df315ba5df0",
+    "extensions/results/transfer_irregular_n4000_k227_c2_pipeline_selected.npz": "888f671d5b2a66386c86a08cd59ed9cabc2aca59dabe9b7c9fdd006ba22d4dc0",
+    "extensions/results/transfer_irregular_n4000_k227_c2_timing.json": "ec3d273aa99e6b5dc672e0b197ab09aa231605fb91cdf76992279457e898b4b1",
+    "extensions/results/transfer_irregular_n4000_k229_c0_evaluation.npz": "496b38346e978d5f80ff9643433d00321ae06f5fe677b5298e6ba379b189aa4f",
+    "extensions/results/transfer_irregular_n4000_k229_c0_pipeline_pooled.npz": "ca7280d9d56dcf1f4c3214b86eb1307055ab793b19972662d7bc28424000364e",
+    "extensions/results/transfer_irregular_n4000_k229_c0_pipeline_selected.npz": "f9cae6d6ad8fdec29f6079507ca72341fe6f76b6334b848c26bb47776eddbb39",
+    "extensions/results/transfer_irregular_n4000_k229_c0_timing.json": "f22ea331b72588d36d5bda87275bd4455e475fc9c9328df4cd6f370cf2b448d3",
+    "extensions/results/transfer_irregular_n4000_k229_c1_evaluation.npz": "0f209bfebc2a83be0506f1463a9364e52e75bcf1ddff1ba4b2b960ca9b76b907",
+    "extensions/results/transfer_irregular_n4000_k229_c1_pipeline_pooled.npz": "c0c83a75db86cc5a6a0163a16e89f8eda82497d5336bed72ebf15bd44ffecb5e",
+    "extensions/results/transfer_irregular_n4000_k229_c1_pipeline_selected.npz": "d6ded44fae4fcf6f1a4131c17dc2a0ba1ae6f2fe6ad999fe4ab957d84e2451d0",
+    "extensions/results/transfer_irregular_n4000_k229_c1_timing.json": "69224f086f75406cd03114b565d5a80d421df6bf7916ffb1a6b2107bdc0f1710",
+    "extensions/results/transfer_irregular_n4000_k229_c2_evaluation.npz": "62df22cb5a83bd8c4469f91c46b8558b50cf2a81b9c269ee0ce228ef7e21f5d2",
+    "extensions/results/transfer_irregular_n4000_k229_c2_pipeline_pooled.npz": "731f9ea3e342d2132f677b910ba0508d0d9a637dab102d5c7b96dd405e1bbf32",
+    "extensions/results/transfer_irregular_n4000_k229_c2_pipeline_selected.npz": "e6a098c265e4c301ceede5f5a52dcc07a36bdd1b80dffd166b879bd9335fbdd6",
+    "extensions/results/transfer_irregular_n4000_k229_c2_timing.json": "a39e8e021cb922b38073be7bd43f20553c65f4358fdf8f4d5f354ddafee11084",
+    "extensions/results/transfer_irregular_n4000_k233_c0_evaluation.npz": "65d9fc41fd5b5d1d13a4ff9f96c35e738687655230168b32ffe074082df60506",
+    "extensions/results/transfer_irregular_n4000_k233_c0_pipeline_pooled.npz": "99014a35c3b4fb2421b119bcb38150c72af7aa001f3a5d143d09cbe69e116e31",
+    "extensions/results/transfer_irregular_n4000_k233_c0_pipeline_selected.npz": "a14079c5832396dba4a3dfe117344446cdbee358ca11ccbda1732252c4b548aa",
+    "extensions/results/transfer_irregular_n4000_k233_c0_timing.json": "ebdfb3580213defde7f72cc1a3ca5be9951be899f20efc5bf3f7f27258327052",
+    "extensions/results/transfer_irregular_n4000_k233_c1_evaluation.npz": "7acfe3edf77a1e30ba904544a5d2fee3a861200b68bf99a339a2795daf06a231",
+    "extensions/results/transfer_irregular_n4000_k233_c1_pipeline_pooled.npz": "a877332ed45e9298b64ca92ea283f2ab5e6f66a314559c799881d11711d56a60",
+    "extensions/results/transfer_irregular_n4000_k233_c1_pipeline_selected.npz": "4f7d1a4bb3983d7859557108d15d3bbb08ae8a2846409138a2d6cf942cfb25c3",
+    "extensions/results/transfer_irregular_n4000_k233_c1_timing.json": "23329015d07e7f5452bdfdad4707a0ceab0ecbec5f660ea705a6f15d5065097c",
+    "extensions/results/transfer_irregular_n4000_k233_c2_evaluation.npz": "146b147783a8b7602e797dad50fb20daf91b1eb0e6c52506f475b876041a5e4c",
+    "extensions/results/transfer_irregular_n4000_k233_c2_pipeline_pooled.npz": "5be4c142eee47a5bc088d13deb1a4f83522f19bc1298fd9b2ace0cb429496228",
+    "extensions/results/transfer_irregular_n4000_k233_c2_pipeline_selected.npz": "f89cb946eba5a82551a205017358e4a0a9cd1c5a8d3c2e4c0c11cf72411a56a5",
+    "extensions/results/transfer_irregular_n4000_k233_c2_timing.json": "fe36e82eaf031a5292d93c639d672ea5d1fdd5f06fff143eb0d75fb4b82f139e",
+    "study/reconciliation_v2.py": "ccc530582aa0092c2067b1302792af6ced38820567f1f994e82523649aa221ea"
+  }
+}

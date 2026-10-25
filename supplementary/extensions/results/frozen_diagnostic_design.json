@@ -1,0 +1,287 @@
+{
+  "two": {
+    "scales": [
+      1,
+      8
+    ],
+    "share": 0.7,
+    "worst_variance": 8.199644950035284e-05
+  },
+  "calibration": {
+    "calibration_share": 0.3,
+    "worst_variance": 7.627199860002406e-05
+  },
+  "candidates": [
+    {
+      "scales": [
+        1,
+        2.5
+      ],
+      "share": 0.5,
+      "worst_variance": 0.00024191609405666684
+    },
+    {
+      "scales": [
+        1,
+        2.5
+      ],
+      "share": 0.6,
+      "worst_variance": 0.00022260591157478269
+    },
+    {
+      "scales": [
+        1,
+        2.5
+      ],
+      "share": 0.7,
+      "worst_variance": 0.00022081816210347193
+    },
+    {
+      "scales": [
+        1,
+        2.5
+      ],
+      "share": 0.8,
+      "worst_variance": 0.00024573880815943955
+    },
+    {
+      "scales": [
+        1,
+        2.5
+      ],
+      "share": 0.9,
+      "worst_variance": 0.00035849560632546094
+    },
+    {
+      "scales": [
+        1,
+        4
+      ],
+      "share": 0.5,
+      "worst_variance": 0.00014239256179266824
+    },
+    {
+      "scales": [
+        1,
+        4
+      ],
+      "share": 0.6,
+      "worst_variance": 0.00012670820986867738
+    },
+    {
+      "scales": [
+        1,
+        4
+      ],
+      "share": 0.7,
+      "worst_variance": 0.00012010381089903852
+    },
+    {
+      "scales": [
+        1,
+        4
+      ],
+      "share": 0.8,
+      "worst_variance": 0.00012521018880696006
+    },
+    {
+      "scales": [
+        1,
+        4
+      ],
+      "share": 0.9,
+      "worst_variance": 0.00016494955699365713
+    },
+    {
+      "scales": [
+        1,
+        6
+      ],
+      "share": 0.5,
+      "worst_variance": 0.0001120585760502165
+    },
+    {
+      "scales": [
+        1,
+        6
+      ],
+      "share": 0.6,
+      "worst_variance": 9.825317311792272e-05
+    },
+    {
+      "scales": [
+        1,
+        6
+      ],
+      "share": 0.7,
+      "worst_variance": 9.117561468594667e-05
+    },
+    {
+      "scales": [
+        1,
+        6
+      ],
+      "share": 0.8,
+      "worst_variance": 9.195622887372588e-05
+    },
+    {
+      "scales": [
+        1,
+        6
+      ],
+      "share": 0.9,
+      "worst_variance": 0.00011421237950603865
+    },
+    {
+      "scales": [
+        1,
+        8
+      ],
+      "share": 0.5,
+      "worst_variance": 0.0001016524376621174
+    },
+    {
+      "scales": [
+        1,
+        8
+      ],
+      "share": 0.6,
+      "worst_variance": 8.881742460542385e-05
+    },
+    {
+      "scales": [
+        1,
+        8
+      ],
+      "share": 0.7,
+      "worst_variance": 8.199644950035284e-05
+    },
+    {
+      "scales": [
+        1,
+        8
+      ],
+      "share": 0.8,
+      "worst_variance": 8.201454303029043e-05
+    },
+    {
+      "scales": [
+        1,
+        8
+      ],
+      "share": 0.9,
+      "worst_variance": 0.00010028221527354273
+    }
+  ],
+  "calibration_candidates": [
+    {
+      "calibration_share": 0.2,
+      "worst_variance": 8.325692873238229e-05
+    },
+    {
+      "calibration_share": 0.3,
+      "worst_variance": 7.627199860002406e-05
+    },
+    {
+      "calibration_share": 0.4,
+      "worst_variance": 7.797137839512055e-05
+    },
+    {
+      "calibration_share": 0.5,
+      "worst_variance": 8.563656769461128e-05
+    },
+    {
+      "calibration_share": 0.6,
+      "worst_variance": 0.0001004381376353196
+    },
+    {
+      "calibration_share": 0.7,
+      "worst_variance": 0.0001276245911490504
+    },
+    {
+      "calibration_share": 0.8,
+      "worst_variance": 0.000184357345313278
+    }
+  ],
+  "grid": [
+    [
+      0.005,
+      0
+    ],
+    [
+      0.005,
+      0.1
+    ],
+    [
+      0.005,
+      0.2
+    ],
+    [
+      0.005,
+      0.4
+    ],
+    [
+      0.015,
+      0
+    ],
+    [
+      0.015,
+      0.1
+    ],
+    [
+      0.015,
+      0.2
+    ],
+    [
+      0.015,
+      0.4
+    ],
+    [
+      0.03,
+      0
+    ],
+    [
+      0.03,
+      0.1
+    ],
+    [
+      0.03,
+      0.2
+    ],
+    [
+      0.03,
+      0.4
+    ],
+    [
+      0.06,
+      0
+    ],
+    [
+      0.06,
+      0.1
+    ],
+    [
+      0.06,
+      0.2
+    ],
+    [
+      0.06,
+      0.4
+    ]
+  ],
+  "selection": "Minimize worst Fisher/delta variance on declared design grid before any diagnostic simulation.",
+  "methods": [
+    "linear_four",
+    "gate_four",
+    "gate_two",
+    "calibrated_BSC",
+    "calibrated_gate",
+    "Fiorini"
+  ],
+  "confidence": "Unclipped signed point estimates; plug-in 95% delta/Wald intervals.",
+  "noisy_Eve_controls": {
+    "p_eve": 0.03,
+    "knowledge": "known to model-based estimators; unknown-Eve identifiability separately assessed"
+  },
+  "robustness": "Main48 cells use ideal Eve. Noisy and all-scaled cases use all16(p,r) cells at budget8000. Stress uses declared(.03,.2,8000) cell."
+}

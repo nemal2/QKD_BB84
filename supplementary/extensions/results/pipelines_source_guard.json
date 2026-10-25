@@ -1,0 +1,10 @@
+{
+  "protocol.json": "0a888eed1070afcdd2dde5321df77d12c1e12550661c7251a9bb028e396f40b8",
+  "common.py": "89d34c154514b54e501150fe983e027c4700d169217432642c502f7d95f6cd09",
+  "pipelines.py": "4f7d211d776d7fe5c11a162d6c9219def4cf90db97b19bf7c627f7146423ffb5",
+  "physics.py": "36ae3062709c01865b390345b8e2c7eee120f5f520ee5d344d6d3d444f76638c",
+  "results/frozen_rule.json": "c67cfcf0a4b5e34c50b009257e893f2e16b1269f5af86381594b7847d8d04996",
+  "results/frozen_confirmation_plan.json": "d66bba6f3f7e36ff14cacb73e1c411a79bccd2d6e2a7cee7ad20c0e5c7172afb",
+  "../study/reconciliation_v2.py": "ccc530582aa0092c2067b1302792af6ced38820567f1f994e82523649aa221ea",
+  "provenance.py": "acef6d7d26ec2ba3f6bd67cdea2a4fd31a74999bb13f8e9a14a8367c12632406"
+}

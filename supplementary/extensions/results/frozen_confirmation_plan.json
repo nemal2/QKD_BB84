@@ -1,0 +1,23 @@
+[
+  {
+    "a": 0,
+    "s": 50,
+    "frames_per_matrix": 500,
+    "pilot_variance": 0.004799697147870873,
+    "power_scope": "conditional Monte Carlo approximation; five-matrix variation assessed separately"
+  },
+  {
+    "a": 0.25,
+    "s": 200,
+    "frames_per_matrix": 500,
+    "pilot_variance": 0.0022137604166666664,
+    "power_scope": "conditional Monte Carlo approximation; five-matrix variation assessed separately"
+  },
+  {
+    "a": 0.75,
+    "s": 1000,
+    "frames_per_matrix": 500,
+    "pilot_variance": 0.0058403227072864345,
+    "power_scope": "conditional Monte Carlo approximation; five-matrix variation assessed separately"
+  }
+]

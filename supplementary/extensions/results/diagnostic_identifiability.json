@@ -1,0 +1,61 @@
+{
+  "settings": [
+    1.0,
+    8.0
+  ],
+  "jacobian_rank": 2,
+  "unknown_parameters": 3,
+  "equivalent_two_setting_solutions": [
+    {
+      "p": 0.029928268087580676,
+      "r": 0.20883774449575393,
+      "pE": 0.0,
+      "probabilities": [
+        0.07191374458544375,
+        0.18889553858720004
+      ],
+      "zero_legitimate_intercept": 0.05220943612393848
+    },
+    {
+      "p": 0.02996542273597645,
+      "r": 0.20427876172227366,
+      "pE": 0.015,
+      "probabilities": [
+        0.07191374458544365,
+        0.18889553858719885
+      ],
+      "zero_legitimate_intercept": 0.052207310874960625
+    },
+    {
+      "p": 0.03,
+      "r": 0.2,
+      "pE": 0.03,
+      "probabilities": [
+        0.07191374458544376,
+        0.18889553858720004
+      ],
+      "zero_legitimate_intercept": 0.052205337500000004
+    },
+    {
+      "p": 0.030062213419043436,
+      "r": 0.19219146949105784,
+      "pE": 0.06,
+      "probabilities": [
+        0.0719137445854438,
+        0.18889553858720004
+      ],
+      "zero_legitimate_intercept": 0.05220179769860944
+    },
+    {
+      "p": 0.030132711780663898,
+      "r": 0.18311003138063364,
+      "pE": 0.1,
+      "probabilities": [
+        0.07191374458544378,
+        0.18889553858720004
+      ],
+      "zero_legitimate_intercept": 0.052197803320441875
+    }
+  ],
+  "scope": "Two aggregate settings cannot identify unknown legitimate noise, attack fraction and fixed Eve noise simultaneously. Known-Eve fits impose an extra assumption; four-setting identifiability is not ruled out."
+}

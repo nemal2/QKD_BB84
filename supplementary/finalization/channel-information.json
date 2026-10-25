@@ -1,0 +1,488 @@
+{
+  "status": "passed",
+  "scope": "Descriptive analysis of retained records and exact response laws; no new Monte Carlo experiments.",
+  "physical": [
+    {
+      "model": "homogeneous",
+      "setting": "fixed",
+      "transitions": [
+        [
+          0.043663499999999994,
+          0.043663499999999994
+        ],
+        [
+          0.043663500000000036,
+          0.043663500000000036
+        ]
+      ],
+      "qber": 0.04366350000000001,
+      "H_A_given_B": 0.2588441355324922,
+      "H_A_given_BZ": 0.2588441355324922,
+      "G": 0.0,
+      "H_error": 0.25884413553249214,
+      "H_error_given_basis": 0.2588441355324923,
+      "basis_prior_logloss_gain": 0.0,
+      "bit_prior_logloss_gain": 1.1102230246251565e-16
+    },
+    {
+      "model": "homogeneous",
+      "setting": "matched",
+      "transitions": [
+        [
+          0.06000000000000004,
+          0.06000000000000004
+        ],
+        [
+          0.059999999999999984,
+          0.059999999999999984
+        ]
+      ],
+      "qber": 0.06000000000000001,
+      "H_A_given_B": 0.3274449191544764,
+      "H_A_given_BZ": 0.32744491915447593,
+      "G": 4.440892098500626e-16,
+      "H_error": 0.3274449191544763,
+      "H_error_given_basis": 0.3274449191544762,
+      "basis_prior_logloss_gain": 1.1102230246251565e-16,
+      "bit_prior_logloss_gain": 2.7755575615628914e-16
+    },
+    {
+      "model": "gate_dependent",
+      "setting": "fixed",
+      "transitions": [
+        [
+          0.0074625625000000004,
+          0.01488775
+        ],
+        [
+          0.05100624999999999,
+          0.057775000000000035
+        ]
+      ],
+      "qber": 0.032782890625000005,
+      "H_A_given_B": 0.207910772880749,
+      "H_A_given_BZ": 0.19612247549539585,
+      "G": 0.011788297385353141,
+      "H_error": 0.20816144088620442,
+      "H_error_given_basis": 0.1966248836554196,
+      "basis_prior_logloss_gain": 0.01153655723078481,
+      "bit_prior_logloss_gain": 0.000502408160023754
+    },
+    {
+      "model": "gate_dependent",
+      "setting": "matched",
+      "transitions": [
+        [
+          0.013954118977629576,
+          0.02777678948104065
+        ],
+        [
+          0.09335221266723587,
+          0.10491687887409397
+        ]
+      ],
+      "qber": 0.06000000000000001,
+      "H_A_given_B": 0.3270450403549703,
+      "H_A_given_BZ": 0.3053823669686817,
+      "G": 0.021662673386288578,
+      "H_error": 0.3274449191544763,
+      "H_error_given_basis": 0.3062593909251603,
+      "basis_prior_logloss_gain": 0.02118552822931602,
+      "bit_prior_logloss_gain": 0.0008770239564785953
+    },
+    {
+      "model": "pauli",
+      "setting": "fixed",
+      "transitions": [
+        [
+          0.02,
+          0.02
+        ],
+        [
+          0.07999999999999995,
+          0.07999999999999995
+        ]
+      ],
+      "qber": 0.049999999999999975,
+      "H_A_given_B": 0.28639695711595614,
+      "H_A_given_BZ": 0.27180986637204674,
+      "G": 0.014587090743909403,
+      "H_error": 0.2863969571159559,
+      "H_error_given_basis": 0.2718098663720467,
+      "basis_prior_logloss_gain": 0.014587090743909237,
+      "bit_prior_logloss_gain": 0.0
+    },
+    {
+      "model": "pauli",
+      "setting": "matched",
+      "transitions": [
+        [
+          0.024000000000000007,
+          0.024000000000000007
+        ],
+        [
+          0.09599999999999996,
+          0.09599999999999996
+        ]
+      ],
+      "qber": 0.059999999999999984,
+      "H_A_given_B": 0.32744491915447616,
+      "H_A_given_BZ": 0.30976582287646437,
+      "G": 0.017679096278011786,
+      "H_error": 0.32744491915447604,
+      "H_error_given_basis": 0.30976582287646426,
+      "basis_prior_logloss_gain": 0.017679096278011786,
+      "bit_prior_logloss_gain": 0.0
+    },
+    {
+      "model": "thermal",
+      "setting": "fixed",
+      "transitions": [
+        [
+          0.0,
+          0.04877057549928614
+        ],
+        [
+          0.011468421666826786,
+          0.06500486682931689
+        ]
+      ],
+      "qber": 0.03131096599885745,
+      "H_A_given_B": 0.18484404216284522,
+      "H_A_given_BZ": 0.18152475198780205,
+      "G": 0.003319290175043177,
+      "H_error": 0.20092427333079682,
+      "H_error_given_basis": 0.19977433701056274,
+      "basis_prior_logloss_gain": 0.0011499363202340795,
+      "bit_prior_logloss_gain": 0.018249585022760695
+    },
+    {
+      "model": "thermal",
+      "setting": "matched",
+      "transitions": [
+        [
+          0.0,
+          0.09425826622167735
+        ],
+        [
+          0.021722475764378472,
+          0.1240192580140074
+        ]
+      ],
+      "qber": 0.060000000000015805,
+      "H_A_given_B": 0.29885974543903215,
+      "H_A_given_BZ": 0.29257417869978597,
+      "G": 0.0062855667392461845,
+      "H_error": 0.32744491915453894,
+      "H_error_given_basis": 0.3253105958142345,
+      "basis_prior_logloss_gain": 0.002134323340304445,
+      "bit_prior_logloss_gain": 0.032736417114448524
+    },
+    {
+      "model": "readout",
+      "setting": "fixed",
+      "transitions": [
+        [
+          0.01,
+          0.11
+        ],
+        [
+          0.009999999999999997,
+          0.10999999999999996
+        ]
+      ],
+      "qber": 0.05999999999999999,
+      "H_A_given_B": 0.2975800930424113,
+      "H_A_given_BZ": 0.29758009304241106,
+      "G": 2.220446049250313e-16,
+      "H_error": 0.3274449191544761,
+      "H_error_given_basis": 0.32744491915447616,
+      "basis_prior_logloss_gain": 0.0,
+      "bit_prior_logloss_gain": 0.02986482611206509
+    },
+    {
+      "model": "readout",
+      "setting": "matched",
+      "transitions": [
+        [
+          0.010000000000000002,
+          0.11000000000000003
+        ],
+        [
+          0.009999999999999998,
+          0.10999999999999999
+        ]
+      ],
+      "qber": 0.060000000000000005,
+      "H_A_given_B": 0.2975800930424113,
+      "H_A_given_BZ": 0.29758009304241106,
+      "G": 2.220446049250313e-16,
+      "H_error": 0.32744491915447627,
+      "H_error_given_basis": 0.3274449191544762,
+      "basis_prior_logloss_gain": 5.551115123125783e-17,
+      "bit_prior_logloss_gain": 0.029864826112065146
+    }
+  ],
+  "pipeline": [
+    {
+      "family": "gallager",
+      "pooled_row_fraction": 0.501121425,
+      "selected_row_fraction": 0.49330365,
+      "disclosure_pp": 0.7357905882352941,
+      "recovery_pp": 0.33660000000000007,
+      "delta_pp": 1.0723905882352942,
+      "matrix_values": [
+        {
+          "seed": 211,
+          "pooled_row_fraction": 0.50092275,
+          "selected_row_fraction": 0.4933245,
+          "disclosure_pp": 0.7151294117647059,
+          "recovery_pp": 0.5610000000000002,
+          "delta_pp": 1.276129411764706
+        },
+        {
+          "seed": 223,
+          "pooled_row_fraction": 0.50192025,
+          "selected_row_fraction": 0.4947225,
+          "disclosure_pp": 0.677435294117647,
+          "recovery_pp": 0.22440000000000004,
+          "delta_pp": 0.9018352941176471
+        },
+        {
+          "seed": 227,
+          "pooled_row_fraction": 0.5012205000000001,
+          "selected_row_fraction": 0.492621,
+          "disclosure_pp": 0.809364705882353,
+          "recovery_pp": 0.22440000000000004,
+          "delta_pp": 1.033764705882353
+        },
+        {
+          "seed": 229,
+          "pooled_row_fraction": 0.50122275,
+          "selected_row_fraction": 0.493425,
+          "disclosure_pp": 0.7339058823529412,
+          "recovery_pp": 0.33660000000000007,
+          "delta_pp": 1.0705058823529412
+        },
+        {
+          "seed": 233,
+          "pooled_row_fraction": 0.500320875,
+          "selected_row_fraction": 0.49242525,
+          "disclosure_pp": 0.7431176470588235,
+          "recovery_pp": 0.33660000000000007,
+          "delta_pp": 1.0797176470588234
+        }
+      ],
+      "pooled_excess": 0.17367650584552374,
+      "selected_excess": 0.19479942508458892
+    },
+    {
+      "family": "irregular",
+      "pooled_row_fraction": 0.4710599999999999,
+      "selected_row_fraction": 0.42519999999999997,
+      "disclosure_pp": 4.316235294117647,
+      "recovery_pp": -0.16271058823529413,
+      "delta_pp": 4.153524705882354,
+      "matrix_values": [
+        {
+          "seed": 211,
+          "pooled_row_fraction": 0.4711,
+          "selected_row_fraction": 0.42469999999999997,
+          "disclosure_pp": 4.367058823529412,
+          "recovery_pp": -0.12160000000000001,
+          "delta_pp": 4.245458823529414
+        },
+        {
+          "seed": 223,
+          "pooled_row_fraction": 0.4717,
+          "selected_row_fraction": 0.42619999999999997,
+          "disclosure_pp": 4.282352941176471,
+          "recovery_pp": -0.3271529411764706,
+          "delta_pp": 3.955200000000002
+        },
+        {
+          "seed": 227,
+          "pooled_row_fraction": 0.4709,
+          "selected_row_fraction": 0.42410000000000003,
+          "disclosure_pp": 4.404705882352942,
+          "recovery_pp": 0.0,
+          "delta_pp": 4.4047058823529435
+        },
+        {
+          "seed": 229,
+          "pooled_row_fraction": 0.4701,
+          "selected_row_fraction": 0.4244,
+          "disclosure_pp": 4.301176470588235,
+          "recovery_pp": -0.24320000000000003,
+          "delta_pp": 4.057976470588237
+        },
+        {
+          "seed": 233,
+          "pooled_row_fraction": 0.4715,
+          "selected_row_fraction": 0.42660000000000003,
+          "disclosure_pp": 4.225882352941177,
+          "recovery_pp": -0.12160000000000001,
+          "delta_pp": 4.104282352941178
+        }
+      ],
+      "pooled_excess": 0.14361508084552366,
+      "selected_excess": 0.1266957750845889
+    }
+  ],
+  "transfer_benchmark": {
+    "qber": 0.06,
+    "asymmetry": 0.75,
+    "n": 16000,
+    "sample": 1000,
+    "H_pooled": 0.32744491915447627,
+    "H_conditional": 0.29850422491541106,
+    "G": 0.0289406942390652,
+    "ideal_yield_difference_pp": 2.7238300460296663
+  },
+  "aggregate_ambiguity": {
+    "attacked_p": 0.015,
+    "attack_fraction": 0.1,
+    "noise_only_p": 0.049023963419052484,
+    "common_operating_qber": 0.03558102578125001,
+    "residuals": [
+      0.025,
+      0.0
+    ],
+    "maximum_density_check_error": 5.551115123125783e-17,
+    "attacked_basis_rates": [
+      0.0285625,
+      0.042599551562500004
+    ],
+    "noise_only_basis_rates": [
+      0.012255990854763121,
+      0.05890606070773683
+    ],
+    "single_setting_basis_inverse_verified": true
+  },
+  "input_sha256": {
+    "extensions/common.py": "89d34c154514b54e501150fe983e027c4700d169217432642c502f7d95f6cd09",
+    "extensions/physics.py": "36ae3062709c01865b390345b8e2c7eee120f5f520ee5d344d6d3d444f76638c",
+    "extensions/results/physical_gallager_k211_gate_dependent_fixed_frames.npz": "467dc3a14ec7b7c923985eed58e1d730bb5de39c0ddc2fbb478b8f7195ebdc3b",
+    "extensions/results/physical_gallager_k211_gate_dependent_matched_frames.npz": "50a5e5864a1199880e19bbf225cfe32f320fbc347da554098ee3679eb804981a",
+    "extensions/results/physical_gallager_k211_homogeneous_fixed_frames.npz": "b3e3384d6363f3549f22261ee5d322794a5428b1df12c87ea58ae61e6773a8aa",
+    "extensions/results/physical_gallager_k211_homogeneous_matched_frames.npz": "92c6b815c5a2177cadee9ed7f98fc717c9e4e00eb2ec336455ee07d22b0e76d1",
+    "extensions/results/physical_gallager_k211_pauli_fixed_frames.npz": "1db0ae944cf67d8de43c5e3b4aa60d1deef649eeb9cdda82f61aa757ceb5113f",
+    "extensions/results/physical_gallager_k211_pauli_matched_frames.npz": "0099a1681882c6f9b4fc9734a2cfeefd6ca312c4ba7e41103251b924a519f4bc",
+    "extensions/results/physical_gallager_k211_readout_fixed_frames.npz": "eac99290d0a849d0c546587cf556699d81f4f70fc7c1ff986e67193893321565",
+    "extensions/results/physical_gallager_k211_readout_matched_frames.npz": "0883f6d26b420b246681f111267ae454b50ff7f084fd2010d2ab0a32ee19b167",
+    "extensions/results/physical_gallager_k211_thermal_fixed_frames.npz": "a2473ed3fda62f8cae2c327b98fbc184cfe5945469ef8b59aaec6fa48f6d8c84",
+    "extensions/results/physical_gallager_k211_thermal_matched_frames.npz": "891a63e026b0877900b495d7675e314f65cb968dd6457d598a2942190d34b7f2",
+    "extensions/results/physical_gallager_k223_gate_dependent_fixed_frames.npz": "2609c318438a71d6fce7d9b4d4b29f7d8e2cf476e99498653b6a138f5249611a",
+    "extensions/results/physical_gallager_k223_gate_dependent_matched_frames.npz": "9a7d7399f827922e042cd84209a3db371be6d0792c6d8d532c3b499aa4b8bfff",
+    "extensions/results/physical_gallager_k223_homogeneous_fixed_frames.npz": "8f4ea37ef5f5eafd17aec9637309b3418c5edc7568cc7b1d8bb68b5704c969d3",
+    "extensions/results/physical_gallager_k223_homogeneous_matched_frames.npz": "242e5d039197a03d3a74687294044027ac6c6dd57f4a4872eb78cc629b51509f",
+    "extensions/results/physical_gallager_k223_pauli_fixed_frames.npz": "ae3f950fb2572be5c1b6b3c2ba6abf03eabaf8d0184bfaa1372a7db33d9deb20",
+    "extensions/results/physical_gallager_k223_pauli_matched_frames.npz": "224a2c2e9a3b6a7d893e66c53f71ac1005e60c43d820f34b2a39e5cae6b33390",
+    "extensions/results/physical_gallager_k223_readout_fixed_frames.npz": "588ae9ada85b50a2dbcd34f484771af961d099fcd09d292a38ca11b8cbafe07b",
+    "extensions/results/physical_gallager_k223_readout_matched_frames.npz": "5141c1ff8112fe8d9308b7709522df1b10be53a03be620e5aeaca076e1493817",
+    "extensions/results/physical_gallager_k223_thermal_fixed_frames.npz": "0423df2c38cc305916eaf5269793fb4a9a1e9987790de7f21de487930707027f",
+    "extensions/results/physical_gallager_k223_thermal_matched_frames.npz": "be819daeb2877fe4176e2e9e374dcca87917f421ee45e7f3b08fb082fa44ae37",
+    "extensions/results/physical_gallager_k227_gate_dependent_fixed_frames.npz": "b4bde7241058965d344f4ccd559c18f1d5034014bcaef2988cc5ceb64d24c5bb",
+    "extensions/results/physical_gallager_k227_gate_dependent_matched_frames.npz": "d41dfecde1e15fc59c4832b5b0b63abe3ad8d7d33b120dcba2b1083fa7bd3dd5",
+    "extensions/results/physical_gallager_k227_homogeneous_fixed_frames.npz": "1dcaa38a4ef7652f2ba348cb725b22d7dd7ba7785ba7ad11962e7525718043bc",
+    "extensions/results/physical_gallager_k227_homogeneous_matched_frames.npz": "9a9920a5b5a7dbefc249ab5ef861555d8d74f435ec194ff94ce1a0ef0c3d7986",
+    "extensions/results/physical_gallager_k227_pauli_fixed_frames.npz": "0727bb9d6c2ea4bd2f84a980bef0493d120528f8e8e15893f7e790346f3462e6",
+    "extensions/results/physical_gallager_k227_pauli_matched_frames.npz": "36fa3ca1b2099389204e18dd8ea665a9e9713108a9923a217f5e5a1097cbd158",
+    "extensions/results/physical_gallager_k227_readout_fixed_frames.npz": "39019f037c24bb76a99ad277e8d9ea189fe88ccd81cf2de9863efcc8270c0497",
+    "extensions/results/physical_gallager_k227_readout_matched_frames.npz": "1701388096e8d80e8ca55091b45c1e29c4847c4f9c5c816490cfe0ebcfe2fd4a",
+    "extensions/results/physical_gallager_k227_thermal_fixed_frames.npz": "d8d079845279f53b59078c40e1f42a37b115029610bb3d5f3cd47e177fc7eaad",
+    "extensions/results/physical_gallager_k227_thermal_matched_frames.npz": "900ce3cacd943ba1256a13d36beabf4d8e2406790f20c8c36829092eff010b74",
+    "extensions/results/physical_gallager_k229_gate_dependent_fixed_frames.npz": "91b7f0fa53b9006e5b5a6c381a9e821ca10014159a66a177f3dc15a1fa8c5405",
+    "extensions/results/physical_gallager_k229_gate_dependent_matched_frames.npz": "805e6533921790f3c004af2c3d46a4c39c22cc07963573d3c7566d33bdf21a29",
+    "extensions/results/physical_gallager_k229_homogeneous_fixed_frames.npz": "6c08ce84a468e9f1b96787df141ffe8891dbe3fdc0ab21e0ff47427de6bc839d",
+    "extensions/results/physical_gallager_k229_homogeneous_matched_frames.npz": "d10b824ba04dacfb90e0939b38e61f79a2d984c1b5d1839430b78e68aeee3a6e",
+    "extensions/results/physical_gallager_k229_pauli_fixed_frames.npz": "43b82148ce6a10248cbade03ddd0d11e74f1f939709303330ec6d7040f5a8ab8",
+    "extensions/results/physical_gallager_k229_pauli_matched_frames.npz": "ed9e3a5e1e73a4f59a2a074e484685291b1c4b0f4d90f778aa5f33bf8d21f1f4",
+    "extensions/results/physical_gallager_k229_readout_fixed_frames.npz": "88980e16ab323ba0520c9ab5d7abc4f1cee32109e7b3322be4305019b7987617",
+    "extensions/results/physical_gallager_k229_readout_matched_frames.npz": "a4696cf072f5f3cb9068ee5c3ffef9e08bc523702b4f3bb6b4041bb45fd4321e",
+    "extensions/results/physical_gallager_k229_thermal_fixed_frames.npz": "2af89359dd37ea38afa7ba8264ca3f3a1595fff85d2f460bd4df383935b16108",
+    "extensions/results/physical_gallager_k229_thermal_matched_frames.npz": "a3915244e05e1fc49822583d53b6c7cdd2f68e36dbc4134c098e6d8190366fd0",
+    "extensions/results/physical_gallager_k233_gate_dependent_fixed_frames.npz": "ee1ab7659d76e294cbc262535c634366d4dd769d204a15d91a8d3ac27eeba6cc",
+    "extensions/results/physical_gallager_k233_gate_dependent_matched_frames.npz": "50b4dcf511175922bc8ee6029bb77d9585fab92105eafd01ae199c3208cfc5f8",
+    "extensions/results/physical_gallager_k233_homogeneous_fixed_frames.npz": "be331e98c8b3d0380efd507802e00c9cc7cdc8cbc30d405aeecabf7d0ae90437",
+    "extensions/results/physical_gallager_k233_homogeneous_matched_frames.npz": "1557b5b4c5194c6ea40f4f4eb23795cbd30625265b17effce8575d5dc583134b",
+    "extensions/results/physical_gallager_k233_pauli_fixed_frames.npz": "ff996587bd7252e5c3afc4029b43af6954fa087e6db3c9e73dcd24916df4c710",
+    "extensions/results/physical_gallager_k233_pauli_matched_frames.npz": "25ed18cc69b2055878a40cd9c31cf3a8658ba11ad7f7438cecea8c64f03dcbe6",
+    "extensions/results/physical_gallager_k233_readout_fixed_frames.npz": "dd84c4ffc9abf612fd5231a97d720e15dd81404dc7d666eabb7daeebe0ae96bb",
+    "extensions/results/physical_gallager_k233_readout_matched_frames.npz": "a2912fc7d7d66b4e1b2f16cde0cf68643a78e154ad8d6cabfcefb526d2e063e6",
+    "extensions/results/physical_gallager_k233_thermal_fixed_frames.npz": "7ad00a51c99fbb0959ee112d7b6dfcbe47a786993608d2e7b67c2eb80e9144a1",
+    "extensions/results/physical_gallager_k233_thermal_matched_frames.npz": "29c8241787ca086f2a1644e950aaf43edfd9d8ed5e65a81ae8d178988619ed3d",
+    "extensions/results/physical_irregular_k211_gate_dependent_fixed_frames.npz": "467dc3a14ec7b7c923985eed58e1d730bb5de39c0ddc2fbb478b8f7195ebdc3b",
+    "extensions/results/physical_irregular_k211_gate_dependent_matched_frames.npz": "50a5e5864a1199880e19bbf225cfe32f320fbc347da554098ee3679eb804981a",
+    "extensions/results/physical_irregular_k211_homogeneous_fixed_frames.npz": "b3e3384d6363f3549f22261ee5d322794a5428b1df12c87ea58ae61e6773a8aa",
+    "extensions/results/physical_irregular_k211_homogeneous_matched_frames.npz": "92c6b815c5a2177cadee9ed7f98fc717c9e4e00eb2ec336455ee07d22b0e76d1",
+    "extensions/results/physical_irregular_k211_pauli_fixed_frames.npz": "1db0ae944cf67d8de43c5e3b4aa60d1deef649eeb9cdda82f61aa757ceb5113f",
+    "extensions/results/physical_irregular_k211_pauli_matched_frames.npz": "0099a1681882c6f9b4fc9734a2cfeefd6ca312c4ba7e41103251b924a519f4bc",
+    "extensions/results/physical_irregular_k211_readout_fixed_frames.npz": "eac99290d0a849d0c546587cf556699d81f4f70fc7c1ff986e67193893321565",
+    "extensions/results/physical_irregular_k211_readout_matched_frames.npz": "0883f6d26b420b246681f111267ae454b50ff7f084fd2010d2ab0a32ee19b167",
+    "extensions/results/physical_irregular_k211_thermal_fixed_frames.npz": "a2473ed3fda62f8cae2c327b98fbc184cfe5945469ef8b59aaec6fa48f6d8c84",
+    "extensions/results/physical_irregular_k211_thermal_matched_frames.npz": "891a63e026b0877900b495d7675e314f65cb968dd6457d598a2942190d34b7f2",
+    "extensions/results/physical_irregular_k223_gate_dependent_fixed_frames.npz": "2609c318438a71d6fce7d9b4d4b29f7d8e2cf476e99498653b6a138f5249611a",
+    "extensions/results/physical_irregular_k223_gate_dependent_matched_frames.npz": "9a7d7399f827922e042cd84209a3db371be6d0792c6d8d532c3b499aa4b8bfff",
+    "extensions/results/physical_irregular_k223_homogeneous_fixed_frames.npz": "8f4ea37ef5f5eafd17aec9637309b3418c5edc7568cc7b1d8bb68b5704c969d3",
+    "extensions/results/physical_irregular_k223_homogeneous_matched_frames.npz": "242e5d039197a03d3a74687294044027ac6c6dd57f4a4872eb78cc629b51509f",
+    "extensions/results/physical_irregular_k223_pauli_fixed_frames.npz": "ae3f950fb2572be5c1b6b3c2ba6abf03eabaf8d0184bfaa1372a7db33d9deb20",
+    "extensions/results/physical_irregular_k223_pauli_matched_frames.npz": "224a2c2e9a3b6a7d893e66c53f71ac1005e60c43d820f34b2a39e5cae6b33390",
+    "extensions/results/physical_irregular_k223_readout_fixed_frames.npz": "588ae9ada85b50a2dbcd34f484771af961d099fcd09d292a38ca11b8cbafe07b",
+    "extensions/results/physical_irregular_k223_readout_matched_frames.npz": "5141c1ff8112fe8d9308b7709522df1b10be53a03be620e5aeaca076e1493817",
+    "extensions/results/physical_irregular_k223_thermal_fixed_frames.npz": "0423df2c38cc305916eaf5269793fb4a9a1e9987790de7f21de487930707027f",
+    "extensions/results/physical_irregular_k223_thermal_matched_frames.npz": "be819daeb2877fe4176e2e9e374dcca87917f421ee45e7f3b08fb082fa44ae37",
+    "extensions/results/physical_irregular_k227_gate_dependent_fixed_frames.npz": "b4bde7241058965d344f4ccd559c18f1d5034014bcaef2988cc5ceb64d24c5bb",
+    "extensions/results/physical_irregular_k227_gate_dependent_matched_frames.npz": "d41dfecde1e15fc59c4832b5b0b63abe3ad8d7d33b120dcba2b1083fa7bd3dd5",
+    "extensions/results/physical_irregular_k227_homogeneous_fixed_frames.npz": "1dcaa38a4ef7652f2ba348cb725b22d7dd7ba7785ba7ad11962e7525718043bc",
+    "extensions/results/physical_irregular_k227_homogeneous_matched_frames.npz": "9a9920a5b5a7dbefc249ab5ef861555d8d74f435ec194ff94ce1a0ef0c3d7986",
+    "extensions/results/physical_irregular_k227_pauli_fixed_frames.npz": "0727bb9d6c2ea4bd2f84a980bef0493d120528f8e8e15893f7e790346f3462e6",
+    "extensions/results/physical_irregular_k227_pauli_matched_frames.npz": "36fa3ca1b2099389204e18dd8ea665a9e9713108a9923a217f5e5a1097cbd158",
+    "extensions/results/physical_irregular_k227_readout_fixed_frames.npz": "39019f037c24bb76a99ad277e8d9ea189fe88ccd81cf2de9863efcc8270c0497",
+    "extensions/results/physical_irregular_k227_readout_matched_frames.npz": "1701388096e8d80e8ca55091b45c1e29c4847c4f9c5c816490cfe0ebcfe2fd4a",
+    "extensions/results/physical_irregular_k227_thermal_fixed_frames.npz": "d8d079845279f53b59078c40e1f42a37b115029610bb3d5f3cd47e177fc7eaad",
+    "extensions/results/physical_irregular_k227_thermal_matched_frames.npz": "900ce3cacd943ba1256a13d36beabf4d8e2406790f20c8c36829092eff010b74",
+    "extensions/results/physical_irregular_k229_gate_dependent_fixed_frames.npz": "91b7f0fa53b9006e5b5a6c381a9e821ca10014159a66a177f3dc15a1fa8c5405",
+    "extensions/results/physical_irregular_k229_gate_dependent_matched_frames.npz": "805e6533921790f3c004af2c3d46a4c39c22cc07963573d3c7566d33bdf21a29",
+    "extensions/results/physical_irregular_k229_homogeneous_fixed_frames.npz": "6c08ce84a468e9f1b96787df141ffe8891dbe3fdc0ab21e0ff47427de6bc839d",
+    "extensions/results/physical_irregular_k229_homogeneous_matched_frames.npz": "d10b824ba04dacfb90e0939b38e61f79a2d984c1b5d1839430b78e68aeee3a6e",
+    "extensions/results/physical_irregular_k229_pauli_fixed_frames.npz": "43b82148ce6a10248cbade03ddd0d11e74f1f939709303330ec6d7040f5a8ab8",
+    "extensions/results/physical_irregular_k229_pauli_matched_frames.npz": "ed9e3a5e1e73a4f59a2a074e484685291b1c4b0f4d90f778aa5f33bf8d21f1f4",
+    "extensions/results/physical_irregular_k229_readout_fixed_frames.npz": "88980e16ab323ba0520c9ab5d7abc4f1cee32109e7b3322be4305019b7987617",
+    "extensions/results/physical_irregular_k229_readout_matched_frames.npz": "a4696cf072f5f3cb9068ee5c3ffef9e08bc523702b4f3bb6b4041bb45fd4321e",
+    "extensions/results/physical_irregular_k229_thermal_fixed_frames.npz": "2af89359dd37ea38afa7ba8264ca3f3a1595fff85d2f460bd4df383935b16108",
+    "extensions/results/physical_irregular_k229_thermal_matched_frames.npz": "a3915244e05e1fc49822583d53b6c7cdd2f68e36dbc4134c098e6d8190366fd0",
+    "extensions/results/physical_irregular_k233_gate_dependent_fixed_frames.npz": "ee1ab7659d76e294cbc262535c634366d4dd769d204a15d91a8d3ac27eeba6cc",
+    "extensions/results/physical_irregular_k233_gate_dependent_matched_frames.npz": "50b4dcf511175922bc8ee6029bb77d9585fab92105eafd01ae199c3208cfc5f8",
+    "extensions/results/physical_irregular_k233_homogeneous_fixed_frames.npz": "be331e98c8b3d0380efd507802e00c9cc7cdc8cbc30d405aeecabf7d0ae90437",
+    "extensions/results/physical_irregular_k233_homogeneous_matched_frames.npz": "1557b5b4c5194c6ea40f4f4eb23795cbd30625265b17effce8575d5dc583134b",
+    "extensions/results/physical_irregular_k233_pauli_fixed_frames.npz": "ff996587bd7252e5c3afc4029b43af6954fa087e6db3c9e73dcd24916df4c710",
+    "extensions/results/physical_irregular_k233_pauli_matched_frames.npz": "25ed18cc69b2055878a40cd9c31cf3a8658ba11ad7f7438cecea8c64f03dcbe6",
+    "extensions/results/physical_irregular_k233_readout_fixed_frames.npz": "dd84c4ffc9abf612fd5231a97d720e15dd81404dc7d666eabb7daeebe0ae96bb",
+    "extensions/results/physical_irregular_k233_readout_matched_frames.npz": "a2912fc7d7d66b4e1b2f16cde0cf68643a78e154ad8d6cabfcefb526d2e063e6",
+    "extensions/results/physical_irregular_k233_thermal_fixed_frames.npz": "7ad00a51c99fbb0959ee112d7b6dfcbe47a786993608d2e7b67c2eb80e9144a1",
+    "extensions/results/physical_irregular_k233_thermal_matched_frames.npz": "29c8241787ca086f2a1644e950aaf43edfd9d8ed5e65a81ae8d178988619ed3d",
+    "extensions/results/physical_results.csv": "be976dac13b558e99b995db0e3ded22fced1fd6c748f98746ceaf111f00938b2",
+    "extensions/results/transfer_gallager_n16000_k211_c2_pipeline_pooled.npz": "ddaa3920aff77183218dafdda43ba20d8202d79a6a22682f7b99d6746596b380",
+    "extensions/results/transfer_gallager_n16000_k211_c2_pipeline_selected.npz": "78a5b5844cf10c7e6840304c84b59b7d6abce999f5c873da650d78d40f85bdc5",
+    "extensions/results/transfer_gallager_n16000_k223_c2_pipeline_pooled.npz": "38a07cd2a9793a6af667948d8a771c4ab80c1b50c153a4bbe3f01f4afbc6f6cd",
+    "extensions/results/transfer_gallager_n16000_k223_c2_pipeline_selected.npz": "33f8760c10f684289b90625ea865d153dbad5663cdfa653af261462c1f6087be",
+    "extensions/results/transfer_gallager_n16000_k227_c2_pipeline_pooled.npz": "fe4b2868e55d7b59654de3121163480dcf02a80b0b3325450f7ac9b65bd3caa1",
+    "extensions/results/transfer_gallager_n16000_k227_c2_pipeline_selected.npz": "259afae8b0e7d1ba638d7dd53a91a166ff7845748574b715d396e89551f460bf",
+    "extensions/results/transfer_gallager_n16000_k229_c2_pipeline_pooled.npz": "7a278ea09ef20fec4309c19295d78bef9ff18db5ccf353b676bf5965ec0cf09b",
+    "extensions/results/transfer_gallager_n16000_k229_c2_pipeline_selected.npz": "ea99e5a4b86e4e39ce15a23f8b37249a1176f8eeb44ff40be5c0754e54b8c480",
+    "extensions/results/transfer_gallager_n16000_k233_c2_pipeline_pooled.npz": "e286849aba2e3d439044330e5d7664b046814f411411d813d19d288103c3804a",
+    "extensions/results/transfer_gallager_n16000_k233_c2_pipeline_selected.npz": "8bc4633c9c7719a00efef65c060de1fad8bae23339fc74ec46d9dcbde4278e2d",
+    "extensions/results/transfer_irregular_n16000_k211_c2_pipeline_pooled.npz": "7d1d84eb00f2d9872be705f194aed9bac814ff4fc82b150d4d6eb61f492159b5",
+    "extensions/results/transfer_irregular_n16000_k211_c2_pipeline_selected.npz": "9f289ac31fe0565dcb209b80c760dcc42a06206eaeb8f5b0e108684ed1504a69",
+    "extensions/results/transfer_irregular_n16000_k223_c2_pipeline_pooled.npz": "40c732a07a6a0cee06aa3e02cf4e85a70b935fe35c3f54f00304c6478fb26755",
+    "extensions/results/transfer_irregular_n16000_k223_c2_pipeline_selected.npz": "232dcdf8c876418cce0b25edde55498607133411aa0b67749307fc9b054259d6",
+    "extensions/results/transfer_irregular_n16000_k227_c2_pipeline_pooled.npz": "cf50579369ef988de3b727b595e166f05913f2535322138493bf2dc33cf0dae4",
+    "extensions/results/transfer_irregular_n16000_k227_c2_pipeline_selected.npz": "96c1016ec10b40a66a95a7bc3409a6a281410058ac1370621de35e4fcf864b9c",
+    "extensions/results/transfer_irregular_n16000_k229_c2_pipeline_pooled.npz": "bcbca789b5c4b240d3c10e427374f98bb34bd1148a9a919898f4c4dd769b0a07",
+    "extensions/results/transfer_irregular_n16000_k229_c2_pipeline_selected.npz": "640b870cfd87a36c954b09688b8bac57cb11a21521cc832c2316c55b44b9f456",
+    "extensions/results/transfer_irregular_n16000_k233_c2_pipeline_pooled.npz": "d43bc1cac65121658dbbd8693a89fe9586d86513a25da91ebca762dc87dfa0d5",
+    "extensions/results/transfer_irregular_n16000_k233_c2_pipeline_selected.npz": "b48ccc52dcff0b8f704212c15cf411c33daeea438230d67784fb0279ffbfdcd0",
+    "extensions/results/transfer_summary.json": "d68184a38c648790af8c30e574ba59c6379c2560a5ca60e8a1669cbc3f143bdb"
+  }
+}

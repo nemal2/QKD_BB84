@@ -1,0 +1,10 @@
+{
+  "purpose": "fixed-disclosure mechanism check, added after the operating-policy controls showed a near-zero failure floor",
+  "selection": "reuse the gate-only shrinkage row counts selected by the original independent calibration; no tuning on channel holdout outcomes",
+  "schemes": ["PRIMARY", "A"],
+  "channel_qber": [0.025, 0.05, 0.075, 0.10],
+  "methods": ["pooled", "centred shrinkage"],
+  "decoder": "BP and BP+OSD, identical budgets",
+  "frames": "reuse each retained independent 2000-frame channel holdout cohort",
+  "role": "mechanistic sensitivity analysis, separate from the frozen main operating-policy evaluation"
+}

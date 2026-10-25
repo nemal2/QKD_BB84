@@ -1,0 +1,8 @@
+{
+  "retrieved_date": "2026-10-24",
+  "url": "https://mirrors.ctan.org/macros/latex/contrib/acmart.zip",
+  "class_version": "2026/08/16 v2.20",
+  "extraction": "tectonic -X compile acmart.ins --pass tex --outfmt xdv --keep-intermediates",
+  "archive_sha256": "93933ce58fbeffa13e23398bb523fcb68275ecc73369c6bc73b421eeef2c10de",
+  "ccs_source": "https://dl.acm.org/pb-assets/dl_ccs/acm_ccs2012-1516985847293.xml"
+}

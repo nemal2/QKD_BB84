@@ -1,0 +1,181 @@
+{
+  "study_id": "internal-strengthening-v2",
+  "status": "protocol fixed before holdout evaluation; code construction and calibration are development stages",
+  "n": 1000,
+  "sacrificed_bits": 200,
+  "target_fer": 0.01,
+  "verification_bits": 64,
+  "schemes": [
+    "PRIMARY",
+    "A",
+    "B",
+    "B+"
+  ],
+  "qber_targets": [
+    0.02,
+    0.06,
+    0.1
+  ],
+  "matrix_seed": 11,
+  "replication_matrix_seeds": [
+    29,
+    47
+  ],
+  "matrix_design": "PEG column-weight-three base at m=150; deterministic largest-check splitting yields nested row rates .15:.025:.9, check degrees >=2",
+  "calibration_frames": 500,
+  "holdout_frames": 2000,
+  "calibration_grid": {
+    "0.02": [
+      0.15,
+      0.175,
+      0.2,
+      0.225,
+      0.25,
+      0.275,
+      0.3
+    ],
+    "0.06": [
+      0.35,
+      0.375,
+      0.4,
+      0.425,
+      0.45,
+      0.475,
+      0.5,
+      0.525,
+      0.55
+    ],
+    "0.1": [
+      0.5,
+      0.525,
+      0.55,
+      0.575,
+      0.6,
+      0.625,
+      0.65,
+      0.675,
+      0.7,
+      0.725,
+      0.75,
+      0.775,
+      0.8
+    ]
+  },
+  "rate_selection": "smallest calibrated row rate whose Wilson 95% upper FER is <=.01; require all higher tested rates to pass; separate pooled/shrink policies; no holdout retuning",
+  "bp_iterations": 300,
+  "bp_schedule": "layered sum-product, exact syndrome stop",
+  "strong_baseline": "BP plus full order-one ordered-statistics postprocessing on nonconvergence, same channel LLR score and budget for all priors",
+  "priors": [
+    "pooled Jeffreys",
+    "separate Jeffreys (ablation)",
+    "coherent unshrunk",
+    "coherent positive-part empirical-Bayes shrinkage"
+  ],
+  "shrinkage": "p_z=p_pool+w*(E_z/S_z-E/S), w=max(0,1-v/d^2), v=p_pool*(1-p_pool)*(1/S_r+1/S_d), d=E_d/S_d-E_r/S_r; w=0 for missing classes or d=0",
+  "curves": {
+    "schemes": [
+      "A",
+      "B+"
+    ],
+    "row_rates": [
+      0.225,
+      0.45,
+      0.65
+    ],
+    "qber_grid": [
+      0.01,
+      0.02,
+      0.03,
+      0.04,
+      0.05,
+      0.06,
+      0.07,
+      0.08,
+      0.09,
+      0.1,
+      0.11,
+      0.12
+    ],
+    "frames": 500
+  },
+  "channel_control": {
+    "schemes": [
+      "PRIMARY",
+      "A"
+    ],
+    "total_qber": 0.1,
+    "channel_qber": [
+      0.025,
+      0.05,
+      0.075,
+      0.1
+    ],
+    "frames": 2000,
+    "calibration_frames": 500,
+    "noise": "one basis-independent depolarizing channel at Alice/Bob boundary; q_total=q_ch+(1-2q_ch)*q_gate; constant total QBER isolates composition"
+  },
+  "seed_bases": {
+    "calibration": 9100000,
+    "holdout": 9200000,
+    "curves": 9300000,
+    "channel_calibration": 9400000,
+    "channel_holdout": 9500000,
+    "replication": 9600000,
+    "diagnostics": 9700000
+  },
+  "diagnostic": {
+    "replicates": 1000,
+    "signal_budget": 8000,
+    "p_signal": 0.03,
+    "p_eve": [
+      0,
+      0.1,
+      0.2,
+      0.3,
+      0.4
+    ],
+    "calibration_relative_offset": [
+      -0.5,
+      -0.4,
+      -0.3,
+      -0.2,
+      -0.1,
+      -0.05,
+      0,
+      0.05,
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5
+    ],
+    "existing_design": {
+      "scales": [
+        1,
+        1.5,
+        2,
+        2.5
+      ],
+      "signals": [
+        2000,
+        2000,
+        2000,
+        2000
+      ]
+    },
+    "design_optimization": "Fisher-information minimax variance across p=.02,.03,.04 and r=0,.1,.2,.3,.4; two-point f in {2.5,4,6,8}, low-scale share in {.5,.6,.7,.8,.9}; calibration share selected on same grid, without empirical holdout errors",
+    "unscaled_channel_control_qber": [
+      0.01,
+      0.03
+    ],
+    "competitor": "implement and attribute the exact interception-density formula from Fiorini source; score r/4 on the same counts; distinguish its readout-noise convention from this two-hop gate model"
+  },
+  "statistics": {
+    "absolute_FER": "Wilson 95% intervals and observed error counts",
+    "paired_tests": "exact McNemar, Holm separately per predeclared comparison family",
+    "efficiency": "f_syn=m/(n*h2(Q)); f_EC=(m+64)/(n*h2(Q)); Q is measured block QBER in aggregate reporting, target expectation for controlled curves",
+    "yield": "I_correct*(n-m-64)/(n+200)",
+    "uncertainty": "paired stratified frame/replicate bootstrap, 10000 resamples; holdout code choices frozen by calibration",
+    "seed": 9884250
+  }
+}

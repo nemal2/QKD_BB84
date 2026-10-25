@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "new_acquisition_records": 26,
+  "new_replicate_blocks": 6500,
+  "density_cases": 104,
+  "maximum_density_difference": 1.1102230246251565e-16,
+  "analytic_inverse_cases": 2000,
+  "maximum_inverse_error": 5.551115123125783e-16,
+  "independent_global_optimizer_checks": 105,
+  "maximum_optimizer_objective_excess": 0.0,
+  "independent_profile_endpoint_checks": 202,
+  "maximum_endpoint_deviance_error": 9.756268237737231e-09,
+  "maximum_jacobian_difference": 6.022649046144579e-11,
+  "independent_device_profile_endpoints": 20,
+  "maximum_device_endpoint_deviance_error": 4.386829122182689e-09
+}

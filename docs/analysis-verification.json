@@ -1,0 +1,521 @@
+{
+  "status": "passed",
+  "abstract_words": 192,
+  "anonymous": true,
+  "figure_count": 8,
+  "table_count": 24,
+  "main_tables": 5,
+  "appendix_tables": 19,
+  "generated_tables_checked": 18,
+  "citation_count": 30,
+  "unresolved_references": 0,
+  "comprehensive_main_labels": [
+    "tab:assumptions",
+    "prop:identification",
+    "fig:precisiongrid",
+    "sec:precisiongrid",
+    "tab:information",
+    "tab:crosscircuit",
+    "tab:matched",
+    "tab:asymmetry",
+    "fig:circuits",
+    "fig:ambiguity",
+    "fig:asymmetry",
+    "fig:transfer",
+    "eq:yielddecomposition",
+    "eq:separatedresponse",
+    "eq:channel"
+  ],
+  "comprehensive_supporting_labels": [
+    "tab:cohorts",
+    "tab:validation",
+    "tab:precisionprimary",
+    "tab:precisiona",
+    "tab:precisionbplus",
+    "tab:operating",
+    "tab:ablation",
+    "tab:replication",
+    "tab:channel",
+    "tab:rule",
+    "tab:yieldaccounting",
+    "tab:absolutetransfer",
+    "tab:transferall",
+    "tab:sample",
+    "tab:physical",
+    "tab:holdout",
+    "tab:profiles",
+    "tab:diagnostic",
+    "tab:stress",
+    "fig:exposure",
+    "fig:curves"
+  ],
+  "anonymous_front_matter": true,
+  "scientific_manifests_verified": {
+    "supplementary": 245,
+    "supplementary/extensions": 4126,
+    "supplementary/diagnostic_validation": 488,
+    "supplementary/observation_validation": 93,
+    "supplementary/precision_validation": 308
+  },
+  "channel_information_analysis_verified": true,
+  "retained_record_reporting_verified": true,
+  "observation_validation_verified": {
+    "status": "passed",
+    "new_acquisition_records": 26,
+    "new_replicate_blocks": 6500,
+    "density_cases": 104,
+    "maximum_density_difference": 1.1102230246251565e-16,
+    "analytic_inverse_cases": 2000,
+    "maximum_inverse_error": 5.551115123125783e-16,
+    "independent_global_optimizer_checks": 105,
+    "maximum_optimizer_objective_excess": 0.0,
+    "independent_profile_endpoint_checks": 202,
+    "maximum_endpoint_deviance_error": 9.756268237737231e-09,
+    "maximum_jacobian_difference": 6.022649046144579e-11,
+    "independent_device_profile_endpoints": 20,
+    "maximum_device_endpoint_deviance_error": 4.386829122182689e-09
+  },
+  "precision_validation_verified": {
+    "status": "passed",
+    "proposition": {
+      "parameter_cases": 1018,
+      "inverse_checks": 4072,
+      "cubic_intercept_checks": 2036,
+      "maximum_inverse_error": 1.4432899320127035e-15,
+      "maximum_intercept_error": 5.773159728050814e-15,
+      "maximum_injection_composition_error": 2.220446049250313e-16,
+      "Bplus_distinct_interception_counterexample": true,
+      "unknown_readout_counterexample": true
+    },
+    "cells": 81,
+    "replicate_blocks": 40500,
+    "acquisition_streams_recreated": 162,
+    "density_cases": 648,
+    "maximum_density_error": 1.3877787807814457e-16,
+    "independent_optimizer_checks": 270,
+    "maximum_optimizer_objective_excess": 1.1368683772161603e-13,
+    "independent_profile_endpoint_checks": 78,
+    "maximum_profile_endpoint_deviance_error": 2.5886611521031e-08,
+    "retained_arrays": 3078
+  },
+  "method_documentation_verified": {
+    "status": "passed",
+    "retained_boundary_records": [
+      {
+        "scenario": "alice_low",
+        "records": 500,
+        "lower_noise_hits": [
+          248,
+          0
+        ],
+        "upper_noise_hits": [
+          0,
+          0
+        ],
+        "target_estimate_boundary_hits": 0,
+        "target_interval_boundary_hits": 0,
+        "r_range": [
+          0.11219032223689518,
+          0.2719453231415415
+        ],
+        "interval_endpoint_range": [
+          0.0106824224232696,
+          0.08346273883944376
+        ]
+      },
+      {
+        "scenario": "bob_low",
+        "records": 500,
+        "lower_noise_hits": [
+          244,
+          0
+        ],
+        "upper_noise_hits": [
+          0,
+          0
+        ],
+        "target_estimate_boundary_hits": 0,
+        "target_interval_boundary_hits": 0,
+        "r_range": [
+          0.10202446998188165,
+          0.281540234044854
+        ],
+        "interval_endpoint_range": [
+          0.005337517929729075,
+          0.08766006116056818
+        ]
+      },
+      {
+        "scenario": "curvature",
+        "records": 500,
+        "lower_noise_hits": [
+          251,
+          1
+        ],
+        "upper_noise_hits": [
+          0,
+          0
+        ],
+        "target_estimate_boundary_hits": 0,
+        "target_interval_boundary_hits": 0,
+        "r_range": [
+          0.10663591520323472,
+          0.3135529423184246
+        ],
+        "interval_endpoint_range": [
+          0.008778582874219867,
+          0.09456991584738716
+        ]
+      },
+      {
+        "scenario": "equal",
+        "records": 500,
+        "lower_noise_hits": [
+          252,
+          0
+        ],
+        "upper_noise_hits": [
+          0,
+          0
+        ],
+        "target_estimate_boundary_hits": 0,
+        "target_interval_boundary_hits": 0,
+        "r_range": [
+          0.10437505078078513,
+          0.2915991633012946
+        ],
+        "interval_endpoint_range": [
+          0.009414860059041533,
+          0.08897801848361271
+        ]
+      },
+      {
+        "scenario": "off_grid",
+        "records": 500,
+        "lower_noise_hits": [
+          246,
+          0
+        ],
+        "upper_noise_hits": [
+          0,
+          0
+        ],
+        "target_estimate_boundary_hits": 0,
+        "target_interval_boundary_hits": 0,
+        "r_range": [
+          0.07395513843706347,
+          0.22967859020080006
+        ],
+        "interval_endpoint_range": [
+          0.0023142289021052427,
+          0.07234484368236734
+        ]
+      }
+    ],
+    "pooling_bins_reconstructed": 24,
+    "pooling_frames_reconstructed": 15000,
+    "matched_range_designs": [
+      {
+        "method": "aggregate_two_cap2.5",
+        "location_sets": 1,
+        "allocations_per_set": 19
+      },
+      {
+        "method": "aggregate_four_cap2.5",
+        "location_sets": 10,
+        "allocations_per_set": 969
+      },
+      {
+        "method": "aggregate_two_cap4",
+        "location_sets": 1,
+        "allocations_per_set": 19
+      },
+      {
+        "method": "aggregate_four_cap4",
+        "location_sets": 10,
+        "allocations_per_set": 969
+      },
+      {
+        "method": "aggregate_two_cap8",
+        "location_sets": 1,
+        "allocations_per_set": 19
+      },
+      {
+        "method": "aggregate_four_cap8",
+        "location_sets": 10,
+        "allocations_per_set": 969
+      }
+    ],
+    "rank_condition_checked": true,
+    "three_setting_counterexample": {
+      "scales": [
+        1.0,
+        3.0,
+        4.0
+      ],
+      "parameters": [
+        0.03,
+        0.05,
+        0.2
+      ],
+      "alternative_parameters": [
+        0.043604284267966927,
+        0.022760937055753133,
+        0.2000372548408821
+      ],
+      "maximum_contraction_discrepancy": 1.1102230246251565e-16,
+      "residuals": [
+        0.05,
+        0.05000931371022053
+      ]
+    },
+    "scope": "Retained-record and algebraic checks; no new stochastic experiments or relaxed-bound fitting."
+  },
+  "new_reconciliation_experiments": false,
+  "physical_coincidence_checked_from_records": {
+    "gate_dependent": {
+      "net_rescues": [
+        6,
+        1,
+        1,
+        3,
+        1
+      ],
+      "mean_pp": 0.174,
+      "ci_pp": [
+        -0.02322534039089414,
+        0.3712253403908941
+      ]
+    },
+    "pauli": {
+      "net_rescues": [
+        6,
+        3,
+        1,
+        1,
+        1
+      ],
+      "mean_pp": 0.174,
+      "ci_pp": [
+        -0.02322534039089414,
+        0.3712253403908941
+      ]
+    }
+  },
+  "inherited_circuit_tables_checked": [
+    "tab:matched",
+    "tab:operating",
+    "tab:ablation",
+    "tab:replication",
+    "tab:channel"
+  ],
+  "headline_claims": [
+    {
+      "claim": "PRIMARY full equal-device MAE",
+      "evidence": "observation_validation/results/summary.json",
+      "manuscript_text": "0.504"
+    },
+    {
+      "claim": "PRIMARY scaled equal-device MAE",
+      "evidence": "observation_validation/results/summary.json",
+      "manuscript_text": "0.588"
+    },
+    {
+      "claim": "A full equal-device MAE",
+      "evidence": "observation_validation/results/summary.json",
+      "manuscript_text": "1.114"
+    },
+    {
+      "claim": "A scaled equal-device MAE",
+      "evidence": "observation_validation/results/summary.json",
+      "manuscript_text": "0.708"
+    },
+    {
+      "claim": "PRIMARY full MAE_pp range",
+      "evidence": "observation_validation/results/summary.json",
+      "manuscript_text": "0.444--0.504"
+    },
+    {
+      "claim": "PRIMARY full coverage_pct range",
+      "evidence": "observation_validation/results/summary.json",
+      "manuscript_text": "94.6--95.8"
+    },
+    {
+      "claim": "PRIMARY scaled MAE_pp range",
+      "evidence": "observation_validation/results/summary.json",
+      "manuscript_text": "0.575--0.628"
+    },
+    {
+      "claim": "B+ scaled MAE_pp range",
+      "evidence": "observation_validation/results/summary.json",
+      "manuscript_text": "0.676--0.849"
+    },
+    {
+      "claim": "B+ scaled coverage_pct range",
+      "evidence": "observation_validation/results/summary.json",
+      "manuscript_text": "96.6--97.0"
+    },
+    {
+      "claim": "Retained profile width_median_pp",
+      "evidence": "observation_validation/results/summary.json",
+      "manuscript_text": "2.81--3.40"
+    },
+    {
+      "claim": "Retained profile coverage_pct",
+      "evidence": "observation_validation/results/summary.json",
+      "manuscript_text": "95.4--96.6"
+    },
+    {
+      "claim": "pA profile width range",
+      "evidence": "observation_validation/results/summary.json",
+      "manuscript_text": "5.20--7.34"
+    },
+    {
+      "claim": "pB profile width range",
+      "evidence": "observation_validation/results/summary.json",
+      "manuscript_text": "9.76--13.44"
+    },
+    {
+      "claim": "Range comparison basis_single",
+      "evidence": "diagnostic_validation/results/summary.json",
+      "manuscript_text": "0.504"
+    },
+    {
+      "claim": "Range comparison basis_inverse",
+      "evidence": "diagnostic_validation/results/summary.json",
+      "manuscript_text": "0.534"
+    },
+    {
+      "claim": "Range comparison aggregate_two_cap2.5",
+      "evidence": "diagnostic_validation/results/summary.json",
+      "manuscript_text": "0.817"
+    },
+    {
+      "claim": "Range comparison aggregate_two_cap8",
+      "evidence": "diagnostic_validation/results/summary.json",
+      "manuscript_text": "0.516"
+    },
+    {
+      "claim": "Range comparison calibrated",
+      "evidence": "diagnostic_validation/results/summary.json",
+      "manuscript_text": "0.552"
+    },
+    {
+      "claim": "Lower nuisance boundary count",
+      "evidence": "method-checks.json",
+      "manuscript_text": "1241 reach the lower Alice-noise bound and one reaches the lower Bob-noise bound;"
+    },
+    {
+      "claim": "Weak-interception B+ interval widths",
+      "evidence": "precision_validation/results/summary.json",
+      "manuscript_text": "3.20--4.15 pp"
+    },
+    {
+      "claim": "PRIMARY grid direction",
+      "evidence": "precision_validation/results/summary.json",
+      "manuscript_text": "PRIMARY has lower full-data MAE in all 27 point comparisons; 26 simultaneous"
+    },
+    {
+      "claim": "A grid direction",
+      "evidence": "precision_validation/results/summary.json",
+      "manuscript_text": "Scheme A favors scaling in 25 of 27 point comparisons, with 19"
+    },
+    {
+      "claim": "A weak-interception reversal 28",
+      "evidence": "precision_validation/results/summary.json",
+      "manuscript_text": "-0.100"
+    },
+    {
+      "claim": "A reversal interval 28",
+      "evidence": "precision_validation/results/summary.json",
+      "manuscript_text": "[-0.154,-0.046]"
+    },
+    {
+      "claim": "A weak-interception reversal 47",
+      "evidence": "precision_validation/results/summary.json",
+      "manuscript_text": "-0.077"
+    },
+    {
+      "claim": "A reversal interval 47",
+      "evidence": "precision_validation/results/summary.json",
+      "manuscript_text": "[-0.114,-0.039]"
+    },
+    {
+      "claim": "Matched-code failures",
+      "evidence": "study/results/summary.json",
+      "manuscript_text": "failures from 28 to 13 out of 2000"
+    },
+    {
+      "claim": "Matched-code ratio",
+      "evidence": "study/results/summary.json",
+      "manuscript_text": "ratio 0.464"
+    },
+    {
+      "claim": "Matched-code paired interval",
+      "evidence": "study/results/summary.json",
+      "manuscript_text": "[0.263,0.692]"
+    },
+    {
+      "claim": "Operating upper FER bound",
+      "evidence": "study/results/summary.json",
+      "manuscript_text": "Wilson interval [0.61\\%,1.48\\%]"
+    },
+    {
+      "claim": "Corrected confirmation gains",
+      "evidence": "extensions/results/asymmetry_summary.json",
+      "manuscript_text": "25 gains"
+    },
+    {
+      "claim": "Confirmation mean",
+      "evidence": "extensions/results/asymmetry_summary.json",
+      "manuscript_text": "mean gain is 0.813 pp"
+    },
+    {
+      "claim": "Confirmation harm",
+      "evidence": "extensions/results/asymmetry_summary.json",
+      "manuscript_text": "-1.029 pp"
+    },
+    {
+      "claim": "gallager pipeline gain",
+      "evidence": "extensions/results/transfer_summary.json",
+      "manuscript_text": "+1.07 pp"
+    },
+    {
+      "claim": "irregular pipeline gain",
+      "evidence": "extensions/results/transfer_summary.json",
+      "manuscript_text": "+4.15 pp"
+    },
+    {
+      "claim": "gallager disclosure_pp",
+      "evidence": "channel-information.json",
+      "manuscript_text": "+0.736"
+    },
+    {
+      "claim": "gallager recovery_pp",
+      "evidence": "channel-information.json",
+      "manuscript_text": "+0.337"
+    },
+    {
+      "claim": "irregular disclosure_pp",
+      "evidence": "channel-information.json",
+      "manuscript_text": "+4.316"
+    },
+    {
+      "claim": "irregular recovery_pp",
+      "evidence": "channel-information.json",
+      "manuscript_text": "-0.163"
+    }
+  ],
+  "source_sha256": {
+    "main.tex": "d615b3dff2a6e7c2e0675ab6d8fc6836d80b17b93056d476f8e3a9edfee965de",
+    "appendix.tex": "c06046b29474a17fa8488cfb7a46c1aa58eda9c5842134f4afb14b717a0d2a8f",
+    "references.bib": "b2febb26abc6317da3fc581ba1b5529ca015776c22a2a0b3e2c622bda6ed4633"
+  },
+  "mode": "analysis",
+  "analysis_regenerated": true,
+  "raw_experiments_rerun": false,
+  "working_copy": false,
+  "final_manifest_verified": true,
+  "manuscript_source_identical": true,
+  "compiled_pdf": "output/pdf/manuscript.pdf"
+}

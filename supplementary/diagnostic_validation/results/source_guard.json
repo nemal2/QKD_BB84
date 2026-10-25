@@ -1,0 +1,7 @@
+{
+  "diagnostic_validation/protocol.json": "63f87f926fca3b7e06d1de41132f76c3af4859849f61e669a2ae42680842db21",
+  "diagnostic_validation/models.py": "fea0d884c6fa15451626d37beafb8ecc66240985a4b9b6b693fec972c8fc5456",
+  "diagnostic_validation/experiment.py": "559ae2821d1084e68cf0dc5b7b91a89070e2624a0942efceaae674776139a69e",
+  "extensions/diagnostics.py": "4c77c4b37ab1fda86e8fe57025d954a7a6528686e1ced5f75eb59a4ba2ae2074",
+  "extensions/physics.py": "36ae3062709c01865b390345b8e2c7eee120f5f520ee5d344d6d3d444f76638c"
+}

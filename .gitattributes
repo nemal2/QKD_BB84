@@ -1,0 +1,6 @@
+# Preserve exact source hashes on platforms that normally translate line endings.
+* -text
+*.npz binary
+*.pdf binary
+*.png binary
+*.whl binary

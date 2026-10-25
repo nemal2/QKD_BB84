@@ -1,0 +1,26 @@
+[
+  {
+    "family": "gallager",
+    "method": "pooled",
+    "rows": 39600,
+    "status": "exact fit reproduced"
+  },
+  {
+    "family": "gallager",
+    "method": "selected",
+    "rows": 39600,
+    "status": "exact fit reproduced"
+  },
+  {
+    "family": "irregular",
+    "method": "pooled",
+    "rows": 39600,
+    "status": "exact fit reproduced"
+  },
+  {
+    "family": "irregular",
+    "method": "selected",
+    "rows": 39600,
+    "status": "exact fit reproduced"
+  }
+]

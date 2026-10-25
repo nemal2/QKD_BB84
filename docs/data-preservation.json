@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "protocol_sha256": {
+    "study": "2d9521dd75dcd7cf2c323c6ec328301d4fdd3d79d4f44e5ff0201d6fc35a6f0c",
+    "extensions": "0a888eed1070afcdd2dde5321df77d12c1e12550661c7251a9bb028e396f40b8",
+    "diagnostic_validation": "63f87f926fca3b7e06d1de41132f76c3af4859849f61e669a2ae42680842db21",
+    "observation_validation": "b6b690c4d90d430f7bb9f643c2ed249d03308997c0a2e838bd763f732377b27d",
+    "precision_validation": "75c9e0787fd1a3722991ced26448ba9beb960359dbe1d920ccdf99b442552d8f"
+  },
+  "numerical_files_unchanged": 3893,
+  "npz_archives_unchanged": 3858,
+  "scope": "All five scientific components retain their experimental parameters and numerical observations. Repository-specific commit metadata is omitted; checksums and source guards describe the distributed files.",
+  "experimental_protocol_parameters_unchanged": true
+}

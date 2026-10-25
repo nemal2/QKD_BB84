@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "unique_frame_dataset_seeds": 70,
+  "independent_sifted_frames": 68000,
+  "decoded_method_frames_checked": 296000,
+  "Toeplitz_collisions": 0,
+  "calibration_selections_recomputed": 20,
+  "all_final_patterns_syndrome_valid": true
+}

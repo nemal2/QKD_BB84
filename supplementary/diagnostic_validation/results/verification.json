@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "records_checked": 476,
+  "density_cases": 170,
+  "independent_two_parameter_fits": 2875,
+  "independent_three_parameter_fits": 34,
+  "maximum_density_difference": 1.1102230246251565e-16,
+  "maximum_reference_objective_excess": 1.7319479184152442e-14,
+  "maximum_two_parameter_reference_intercept_difference": 1.8075692180020975e-09,
+  "scope": "All retained acquisition budgets and counts; density-state laws; fixed and extremal sample fits against independent optimizer references. No decoder experiments in this validation."
+}

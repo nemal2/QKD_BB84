@@ -1,0 +1,2102 @@
+[
+  {
+    "experiment": "fixed_total",
+    "family": "gallager",
+    "sample": 50,
+    "delta": {
+      "matrices": 5,
+      "mean": -0.0005482000000000004,
+      "ci": [
+        -0.00468335045136017,
+        0.003586950451360169
+      ],
+      "matrix_values": [
+        -9.300000000000019e-05,
+        -0.00038400000000000033,
+        -0.005434000000000001,
+        0.003947,
+        -0.0007770000000000001
+      ]
+    },
+    "pooled_yield": {
+      "matrices": 5,
+      "mean": 0.36807199999999995,
+      "ci": [
+        0.35572020014434375,
+        0.38042379985565616
+      ],
+      "matrix_values": [
+        0.375401,
+        0.36283699999999997,
+        0.36883399999999994,
+        0.37909499999999996,
+        0.354193
+      ]
+    },
+    "selected_yield": {
+      "matrices": 5,
+      "mean": 0.36752379999999996,
+      "ci": [
+        0.35305485692081645,
+        0.38199274307918346
+      ],
+      "matrix_values": [
+        0.375308,
+        0.36245299999999997,
+        0.3634,
+        0.383042,
+        0.353416
+      ]
+    }
+  },
+  {
+    "experiment": "fixed_total",
+    "family": "gallager",
+    "sample": 100,
+    "delta": {
+      "matrices": 5,
+      "mean": 0.008331,
+      "ci": [
+        0.004970762992413379,
+        0.01169123700758662
+      ],
+      "matrix_values": [
+        0.010610999999999999,
+        0.008265,
+        0.010344,
+        0.008574,
+        0.003861
+      ]
+    },
+    "pooled_yield": {
+      "matrices": 5,
+      "mean": 0.37419719999999995,
+      "ci": [
+        0.36992102551664907,
+        0.37847337448335083
+      ],
+      "matrix_values": [
+        0.37457099999999993,
+        0.37369199999999997,
+        0.37690799999999997,
+        0.37717199999999995,
+        0.368643
+      ]
+    },
+    "selected_yield": {
+      "matrices": 5,
+      "mean": 0.3825282,
+      "ci": [
+        0.3751687339667107,
+        0.3898876660332893
+      ],
+      "matrix_values": [
+        0.38518199999999997,
+        0.381957,
+        0.38725199999999993,
+        0.385746,
+        0.3725039999999999
+      ]
+    }
+  },
+  {
+    "experiment": "fixed_total",
+    "family": "gallager",
+    "sample": 200,
+    "delta": {
+      "matrices": 5,
+      "mean": 0.0071092,
+      "ci": [
+        0.004729123724448864,
+        0.009489276275551137
+      ],
+      "matrix_values": [
+        0.007086,
+        0.01025,
+        0.006726000000000001,
+        0.005054,
+        0.00643
+      ]
+    },
+    "pooled_yield": {
+      "matrices": 5,
+      "mean": 0.3761976000000001,
+      "ci": [
+        0.36756374880232145,
+        0.3848314511976787
+      ],
+      "matrix_values": [
+        0.3669300000000001,
+        0.3715980000000001,
+        0.38255600000000006,
+        0.38293000000000005,
+        0.37697400000000003
+      ]
+    },
+    "selected_yield": {
+      "matrices": 5,
+      "mean": 0.38330680000000006,
+      "ci": [
+        0.3758043406914625,
+        0.3908092593085376
+      ],
+      "matrix_values": [
+        0.37401600000000007,
+        0.3818480000000001,
+        0.389282,
+        0.38798400000000005,
+        0.3834040000000001
+      ]
+    }
+  },
+  {
+    "experiment": "fixed_total",
+    "family": "gallager",
+    "sample": 500,
+    "delta": {
+      "matrices": 5,
+      "mean": 0.005263200000000001,
+      "ci": [
+        0.003004129884234296,
+        0.007522270115765705
+      ],
+      "matrix_values": [
+        0.008155,
+        0.0032140000000000003,
+        0.005497000000000002,
+        0.004575000000000001,
+        0.004875000000000001
+      ]
+    },
+    "pooled_yield": {
+      "matrices": 5,
+      "mean": 0.32947519999999997,
+      "ci": [
+        0.3275180950118155,
+        0.33143230498818443
+      ],
+      "matrix_values": [
+        0.328274,
+        0.328457,
+        0.32997899999999997,
+        0.332026,
+        0.32864
+      ]
+    },
+    "selected_yield": {
+      "matrices": 5,
+      "mean": 0.3347384,
+      "ci": [
+        0.33212079152635815,
+        0.33735600847364183
+      ],
+      "matrix_values": [
+        0.33642900000000003,
+        0.331671,
+        0.335476,
+        0.336601,
+        0.333515
+      ]
+    }
+  },
+  {
+    "experiment": "fixed_total",
+    "family": "gallager",
+    "sample": 1000,
+    "delta": {
+      "matrices": 5,
+      "mean": 0.0055769999999999995,
+      "ci": [
+        0.0029783368166420962,
+        0.008175663183357903
+      ],
+      "matrix_values": [
+        0.005892,
+        0.003818999999999999,
+        0.008837999999999999,
+        0.0036569999999999997,
+        0.005678999999999999
+      ]
+    },
+    "pooled_yield": {
+      "matrices": 5,
+      "mean": 0.20680979999999996,
+      "ci": [
+        0.2031708330331149,
+        0.21044876696688503
+      ],
+      "matrix_values": [
+        0.20537399999999997,
+        0.20985599999999996,
+        0.20289899999999997,
+        0.20955299999999993,
+        0.20636699999999997
+      ]
+    },
+    "selected_yield": {
+      "matrices": 5,
+      "mean": 0.2123868,
+      "ci": [
+        0.21112486144227935,
+        0.21364873855772062
+      ],
+      "matrix_values": [
+        0.21126599999999995,
+        0.21367499999999995,
+        0.21173699999999995,
+        0.21320999999999998,
+        0.21204599999999996
+      ]
+    }
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "homogeneous",
+    "setting": "fixed",
+    "method": "separate",
+    "matrices": 5,
+    "mean": 0.0,
+    "ci": [
+      0.0,
+      0.0
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "homogeneous",
+    "setting": "fixed",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": 0.0,
+    "ci": [
+      0.0,
+      0.0
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "homogeneous",
+    "setting": "fixed",
+    "method": "selected",
+    "matrices": 5,
+    "mean": 0.0,
+    "ci": [
+      0.0,
+      0.0
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "homogeneous",
+    "setting": "fixed",
+    "method": "transition",
+    "matrices": 5,
+    "mean": -0.000145,
+    "ci": [
+      -0.00054758454025368,
+      0.00025758454025367995
+    ],
+    "matrix_values": [
+      -0.000725,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "homogeneous",
+    "setting": "matched",
+    "method": "separate",
+    "matrices": 5,
+    "mean": -0.0029,
+    "ci": [
+      -0.003800206398697729,
+      -0.0019997936013022707
+    ],
+    "matrix_values": [
+      -0.002175,
+      -0.0036249999999999998,
+      -0.003625,
+      -0.0029,
+      -0.002175
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "homogeneous",
+    "setting": "matched",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": -0.000145,
+    "ci": [
+      -0.0013187255439138096,
+      0.0010287255439138097
+    ],
+    "matrix_values": [
+      -0.000725,
+      0.000725,
+      -0.00145,
+      0.0,
+      0.000725
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "homogeneous",
+    "setting": "matched",
+    "method": "selected",
+    "matrices": 5,
+    "mean": -0.000145,
+    "ci": [
+      -0.00054758454025368,
+      0.00025758454025367995
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      -0.000725,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "homogeneous",
+    "setting": "matched",
+    "method": "transition",
+    "matrices": 5,
+    "mean": -0.006959999999999999,
+    "ci": [
+      -0.008714825327197574,
+      -0.005205174672802425
+    ],
+    "matrix_values": [
+      -0.0065249999999999996,
+      -0.0065249999999999996,
+      -0.0065249999999999996,
+      -0.009425000000000001,
+      -0.0058
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "gate_dependent",
+    "setting": "fixed",
+    "method": "separate",
+    "matrices": 5,
+    "mean": 0.000145,
+    "ci": [
+      -0.00025758454025367995,
+      0.00054758454025368
+    ],
+    "matrix_values": [
+      0.000725,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "gate_dependent",
+    "setting": "fixed",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": 0.000145,
+    "ci": [
+      -0.00025758454025367995,
+      0.00054758454025368
+    ],
+    "matrix_values": [
+      0.000725,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "gate_dependent",
+    "setting": "fixed",
+    "method": "selected",
+    "matrices": 5,
+    "mean": 0.000145,
+    "ci": [
+      -0.00025758454025367995,
+      0.00054758454025368
+    ],
+    "matrix_values": [
+      0.000725,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "gate_dependent",
+    "setting": "fixed",
+    "method": "transition",
+    "matrices": 5,
+    "mean": 0.00029,
+    "ci": [
+      -0.0005151690805073599,
+      0.00109516908050736
+    ],
+    "matrix_values": [
+      0.00145,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "gate_dependent",
+    "setting": "matched",
+    "method": "separate",
+    "matrices": 5,
+    "mean": 0.002175,
+    "ci": [
+      6.382886022713837e-05,
+      0.004286171139772862
+    ],
+    "matrix_values": [
+      0.0050750000000000005,
+      0.000725,
+      0.00145,
+      0.002175,
+      0.00145
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "gate_dependent",
+    "setting": "matched",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": 0.0027549999999999996,
+    "ci": [
+      0.0010234184186275136,
+      0.004486581581372486
+    ],
+    "matrix_values": [
+      0.0050750000000000005,
+      0.002175,
+      0.002175,
+      0.0029,
+      0.00145
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "gate_dependent",
+    "setting": "matched",
+    "method": "selected",
+    "matrices": 5,
+    "mean": 0.0024649999999999997,
+    "ci": [
+      0.001099769400947382,
+      0.0038302305990526174
+    ],
+    "matrix_values": [
+      0.00435,
+      0.002175,
+      0.002175,
+      0.002175,
+      0.00145
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "gate_dependent",
+    "setting": "matched",
+    "method": "transition",
+    "matrices": 5,
+    "mean": 0.0017399999999999998,
+    "ci": [
+      -0.00023225340390894142,
+      0.003712253403908941
+    ],
+    "matrix_values": [
+      0.00435,
+      0.000725,
+      0.000725,
+      0.002175,
+      0.000725
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "pauli",
+    "setting": "fixed",
+    "method": "separate",
+    "matrices": 5,
+    "mean": 0.00058,
+    "ci": [
+      0.00017741545974632006,
+      0.00098258454025368
+    ],
+    "matrix_values": [
+      0.0,
+      0.000725,
+      0.000725,
+      0.000725,
+      0.000725
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "pauli",
+    "setting": "fixed",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": 0.00043499999999999995,
+    "ci": [
+      -5.8063350977235356e-05,
+      0.0009280633509772353
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.000725,
+      0.000725,
+      0.000725
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "pauli",
+    "setting": "fixed",
+    "method": "selected",
+    "matrices": 5,
+    "mean": 0.00029,
+    "ci": [
+      -0.0002030633509772354,
+      0.0007830633509772354
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.000725,
+      0.0,
+      0.000725
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "pauli",
+    "setting": "fixed",
+    "method": "transition",
+    "matrices": 5,
+    "mean": 0.00058,
+    "ci": [
+      0.00017741545974632006,
+      0.00098258454025368
+    ],
+    "matrix_values": [
+      0.0,
+      0.000725,
+      0.000725,
+      0.000725,
+      0.000725
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "pauli",
+    "setting": "matched",
+    "method": "separate",
+    "matrices": 5,
+    "mean": 0.0027549999999999996,
+    "ci": [
+      0.00025702862026528083,
+      0.005252971379734718
+    ],
+    "matrix_values": [
+      0.0058,
+      0.002175,
+      0.00145,
+      0.003625,
+      0.000725
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "pauli",
+    "setting": "matched",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": 0.0027549999999999996,
+    "ci": [
+      -0.0003241796399364419,
+      0.005834179639936441
+    ],
+    "matrix_values": [
+      0.0065249999999999996,
+      0.002175,
+      0.00145,
+      0.003625,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "pauli",
+    "setting": "matched",
+    "method": "selected",
+    "matrices": 5,
+    "mean": 0.0020299999999999997,
+    "ci": [
+      -0.0010491796399364419,
+      0.005109179639936441
+    ],
+    "matrix_values": [
+      0.0058,
+      0.00145,
+      0.000725,
+      0.0029,
+      -0.000725
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "pauli",
+    "setting": "matched",
+    "method": "transition",
+    "matrices": 5,
+    "mean": 0.0017399999999999998,
+    "ci": [
+      -0.00023225340390894142,
+      0.003712253403908941
+    ],
+    "matrix_values": [
+      0.00435,
+      0.002175,
+      0.000725,
+      0.000725,
+      0.000725
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "thermal",
+    "setting": "fixed",
+    "method": "separate",
+    "matrices": 5,
+    "mean": -0.000145,
+    "ci": [
+      -0.00054758454025368,
+      0.00025758454025367995
+    ],
+    "matrix_values": [
+      -0.000725,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "thermal",
+    "setting": "fixed",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": -0.000145,
+    "ci": [
+      -0.00054758454025368,
+      0.00025758454025367995
+    ],
+    "matrix_values": [
+      -0.000725,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "thermal",
+    "setting": "fixed",
+    "method": "selected",
+    "matrices": 5,
+    "mean": -0.000145,
+    "ci": [
+      -0.00054758454025368,
+      0.00025758454025367995
+    ],
+    "matrix_values": [
+      -0.000725,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "thermal",
+    "setting": "fixed",
+    "method": "transition",
+    "matrices": 5,
+    "mean": 0.0,
+    "ci": [
+      0.0,
+      0.0
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "thermal",
+    "setting": "matched",
+    "method": "separate",
+    "matrices": 5,
+    "mean": -0.003045,
+    "ci": [
+      -0.004218725543913809,
+      -0.0018712744560861901
+    ],
+    "matrix_values": [
+      -0.00435,
+      -0.002175,
+      -0.0029,
+      -0.003625,
+      -0.002175
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "thermal",
+    "setting": "matched",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": -0.00058,
+    "ci": [
+      -0.0017537255439138096,
+      0.0005937255439138096
+    ],
+    "matrix_values": [
+      0.0,
+      -0.000725,
+      -0.00145,
+      -0.00145,
+      0.000725
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "thermal",
+    "setting": "matched",
+    "method": "selected",
+    "matrices": 5,
+    "mean": -0.00043499999999999995,
+    "ci": [
+      -0.0009280633509772354,
+      5.8063350977235464e-05
+    ],
+    "matrix_values": [
+      -0.000725,
+      0.0,
+      -0.000725,
+      -0.000725,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "thermal",
+    "setting": "matched",
+    "method": "transition",
+    "matrices": 5,
+    "mean": 0.0031899999999999997,
+    "ci": [
+      0.00044473944581139733,
+      0.0059352605541886025
+    ],
+    "matrix_values": [
+      0.005075,
+      0.000725,
+      0.0029,
+      0.00145,
+      0.0058
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "readout",
+    "setting": "fixed",
+    "method": "separate",
+    "matrices": 5,
+    "mean": -0.0042049999999999995,
+    "ci": [
+      -0.007080028680659484,
+      -0.0013299713193405155
+    ],
+    "matrix_values": [
+      -0.00145,
+      -0.0058,
+      -0.00725,
+      -0.003625,
+      -0.0029
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "readout",
+    "setting": "fixed",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": -0.00043499999999999995,
+    "ci": [
+      -0.0018002305990526177,
+      0.0009302305990526177
+    ],
+    "matrix_values": [
+      0.000725,
+      -0.002175,
+      0.0,
+      -0.000725,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "readout",
+    "setting": "fixed",
+    "method": "selected",
+    "matrices": 5,
+    "mean": -0.00043499999999999995,
+    "ci": [
+      -0.0012401690805073596,
+      0.00037016908050735984
+    ],
+    "matrix_values": [
+      0.0,
+      -0.00145,
+      0.0,
+      -0.000725,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "readout",
+    "setting": "fixed",
+    "method": "transition",
+    "matrices": 5,
+    "mean": 0.0027549999999999996,
+    "ci": [
+      0.0005135041437492522,
+      0.0049964958562507475
+    ],
+    "matrix_values": [
+      0.00435,
+      0.00435,
+      0.002175,
+      0.0029,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "readout",
+    "setting": "matched",
+    "method": "separate",
+    "matrices": 5,
+    "mean": -0.0029,
+    "ci": [
+      -0.005674622464847276,
+      -0.00012537753515272365
+    ],
+    "matrix_values": [
+      -0.0065249999999999996,
+      -0.0029,
+      -0.000725,
+      -0.0029,
+      -0.00145
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "readout",
+    "setting": "matched",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": -0.00116,
+    "ci": [
+      -0.002795306133066804,
+      0.0004753061330668041
+    ],
+    "matrix_values": [
+      -0.0029,
+      -0.00145,
+      -0.000725,
+      0.000725,
+      -0.00145
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "readout",
+    "setting": "matched",
+    "method": "selected",
+    "matrices": 5,
+    "mean": -0.00029,
+    "ci": [
+      -0.00109516908050736,
+      0.0005151690805073599
+    ],
+    "matrix_values": [
+      -0.00145,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "gallager",
+    "model": "readout",
+    "setting": "matched",
+    "method": "transition",
+    "matrices": 5,
+    "mean": 0.0029,
+    "ci": [
+      0.0022634579510133145,
+      0.003536542048986685
+    ],
+    "matrix_values": [
+      0.003625,
+      0.0029,
+      0.0029,
+      0.0029,
+      0.002175
+    ]
+  },
+  {
+    "experiment": "fixed_total",
+    "family": "irregular",
+    "sample": 50,
+    "delta": {
+      "matrices": 5,
+      "mean": 0.0174104,
+      "ci": [
+        0.01120586360570603,
+        0.02361493639429397
+      ],
+      "matrix_values": [
+        0.018854,
+        0.025373999999999997,
+        0.012660000000000001,
+        0.014387,
+        0.015777
+      ]
+    },
+    "pooled_yield": {
+      "matrices": 5,
+      "mean": 0.37440100000000004,
+      "ci": [
+        0.36107229759051146,
+        0.3877297024094886
+      ],
+      "matrix_values": [
+        0.388796,
+        0.366216,
+        0.371353,
+        0.38210500000000003,
+        0.36353500000000005
+      ]
+    },
+    "selected_yield": {
+      "matrices": 5,
+      "mean": 0.39181140000000003,
+      "ci": [
+        0.3780705444631779,
+        0.40555225553682217
+      ],
+      "matrix_values": [
+        0.40764999999999996,
+        0.39159000000000005,
+        0.384013,
+        0.39649199999999996,
+        0.37931200000000004
+      ]
+    }
+  },
+  {
+    "experiment": "fixed_total",
+    "family": "irregular",
+    "sample": 100,
+    "delta": {
+      "matrices": 5,
+      "mean": 0.0097458,
+      "ci": [
+        0.008200540199713847,
+        0.011291059800286154
+      ],
+      "matrix_values": [
+        0.009436000000000003,
+        0.011018,
+        0.011018,
+        0.009056000000000003,
+        0.008201000000000002
+      ]
+    },
+    "pooled_yield": {
+      "matrices": 5,
+      "mean": 0.4020962,
+      "ci": [
+        0.39809365008133,
+        0.40609874991867
+      ],
+      "matrix_values": [
+        0.404187,
+        0.401147,
+        0.404501,
+        0.403803,
+        0.396843
+      ]
+    },
+    "selected_yield": {
+      "matrices": 5,
+      "mean": 0.41184200000000004,
+      "ci": [
+        0.40687364818367583,
+        0.41681035181632425
+      ],
+      "matrix_values": [
+        0.41362299999999996,
+        0.41216499999999995,
+        0.415519,
+        0.41285900000000003,
+        0.40504399999999996
+      ]
+    }
+  },
+  {
+    "experiment": "fixed_total",
+    "family": "irregular",
+    "sample": 200,
+    "delta": {
+      "matrices": 5,
+      "mean": 0.011232400000000002,
+      "ci": [
+        0.008671806195106387,
+        0.013792993804893617
+      ],
+      "matrix_values": [
+        0.012202000000000001,
+        0.010054000000000002,
+        0.014054000000000002,
+        0.011212,
+        0.00864
+      ]
+    },
+    "pooled_yield": {
+      "matrices": 5,
+      "mean": 0.4114644,
+      "ci": [
+        0.4071529959332923,
+        0.4157758040667077
+      ],
+      "matrix_values": [
+        0.410984,
+        0.40720200000000006,
+        0.41661600000000004,
+        0.409994,
+        0.41252600000000006
+      ]
+    },
+    "selected_yield": {
+      "matrices": 5,
+      "mean": 0.42269680000000004,
+      "ci": [
+        0.416551523604421,
+        0.4288420763955791
+      ],
+      "matrix_values": [
+        0.42318600000000006,
+        0.41725600000000007,
+        0.43067000000000005,
+        0.4212060000000001,
+        0.42116600000000004
+      ]
+    }
+  },
+  {
+    "experiment": "fixed_total",
+    "family": "irregular",
+    "sample": 500,
+    "delta": {
+      "matrices": 5,
+      "mean": 0.012661399999999998,
+      "ci": [
+        0.009339009496963088,
+        0.01598379050303691
+      ],
+      "matrix_values": [
+        0.013863999999999996,
+        0.010519999999999996,
+        0.016821999999999997,
+        0.010819999999999996,
+        0.011280999999999996
+      ]
+    },
+    "pooled_yield": {
+      "matrices": 5,
+      "mean": 0.35486799999999996,
+      "ci": [
+        0.3503816358343485,
+        0.3593543641656514
+      ],
+      "matrix_values": [
+        0.354685,
+        0.35692599999999997,
+        0.34962699999999997,
+        0.35927299999999995,
+        0.353829
+      ]
+    },
+    "selected_yield": {
+      "matrices": 5,
+      "mean": 0.3675294,
+      "ci": [
+        0.3651540100252976,
+        0.3699047899747024
+      ],
+      "matrix_values": [
+        0.36854899999999996,
+        0.36744600000000005,
+        0.366449,
+        0.37009299999999995,
+        0.36511
+      ]
+    }
+  },
+  {
+    "experiment": "fixed_total",
+    "family": "irregular",
+    "sample": 1000,
+    "delta": {
+      "matrices": 5,
+      "mean": 0.008325600000000002,
+      "ci": [
+        0.006464653084681787,
+        0.010186546915318218
+      ],
+      "matrix_values": [
+        0.009376,
+        0.009626000000000001,
+        0.008154000000000003,
+        0.008612000000000002,
+        0.0058600000000000015
+      ]
+    },
+    "pooled_yield": {
+      "matrices": 5,
+      "mean": 0.22630119999999998,
+      "ci": [
+        0.22327071323283282,
+        0.22933168676716714
+      ],
+      "matrix_values": [
+        0.22628999999999996,
+        0.22961999999999996,
+        0.22766199999999998,
+        0.22378799999999996,
+        0.22414599999999996
+      ]
+    },
+    "selected_yield": {
+      "matrices": 5,
+      "mean": 0.23462679999999994,
+      "ci": [
+        0.23023064425942041,
+        0.23902295574057947
+      ],
+      "matrix_values": [
+        0.23566599999999996,
+        0.23924599999999996,
+        0.23581599999999994,
+        0.23239999999999997,
+        0.23000599999999996
+      ]
+    }
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "homogeneous",
+    "setting": "fixed",
+    "method": "separate",
+    "matrices": 5,
+    "mean": 0.0,
+    "ci": [
+      0.0,
+      0.0
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "homogeneous",
+    "setting": "fixed",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": 0.0,
+    "ci": [
+      0.0,
+      0.0
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "homogeneous",
+    "setting": "fixed",
+    "method": "selected",
+    "matrices": 5,
+    "mean": 0.0,
+    "ci": [
+      0.0,
+      0.0
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "homogeneous",
+    "setting": "fixed",
+    "method": "transition",
+    "matrices": 5,
+    "mean": 0.000162,
+    "ci": [
+      -0.0009397415566663743,
+      0.0012637415566663743
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0,
+      -0.0008100000000000001,
+      0.0016200000000000001
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "homogeneous",
+    "setting": "matched",
+    "method": "separate",
+    "matrices": 5,
+    "mean": -0.0030780000000000004,
+    "ci": [
+      -0.00391946901328369,
+      -0.0022365309867163107
+    ],
+    "matrix_values": [
+      -0.0024300000000000003,
+      -0.0032400000000000003,
+      -0.0032400000000000003,
+      -0.004050000000000001,
+      -0.0024300000000000003
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "homogeneous",
+    "setting": "matched",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": -0.000162,
+    "ci": [
+      -0.0010034690132836898,
+      0.0006794690132836898
+    ],
+    "matrix_values": [
+      -0.0008100000000000001,
+      0.0,
+      0.0,
+      -0.0008100000000000001,
+      0.0008100000000000001
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "homogeneous",
+    "setting": "matched",
+    "method": "selected",
+    "matrices": 5,
+    "mean": -0.000324,
+    "ci": [
+      -0.0008748707783331872,
+      0.00022687077833318713
+    ],
+    "matrix_values": [
+      0.0,
+      -0.0008100000000000001,
+      -0.0008100000000000001,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "homogeneous",
+    "setting": "matched",
+    "method": "transition",
+    "matrices": 5,
+    "mean": -0.0063180000000000016,
+    "ci": [
+      -0.009450383841894058,
+      -0.0031856161581059455
+    ],
+    "matrix_values": [
+      -0.008100000000000001,
+      -0.0032400000000000003,
+      -0.004050000000000001,
+      -0.00891,
+      -0.007290000000000001
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "gate_dependent",
+    "setting": "fixed",
+    "method": "separate",
+    "matrices": 5,
+    "mean": 0.0,
+    "ci": [
+      0.0,
+      0.0
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "gate_dependent",
+    "setting": "fixed",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": 0.0,
+    "ci": [
+      0.0,
+      0.0
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "gate_dependent",
+    "setting": "fixed",
+    "method": "selected",
+    "matrices": 5,
+    "mean": 0.0,
+    "ci": [
+      0.0,
+      0.0
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "gate_dependent",
+    "setting": "fixed",
+    "method": "transition",
+    "matrices": 5,
+    "mean": 0.0,
+    "ci": [
+      0.0,
+      0.0
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "gate_dependent",
+    "setting": "matched",
+    "method": "separate",
+    "matrices": 5,
+    "mean": 0.004374,
+    "ci": [
+      0.002413436530993056,
+      0.006334563469006944
+    ],
+    "matrix_values": [
+      0.0032400000000000003,
+      0.0024300000000000003,
+      0.004860000000000001,
+      0.004860000000000001,
+      0.0064800000000000005
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "gate_dependent",
+    "setting": "matched",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": 0.0038880000000000004,
+    "ci": [
+      0.0014868099462960424,
+      0.006289190053703958
+    ],
+    "matrix_values": [
+      0.0016200000000000001,
+      0.0024300000000000003,
+      0.004860000000000001,
+      0.004050000000000001,
+      0.0064800000000000005
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "gate_dependent",
+    "setting": "matched",
+    "method": "selected",
+    "matrices": 5,
+    "mean": 0.003726000000000001,
+    "ci": [
+      0.001640436892977448,
+      0.0058115631070225545
+    ],
+    "matrix_values": [
+      0.0016200000000000001,
+      0.0024300000000000003,
+      0.004860000000000001,
+      0.004050000000000001,
+      0.0056700000000000006
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "gate_dependent",
+    "setting": "matched",
+    "method": "transition",
+    "matrices": 5,
+    "mean": 0.0042120000000000005,
+    "ci": [
+      0.0021508302830917205,
+      0.0062731697169082805
+    ],
+    "matrix_values": [
+      0.0024300000000000003,
+      0.0024300000000000003,
+      0.00567,
+      0.004860000000000001,
+      0.0056700000000000006
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "pauli",
+    "setting": "fixed",
+    "method": "separate",
+    "matrices": 5,
+    "mean": 0.0008100000000000002,
+    "ci": [
+      -0.0009320063559626044,
+      0.0025520063559626048
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0008100000000000001,
+      0.0,
+      0.0032400000000000003
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "pauli",
+    "setting": "fixed",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": 0.000648,
+    "ci": [
+      -0.0006633347456140496,
+      0.0019593347456140497
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0008100000000000001,
+      0.0,
+      0.0024300000000000003
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "pauli",
+    "setting": "fixed",
+    "method": "selected",
+    "matrices": 5,
+    "mean": 0.000648,
+    "ci": [
+      -0.0006633347456140496,
+      0.0019593347456140497
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0008100000000000001,
+      0.0,
+      0.0024300000000000003
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "pauli",
+    "setting": "fixed",
+    "method": "transition",
+    "matrices": 5,
+    "mean": 0.0009720000000000001,
+    "ci": [
+      -0.0012084093558936996,
+      0.0031524093558937
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0008100000000000001,
+      0.0,
+      0.004050000000000001
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "pauli",
+    "setting": "matched",
+    "method": "separate",
+    "matrices": 5,
+    "mean": 0.004698000000000001,
+    "ci": [
+      0.003386665254385951,
+      0.00600933474561405
+    ],
+    "matrix_values": [
+      0.004050000000000001,
+      0.004860000000000001,
+      0.0032400000000000003,
+      0.00567,
+      0.00567
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "pauli",
+    "setting": "matched",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": 0.004536,
+    "ci": [
+      0.0030107078824377657,
+      0.0060612921175622345
+    ],
+    "matrix_values": [
+      0.0032400000000000003,
+      0.00567,
+      0.0032400000000000003,
+      0.004860000000000001,
+      0.00567
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "pauli",
+    "setting": "matched",
+    "method": "selected",
+    "matrices": 5,
+    "mean": 0.003078,
+    "ci": [
+      0.00223653098671631,
+      0.00391946901328369
+    ],
+    "matrix_values": [
+      0.0024300000000000003,
+      0.004050000000000001,
+      0.0024300000000000003,
+      0.0032400000000000003,
+      0.0032400000000000003
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "pauli",
+    "setting": "matched",
+    "method": "transition",
+    "matrices": 5,
+    "mean": 0.00405,
+    "ci": [
+      0.002307993644037395,
+      0.005792006355962605
+    ],
+    "matrix_values": [
+      0.0032400000000000003,
+      0.0032400000000000003,
+      0.004050000000000001,
+      0.0032400000000000003,
+      0.0064800000000000005
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "thermal",
+    "setting": "fixed",
+    "method": "separate",
+    "matrices": 5,
+    "mean": -0.000324,
+    "ci": [
+      -0.001223568214084085,
+      0.0005755682140840849
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      -0.0016200000000000001
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "thermal",
+    "setting": "fixed",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": -0.000162,
+    "ci": [
+      -0.0006117841070420425,
+      0.00028778410704204246
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      -0.0008100000000000001
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "thermal",
+    "setting": "fixed",
+    "method": "selected",
+    "matrices": 5,
+    "mean": 0.0,
+    "ci": [
+      0.0,
+      0.0
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "thermal",
+    "setting": "fixed",
+    "method": "transition",
+    "matrices": 5,
+    "mean": 0.000324,
+    "ci": [
+      -0.0005755682140840849,
+      0.001223568214084085
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0016200000000000001
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "thermal",
+    "setting": "matched",
+    "method": "separate",
+    "matrices": 5,
+    "mean": -0.000648,
+    "ci": [
+      -0.0032513137322929125,
+      0.0019553137322929123
+    ],
+    "matrix_values": [
+      -0.0032400000000000003,
+      0.0,
+      -0.0008100000000000001,
+      -0.0016200000000000001,
+      0.0024300000000000003
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "thermal",
+    "setting": "matched",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": -0.000324,
+    "ci": [
+      -0.0012235682140840853,
+      0.0005755682140840851
+    ],
+    "matrix_values": [
+      0.0,
+      -0.0008100000000000001,
+      0.0008100000000000001,
+      -0.0008100000000000001,
+      -0.0008100000000000001
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "thermal",
+    "setting": "matched",
+    "method": "selected",
+    "matrices": 5,
+    "mean": 0.000648,
+    "ci": [
+      -0.0006633347456140496,
+      0.0019593347456140497
+    ],
+    "matrix_values": [
+      0.0008100000000000001,
+      0.0,
+      0.0024300000000000003,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "thermal",
+    "setting": "matched",
+    "method": "transition",
+    "matrices": 5,
+    "mean": 0.005832,
+    "ci": [
+      0.0017839430366216168,
+      0.009880056963378384
+    ],
+    "matrix_values": [
+      0.0024300000000000003,
+      0.00567,
+      0.007290000000000001,
+      0.0032400000000000003,
+      0.010530000000000001
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "readout",
+    "setting": "fixed",
+    "method": "separate",
+    "matrices": 5,
+    "mean": -0.0024300000000000003,
+    "ci": [
+      -0.005529923029691441,
+      0.0006699230296914401
+    ],
+    "matrix_values": [
+      -0.0008100000000000001,
+      -0.0064800000000000005,
+      -0.0024300000000000003,
+      -0.0024300000000000003,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "readout",
+    "setting": "fixed",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": -0.00048600000000000016,
+    "ci": [
+      -0.002908161544051226,
+      0.0019361615440512258
+    ],
+    "matrix_values": [
+      0.0,
+      -0.0032400000000000003,
+      -0.0016200000000000001,
+      0.0008100000000000001,
+      0.0016200000000000001
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "readout",
+    "setting": "fixed",
+    "method": "selected",
+    "matrices": 5,
+    "mean": 0.0,
+    "ci": [
+      0.0,
+      0.0
+    ],
+    "matrix_values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "readout",
+    "setting": "fixed",
+    "method": "transition",
+    "matrices": 5,
+    "mean": 0.006804,
+    "ci": [
+      0.0017954161556879835,
+      0.011812583844312018
+    ],
+    "matrix_values": [
+      0.004050000000000001,
+      0.004050000000000001,
+      0.004050000000000001,
+      0.00891,
+      0.012960000000000001
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "readout",
+    "setting": "matched",
+    "method": "separate",
+    "matrices": 5,
+    "mean": -0.002754,
+    "ci": [
+      -0.005278407039851069,
+      -0.00022959296014893067
+    ],
+    "matrix_values": [
+      -0.00567,
+      -0.0016200000000000001,
+      -0.004050000000000001,
+      -0.0008100000000000001,
+      -0.0016200000000000001
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "readout",
+    "setting": "matched",
+    "method": "shrink",
+    "matrices": 5,
+    "mean": -0.001134,
+    "ci": [
+      -0.0032195631070225527,
+      0.0009515631070225526
+    ],
+    "matrix_values": [
+      -0.004050000000000001,
+      -0.0008100000000000001,
+      -0.0008100000000000001,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "readout",
+    "setting": "matched",
+    "method": "selected",
+    "matrices": 5,
+    "mean": -0.00032400000000000007,
+    "ci": [
+      -0.0018492921175622351,
+      0.001201292117562235
+    ],
+    "matrix_values": [
+      -0.0024300000000000003,
+      0.0,
+      0.0,
+      0.0,
+      0.0008100000000000001
+    ]
+  },
+  {
+    "experiment": "physical",
+    "family": "irregular",
+    "model": "readout",
+    "setting": "matched",
+    "method": "transition",
+    "matrices": 5,
+    "mean": 0.005346000000000001,
+    "ci": [
+      0.0015427302724163863,
+      0.009149269727583616
+    ],
+    "matrix_values": [
+      0.0024300000000000003,
+      0.004860000000000001,
+      0.004050000000000001,
+      0.004860000000000001,
+      0.010530000000000001
+    ]
+  }
+]

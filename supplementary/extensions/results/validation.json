@@ -1,0 +1,908 @@
+{
+  "status": "passed",
+  "references": {
+    "independent_BP_cases": 36,
+    "independent_Toeplitz_cases": 30,
+    "separated_device_density_cases": 30,
+    "maximum_probability_error": 8.326672684688674e-17,
+    "physical_channels": {
+      "homogeneous": {
+        "fixed": [
+          [
+            0.043663499999999994,
+            0.043663499999999994
+          ],
+          [
+            0.043663500000000036,
+            0.043663500000000036
+          ]
+        ],
+        "matched": [
+          [
+            0.06000000000000004,
+            0.06000000000000004
+          ],
+          [
+            0.059999999999999984,
+            0.059999999999999984
+          ]
+        ],
+        "scale": 1.3905342862481078,
+        "entropy": {
+          "qbar": 0.06000000000000001,
+          "basis_qber": [
+            0.06000000000000004,
+            0.059999999999999984
+          ],
+          "conditional_entropy": [
+            0.3274449191544764,
+            0.32744491915447593
+          ],
+          "pooled_conditional_entropy": 0.3274449191544764,
+          "G": 2.220446049250313e-16,
+          "BSC_Jensen_gap": 1.1102230246251565e-16
+        }
+      },
+      "gate_dependent": {
+        "fixed": [
+          [
+            0.0074625625000000004,
+            0.01488775
+          ],
+          [
+            0.05100624999999999,
+            0.057775000000000035
+          ]
+        ],
+        "matched": [
+          [
+            0.013954118977629576,
+            0.02777678948104065
+          ],
+          [
+            0.09335221266723587,
+            0.10491687887409397
+          ]
+        ],
+        "scale": 1.8781308675206785,
+        "entropy": {
+          "qbar": 0.06000000000000001,
+          "basis_qber": [
+            0.020865454229335112,
+            0.09913454577066491
+          ],
+          "conditional_entropy": [
+            0.1446923096279742,
+            0.46607242430938933
+          ],
+          "pooled_conditional_entropy": 0.32704504035496984,
+          "G": 0.021662673386288078,
+          "BSC_Jensen_gap": 0.02118552822931602
+        }
+      },
+      "pauli": {
+        "fixed": [
+          [
+            0.02,
+            0.02
+          ],
+          [
+            0.07999999999999995,
+            0.07999999999999995
+          ]
+        ],
+        "matched": [
+          [
+            0.024000000000000007,
+            0.024000000000000007
+          ],
+          [
+            0.09599999999999996,
+            0.09599999999999996
+          ]
+        ],
+        "scale": 1.2000000000000004,
+        "entropy": {
+          "qbar": 0.059999999999999984,
+          "basis_qber": [
+            0.024000000000000007,
+            0.09599999999999996
+          ],
+          "conditional_entropy": [
+            0.16334554318340233,
+            0.4561861025695262
+          ],
+          "pooled_conditional_entropy": 0.32744491915447593,
+          "G": 0.017679096278011674,
+          "BSC_Jensen_gap": 0.017679096278011786
+        }
+      },
+      "thermal": {
+        "fixed": [
+          [
+            0.0,
+            0.04877057549928614
+          ],
+          [
+            0.011468421666826786,
+            0.06500486682931689
+          ]
+        ],
+        "matched": [
+          [
+            0.0,
+            0.09425826622167735
+          ],
+          [
+            0.021722475764378472,
+            0.1240192580140074
+          ]
+        ],
+        "scale": 1.9800215126379954,
+        "entropy": {
+          "qbar": 0.060000000000015805,
+          "basis_qber": [
+            0.047129133110838675,
+            0.07287086688919293
+          ],
+          "conditional_entropy": [
+            0.23168135497396336,
+            0.35346700242563345
+          ],
+          "pooled_conditional_entropy": 0.29885974543903215,
+          "G": 0.00628556673923375,
+          "BSC_Jensen_gap": 0.002134323340304445
+        }
+      },
+      "readout": {
+        "fixed": [
+          [
+            0.01,
+            0.11
+          ],
+          [
+            0.009999999999999997,
+            0.10999999999999996
+          ]
+        ],
+        "matched": [
+          [
+            0.010000000000000002,
+            0.11000000000000003
+          ],
+          [
+            0.009999999999999998,
+            0.10999999999999999
+          ]
+        ],
+        "scale": 1.0000000000000002,
+        "entropy": {
+          "qbar": 0.060000000000000005,
+          "basis_qber": [
+            0.06000000000000001,
+            0.05999999999999999
+          ],
+          "conditional_entropy": [
+            0.2975800930424113,
+            0.2975800930424113
+          ],
+          "pooled_conditional_entropy": 0.2975800930424113,
+          "G": 0.0,
+          "BSC_Jensen_gap": 5.551115123125783e-17
+        }
+      }
+    },
+    "independent_entropy_cases": 20
+  },
+  "records": {
+    "cells": 117,
+    "independent_input_frames": 36000,
+    "decoder_outputs": 246000,
+    "undetected_errors": 0,
+    "exactly_reproduced_arrays": 0,
+    "audit": [
+      {
+        "file": "pilot_q0_a0_s0_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a0_s1_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a0_s2_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a0_s3_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a0_s4_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a1_s0_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a1_s1_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a1_s2_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a1_s3_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a1_s4_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a2_s0_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a2_s1_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a2_s2_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a2_s3_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a2_s4_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a3_s0_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a3_s1_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a3_s2_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a3_s3_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a3_s4_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a4_s0_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a4_s1_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a4_s2_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a4_s3_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q0_a4_s4_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a0_s0_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a0_s1_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a0_s2_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a0_s3_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a0_s4_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a1_s0_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a1_s1_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a1_s2_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a1_s3_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a1_s4_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a2_s0_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a2_s1_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a2_s2_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a2_s3_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a2_s4_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a3_s0_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a3_s1_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a3_s2_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a3_s3_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a3_s4_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a4_s0_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a4_s1_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a4_s2_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a4_s3_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q1_a4_s4_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a0_s0_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a0_s1_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a0_s2_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a0_s3_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a0_s4_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a1_s0_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a1_s1_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a1_s2_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a1_s3_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a1_s4_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a2_s0_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a2_s1_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a2_s2_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a2_s3_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a2_s4_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a3_s0_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a3_s1_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a3_s2_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a3_s3_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a3_s4_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a4_s0_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a4_s1_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a4_s2_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a4_s3_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "pilot_q2_a4_s4_evaluation.npz",
+        "frames": 200,
+        "methods": 8,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a0_s0_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a0_s1_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a0_s2_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a0_s3_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a0_s4_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a1_s0_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a1_s1_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a1_s2_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a1_s3_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a1_s4_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a2_s0_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a2_s1_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a2_s2_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a2_s3_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a2_s4_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a3_s0_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a3_s1_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a3_s2_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a3_s3_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a3_s4_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a4_s0_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a4_s1_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a4_s2_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a4_s3_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q0_a4_s4_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q1_a0_s0_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q1_a0_s1_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q1_a0_s2_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q1_a0_s3_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q1_a0_s4_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q1_a1_s0_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q1_a1_s1_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q1_a1_s2_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q1_a1_s3_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q1_a1_s4_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q1_a2_s0_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q1_a2_s1_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q1_a2_s2_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q1_a2_s3_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q1_a2_s4_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q1_a3_s0_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      },
+      {
+        "file": "confirm_q1_a3_s1_evaluation.npz",
+        "frames": 500,
+        "methods": 6,
+        "rerun": false
+      }
+    ]
+  }
+}

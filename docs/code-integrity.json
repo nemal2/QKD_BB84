@@ -1,0 +1,319 @@
+{
+  "status": "passed",
+  "scientific_executable_syntax_unchanged": true,
+  "experimental_parameters_unchanged": true,
+  "modules": [
+    {
+      "path": "supplementary/diagnostic_validation/analyse.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "9bc59d89881f998b7d0876f4c7d5d43b5338ded11b133fb9ce80ea7f7f37964a"
+    },
+    {
+      "path": "supplementary/diagnostic_validation/experiment.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "559ae2821d1084e68cf0dc5b7b91a89070e2624a0942efceaae674776139a69e"
+    },
+    {
+      "path": "supplementary/diagnostic_validation/models.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "fea0d884c6fa15451626d37beafb8ecc66240985a4b9b6b693fec972c8fc5456"
+    },
+    {
+      "path": "supplementary/diagnostic_validation/validate.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "1a66ca25fedcf409b6bf6d4fcfe791772f0288ff822d7f988e263667f05daaec"
+    },
+    {
+      "path": "supplementary/extensions/analyse.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "2dbb58536273136c0787d4d98ad4bc43ef055c23ad81a801d360507699bba97d"
+    },
+    {
+      "path": "supplementary/extensions/analyse_extensions.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "b78e3e8432dffd33fdb28626f67d4e4f13472aec025200dc759b027721eadde8"
+    },
+    {
+      "path": "supplementary/extensions/audit_diagnostic_reference.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "39529103fb290569985ad4c72be7e29c55dc2d8dfecff7065f7eb6df51623f29"
+    },
+    {
+      "path": "supplementary/extensions/audit_fixed_reference.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "5fc1a3e0247a2c3b15b11ec0275f426db7e2551ff915c0f15af9c571fd57c365"
+    },
+    {
+      "path": "supplementary/extensions/check_extensions.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "bb14b294925f0b5aabad7690c08a73fbaa9cac9a88dbb8f1698a2669fcd3629f"
+    },
+    {
+      "path": "supplementary/extensions/common.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "89d34c154514b54e501150fe983e027c4700d169217432642c502f7d95f6cd09"
+    },
+    {
+      "path": "supplementary/extensions/diagnostics.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "4c77c4b37ab1fda86e8fe57025d954a7a6528686e1ced5f75eb59a4ba2ae2074"
+    },
+    {
+      "path": "supplementary/extensions/inventory.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "a4e612df706b1eec2f5e2ff68269219fd81598177456af11fad61324b96b4aed"
+    },
+    {
+      "path": "supplementary/extensions/physics.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "36ae3062709c01865b390345b8e2c7eee120f5f520ee5d344d6d3d444f76638c"
+    },
+    {
+      "path": "supplementary/extensions/pilot.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "02aa50333d7f310300c312b77921bd95fdd37ab1c5b7e868842d7d47efad4aee"
+    },
+    {
+      "path": "supplementary/extensions/pipelines.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "4f7d211d776d7fe5c11a162d6c9219def4cf90db97b19bf7c627f7146423ffb5"
+    },
+    {
+      "path": "supplementary/extensions/provenance.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "acef6d7d26ec2ba3f6bd67cdea2a4fd31a74999bb13f8e9a14a8367c12632406"
+    },
+    {
+      "path": "supplementary/extensions/report.py",
+      "executable_syntax_unchanged": false,
+      "role": "presentation and anonymous metadata checks",
+      "sha256": "e65ae7dd6d82057c9f1c679d5fb213a03c795be32f0da6d1d4697343493e94df"
+    },
+    {
+      "path": "supplementary/extensions/validate.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "2f33b5255365d6ae722a9406ded91e6ca77caebd5e7102ea4451401a086c2fb2"
+    },
+    {
+      "path": "supplementary/finalization/audit_manuscript.py",
+      "executable_syntax_unchanged": false,
+      "role": "presentation and anonymous metadata checks",
+      "sha256": "d1e6560f6f258b7db0c67095f3d8bc789c95620b6d2812bfc414e39ba43a7bde"
+    },
+    {
+      "path": "supplementary/finalization/build_artifacts.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "104f03a4ad3399cffc280e681e3062a1ca45edc283cf189b12dea7f41105c231"
+    },
+    {
+      "path": "supplementary/finalization/channel_information.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "fb8012ea169417db8b32abf2a7f1ab9cb511c47622cea2febb8a23ce81cfdbaf"
+    },
+    {
+      "path": "supplementary/finalization/method_checks.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "91b63175e06795f86716e581856658531b873b611145ce3fc31649f338bd775b"
+    },
+    {
+      "path": "supplementary/finalization/review_analysis.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "eb1f7265d06f0d84932fd745af63718879728165662776266b4a930f60c748cd"
+    },
+    {
+      "path": "supplementary/observation_validation/analyse.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "c3de1cdaa53cb16587049c9657eeff232d5f226504db5d64ec2ba1f43ad7022f"
+    },
+    {
+      "path": "supplementary/observation_validation/experiment.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "a694c9fb92cebe7aee4d3993e3f6dcf11b5792963ec9694366a3bda8812416bd"
+    },
+    {
+      "path": "supplementary/observation_validation/likelihood.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "e8849e92529352fa8c8e8b566a8985a52a8d6a2a091f7e8f6569e53efce12589"
+    },
+    {
+      "path": "supplementary/observation_validation/nuisance_intervals.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "bcf34ddb19a844e0980e3f7c8c8cdc6f0a5238792f914d14ef7ed1e8f9604f67"
+    },
+    {
+      "path": "supplementary/observation_validation/validate.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "dd6b30c1eb9010e0aca620654c86eee362c4d02714717eb87e454802eed6c1ec"
+    },
+    {
+      "path": "supplementary/precision_validation/analyse.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "82be8742b87018a3870a40bbb9f4a68537b45baeb4ad751bf65ec864d07ef938"
+    },
+    {
+      "path": "supplementary/precision_validation/experiment.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "2eeed2bfb6c2bcd34d0aed2b6583d2040a34b26cc9a05218163576f4d7b2fc5c"
+    },
+    {
+      "path": "supplementary/precision_validation/likelihood.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "e8849e92529352fa8c8e8b566a8985a52a8d6a2a091f7e8f6569e53efce12589"
+    },
+    {
+      "path": "supplementary/precision_validation/validate.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "87322524ddd9c11dca363b88a48afa0d676ac968308ed15b49f4430aa97e8ec3"
+    },
+    {
+      "path": "supplementary/reproduce.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "d9a20cbab09297ccd8cff20a730313fd64b82f0ab4b5437a86c67c38f51286f1"
+    },
+    {
+      "path": "supplementary/reproduce_diagnostic_validation.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "6a5783de097f5ba6d6d9538d697e4dbefeeed25fe5704cc095995013c827c666"
+    },
+    {
+      "path": "supplementary/reproduce_extensions.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "ffa3deab3b94010316126e024d28227b3bc7f89aaed186da581055d85602c8bd"
+    },
+    {
+      "path": "supplementary/reproduce_final.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "0c51db437653515567ffc6e5780d1f848cffbb025616b927041b38c14a16f027"
+    },
+    {
+      "path": "supplementary/reproduce_observation_validation.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "f3d9c2f32f896dcd0ba2be083e3c5938e2d19b52bea6579ff106f2d4c9d349a2"
+    },
+    {
+      "path": "supplementary/reproduce_precision_validation.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "33428818cd77dac864c967315e3ecfbc74d89176f0a301bc10e2895262cb15f3"
+    },
+    {
+      "path": "supplementary/study/analyse_v2.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "33f1c6da79b8e078229eda3e490a16531da69a6c4f1da3247a14a371f6d1122e"
+    },
+    {
+      "path": "supplementary/study/channel_fixed.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "71f56fa88746991c682e2ff7b557e01dc53e229955a6fc939a182b3c5ff1acfc"
+    },
+    {
+      "path": "supplementary/study/check_v2.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "f0a8461115412e486835a5d5c6ea7cf2231c3c65980ee7e3bc42ad7f6ddf1c3b"
+    },
+    {
+      "path": "supplementary/study/circuits_v2.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "51ec3863107e84e5209b7b152ca31235f89a1370b0a7bfb66fd4d6ff475713c8"
+    },
+    {
+      "path": "supplementary/study/diagnostics_v2.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "4c4ee8649e63d1ccc328b5f64e5c6a56621ad4089e9b2f280dd5e70fc1fde90c"
+    },
+    {
+      "path": "supplementary/study/plot_v2.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "a8def0b70aaf2ee3832550de12df943a651f1e9bd10f9d8adf2954bd90e40688"
+    },
+    {
+      "path": "supplementary/study/reconciliation_v2.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "ccc530582aa0092c2067b1302792af6ced38820567f1f994e82523649aa221ea"
+    },
+    {
+      "path": "supplementary/study/validate_v2.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "8fc5b89c5d48167057cd9c706e68176b8ded811c0e71a5d6ad97820ea2321b2c"
+    },
+    {
+      "path": "supplementary/study/write_v2.py",
+      "executable_syntax_unchanged": false,
+      "role": "presentation and anonymous metadata checks",
+      "sha256": "b03332bd1ddb72e68ea782569c9d8a84b45b09921c7c2882e8289387ab33ccdb"
+    },
+    {
+      "path": "supplementary/upstream/bb84_config.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "26e370beb32c274207ff397441e03cd7335f23dee215bb1de6c6de6b261c441b"
+    },
+    {
+      "path": "supplementary/upstream/bb84_core.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "36bfddc3562afab8598d83e75b2247e4972d74a95211ff570a8f4c6feb0fdc90"
+    },
+    {
+      "path": "supplementary/upstream/bb84_gate_schemes.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "bfba64a6f6ad4d0768ec18db10a53edd8468ef49253b195a96099604aa29ee7d"
+    },
+    {
+      "path": "supplementary/upstream/bb84_noise.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "48c9694447b74fa6827cf62b1e55b5e1b303df3dded832701e2e978e6ed91d45"
+    },
+    {
+      "path": "supplementary/upstream/reconciliation.py",
+      "executable_syntax_unchanged": true,
+      "role": "scientific/reproduction implementation",
+      "sha256": "06f36df8445e8edf77df94da2edae564feca8b9085dda95c9cd6755c75d779a4"
+    }
+  ]
+}

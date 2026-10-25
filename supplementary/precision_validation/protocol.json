@@ -1,0 +1,17 @@
+{
+  "study": "budget-and-interception-precision",
+  "seed_base": 57400000,
+  "replicates": 500,
+  "budgets": [2000, 8000, 32000],
+  "interception": [0.02, 0.10, 0.20],
+  "devices": [[0.03, 0.03], [0.01, 0.05], [0.05, 0.01]],
+  "circuits": {"PRIMARY": [[0,0],[1,0],[1,1],[2,1]], "A": [[1,0],[2,0],[2,1],[3,1]], "B+": [[2,1],[2,1],[2,1],[2,1]]},
+  "strata": "rectilinear-zero, rectilinear-one, diagonal-zero, diagonal-one",
+  "scales": [1.0, 3.0, 3.5, 4.0],
+  "weights": [0.70, 0.05, 0.05, 0.20],
+  "generation": "All 81 cells use fresh independent acquisitions, including the 8000-signal, r=0.20 anchor conditions. A replicate block contains two independent strategies, each paying its entire transmitted-signal budget. Full counts are Multinomial(T;1/8,1/8,1/8,1/8,1/2), then conditional binomial errors; scaling uses independent binomial sifting/error counts at each setting. Ideal interception, no readout noise or drift.",
+  "estimation": "Unchanged physical binomial likelihood, bounds pA,pB in [0,0.24975], r in [0,1], independently unknown devices. likelihood.py is byte-identical to the frozen observation_validation implementation. Full transition and four-setting aggregate fits retain residual profiles; B+ operating counts are stored but no unidentified point estimate is assigned.",
+  "design": "The cap-4 design and allocations are transferred without retuning for budget, interception, circuit, or outcomes. No design search or estimator selection uses these acquisitions.",
+  "statistics": "Primary contrast is MAE(full)-MAE(scaling), in percentage points. Positive values favor scaling. Independent-acquisition standard errors use the sum of replicate absolute-error variances divided by 500; Welch t critical values give pointwise 95% Monte Carlo intervals. Bonferroni simultaneous 95% intervals cover the 54 identified full/scaling cells. Cell means, bias, profile coverage with Wilson Monte Carlo intervals, width quantiles, and boundary fractions are retained. No B+ full-data MAE contrast is computed.",
+  "scope": "A focused within-model operating-grid study, not hardware validation, unknown-readout robustness, acquisition optimality, or a new reconciliation experiment. Conditions and methods are fixed before generation."
+}

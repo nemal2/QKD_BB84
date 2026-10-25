@@ -1,0 +1,23 @@
+{
+  "circuit_source": {
+    "directory": "upstream",
+    "description": "Included source modules define the complete gate paths used by the circuit study."
+  },
+  "current_decoder": "study/reconciliation_v2.py (layered BP plus public-verification-triggered order-one OSD)",
+  "comparator": {
+    "repository": "https://github.com/francesco-fiorini/BB84-QuantumSimulator",
+    "commit": "9ce07ab3425bf3e98a7e352a3e97b6bafa493edf",
+    "source_file": "bb84/bb84_algorithm.py",
+    "formula": "(sampleQber-ech)/(0.25-ech**2)",
+    "shared_target": "interception density / 4",
+    "notice": "study/third_party/LICENSE-Fiorini.txt"
+  },
+  "source_files": {
+    "bb84_config.py": "26e370beb32c274207ff397441e03cd7335f23dee215bb1de6c6de6b261c441b",
+    "bb84_core.py": "36bfddc3562afab8598d83e75b2247e4972d74a95211ff570a8f4c6feb0fdc90",
+    "bb84_gate_schemes.py": "bfba64a6f6ad4d0768ec18db10a53edd8468ef49253b195a96099604aa29ee7d",
+    "bb84_noise.py": "48c9694447b74fa6827cf62b1e55b5e1b303df3dded832701e2e978e6ed91d45",
+    "reconciliation.py": "06f36df8445e8edf77df94da2edae564feca8b9085dda95c9cd6755c75d779a4"
+  },
+  "current_results": "study/results; all current manuscript results use this cohort"
+}

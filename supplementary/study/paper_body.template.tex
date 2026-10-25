@@ -1,0 +1,488 @@
+\begin{abstract}
+Public basis labels in BB84 retain reliability information hidden by aggregate quantum bit
+error rate. We ask when that information survives estimation and coding costs. Complete
+circuit paths explain the asymmetry, including the receiver rotation, while independent
+channel noise progressively removes it. A nested LDPC family, pooled-centred shrinkage,
+separate calibration data, and 24,000 main holdout frames establish a low-failure operating
+regime. When every preparation path is noisy, a matched-code comparison at 10\% target QBER with a stronger
+decoder reduces frame errors from 1.40\% to 0.65\% (ratio 0.46; 95\% interval 0.26--0.69).
+Balanced paths show no corresponding benefit, and conservative calibration can increase
+disclosure despite useful basis information. A complementary equal-budget study compares
+noise scaling with independent calibration and a published interception-density estimator.
+Wider, analytically selected noise settings improve extrapolation precision; drift and
+unscaled channel disturbance expose different limits on interpretation. Together, the
+experiments connect circuit exposure, finite-sample reliability, and acquisition design,
+providing reproducible engineering guidance for gate-based BB84. Reconciliation yield and
+model-based disturbance estimation remain distinct from a secure-key rate.
+\end{abstract}
+@METADATA@
+\maketitle
+\raggedbottom
+
+% The narrative follows the information budget: public labels first, extra
+% acquisitions second. Numerical claims are generated from one analysis.
+\section{Introduction}
+Two BB84 links can have the same overall quantum bit error rate (QBER) and present different
+decoding problems. Errors may be spread evenly across their sifted bits or concentrated in
+one basis. Public basis announcements retain this distinction. A reconciliation decoder can
+use it through position-dependent probabilities, provided those probabilities can be learned
+accurately enough from the bits sacrificed for estimation.
+
+Gate-based implementations make the source of such differences explicit. Alternative
+preparation sequences accumulate different noise exposure, and a receiver's basis rotation
+can restore an asymmetry that preparation balancing appears to remove. This offers a useful
+controlled setting for a broader engineering question: when does additional reliability
+information reduce the cost of reconciling a frame, once code quality and estimation error
+are held accountable?
+
+The answer requires more than comparing failure ratios at a poorly chosen code rate. We
+first identify the complete noisy paths, then calibrate a structured code family for a
+low-FER operating regime using data separate from the final evaluation. We also centre
+class-specific probability estimates on a common pooled estimate, so that additional
+pseudocounts cannot masquerade as useful basis information. A measurement-balanced circuit
+and an independent quantum-channel noise component test where that information disappears.
+
+A second way to obtain information about disturbance is to acquire measurements at several
+device-noise settings. Extrapolation can avoid an Eve-free reference run, but its precision
+depends on setting separation and signal allocation. We connect this acquisition problem to
+the reconciliation study through a common principle: extra information is useful only after
+its sampling and modelling costs are included.
+
+Our contributions are the following controlled evaluations.
+\begin{enumerate}
+\item We identify the complete-path mechanism behind the basis asymmetry and test its
+attenuation when basis-independent channel noise replaces gate noise at fixed total QBER.
+\item We measure the disclosure--FER tradeoff using nested sparse codes, independently
+calibrated operating points, paired holdout frames, smoothing ablations, and a stronger
+decoder. This establishes when basis information helps and when its finite-sample cost wins.
+\item We compare calibrated and calibration-free disturbance estimators at a matched signal
+budget, optimize acquisition design before simulation, and quantify drift sensitivity and
+the ambiguity introduced by unscaled channel disturbance.
+\end{enumerate}
+The contribution is the interaction of circuit exposure, finite-sample inference, and
+resource allocation. Position-dependent soft information and zero-noise extrapolation are
+established tools; the depolarizing identity used to connect them to this implementation is
+standard.
+
+\section{Setting and Related Work}
+\label{sec:setting}
+BB84~\cite{bennett1984} retains matching-basis measurements and discloses a sample for parameter
+estimation. We use uniformly random bits and bases, independent single-qubit signals, and an
+authenticated noiseless classical channel. A reconciliation frame contains $n+S=1200$ sifted
+bits, with $S=200$ randomly disclosed and $n=1000$ decoded. The evaluation conditions on this
+sifted length. A separate diagnostic experiment counts every transmitted signal, including
+signals discarded by sifting.
+
+The Monte Carlo simulation samples each reconciliation bit's error from its exact
+circuit-path probability. Diagnostic sifted counts follow $N\sim\mathrm{Binomial}(T,1/2)$
+for $T$ transmitted signals, then error counts follow $E\sim\mathrm{Binomial}(N,Q)$.
+Under the independent-shot model these distributions reproduce individual circuit
+acquisitions; exact density-matrix checks validate the probabilities used by the sampler.
+
+LDPC syndrome reconciliation and rate adaptation are established in
+QKD~\cite{elkouss2011,blind2012,martinez2013}. Mesiti et al.~\cite{mesiti2010} combine quantum-
+and public-channel metrics in sparse-graph decoding; puncturing and shortening produce
+position-dependent priors~\cite{blind2012}. Origlia et al.~\cite{origlia2026} construct soft
+metrics for reverse reconciliation in discrete-modulation continuous-variable QKD.
+Basis-aware sifting and reconciliation~\cite{martinezmateo2024} exploit related protocol
+structure. These works establish the value of soft information, while the measurement and
+disclosure mechanisms differ from using an already-public BB84 basis label. Modern
+reconciliation evaluations jointly report leakage and frame recovery
+\cite{borisov2023,treeviriyanupab2024}.
+
+Zero-noise extrapolation estimates idealized observables through additional acquisitions
+\cite{temme2017,li2017,giurgicatiron2020,krebsbach2022}. Noisy-channel interception estimators
+\cite{fiorini2024,fiorini2026} and detector-based separation of noise contributions
+\cite{qi2007dualdet} provide relevant alternatives. We implement the published
+interception-density formula alongside calibrated inversion, rather than treating measured
+total QBER as an Eve-only estimator.
+
+Our outcomes are reconciliation performance and model-based disturbance estimates.
+Implementation security and finite-key extraction require source and detector assumptions,
+an entropy bound, and privacy amplification
+\cite{gllp2004,scarani2009,xu2020,fung2009,tomamichel2012,rennerkoenig2005}.
+We therefore report reconciliation yield separately from a secure-key rate.
+
+\section{Reliability Starts with the Complete Circuit}
+\label{sec:mechanism}
+\subsection{Receiver gates complete the exposure count}
+Figure~\ref{fig:circuits} shows the actual preparation and matched-basis measurement paths.
+PRIMARY prepares rectilinear zero without a gate, uses $X$ for rectilinear one, and uses $H$
+or $XH$ for the diagonal states. Scheme~A adds an identity to every preparation, so every
+path has nonzero exposure. Scheme~B uses two preparation gates for each state. Bob still
+applies $H$ before diagonal measurement; B+ adds an identity before rectilinear measurement
+to balance the complete paths. Each identity is retained as an explicit noise site.
+
+% Identity operations are experimental noise carriers. Compiler removal would
+% change the physical model; circuit exports retain all operations explicitly.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.96\linewidth]{images/complete_circuits.pdf}
+\caption{Complete source circuits, with gates ordered from left to right. The dotted boundary separates Alice's preparation from Bob's measurement rotation; the number at right counts noisy gates. All paths start in $|0\rangle$, and the indicated bit determines the preparation. Orange gates belong to Bob. B+ adds a noisy identity on his rectilinear path. Measurement itself is noiseless.}
+\Description{Four encodings, each with two bit paths in each basis. PRIMARY has complete counts 0/1 and 2/3; A has 1/2 and 3/4; B has 2/2 and 3/3; B+ has 3/3 and 3/3.}
+\label{fig:circuits}
+\end{figure}
+
+For a homogeneous depolarizing channel
+$\mathcal D_p(\rho)=(1-p)\rho+pI/2$ after each gate, covariance under ideal gates gives
+\begin{equation}
+ q_k(p)=\frac{1-(1-p)^k}{2}.
+ \label{eq:gate}
+\end{equation}
+The complete gate counts for the two bit values are $(0,1;2,3)$ in PRIMARY,
+$(1,2;3,4)$ in A, $(2,2;3,3)$ in B, and $(3,3;3,3)$ in B+, where the semicolon separates
+rectilinear and diagonal bases. The basis error probability is the average over its two
+bit paths. In B, the ratio is $q_3(p)/q_2(p)$; at 10\% total target QBER it is 1.437.
+The additional receiver Hadamard explains the residual asymmetry. Exact density-matrix
+checks verify all paths and the two-hop intercept-resend model used below.
+
+Scheme~A is a mechanism control rather than a proposed encoding optimization. Its identities
+remove a literal zero-noise path while preserving exposure differences. B+ supplies the
+corresponding negative control for basis information. Together they separate the source
+of the effect from the special bare-state path in PRIMARY.
+
+\subsection{A basis-independent channel attenuates the signal}
+We insert an independent depolarizing link between preparation and reception, with bit-error
+probability $c$ in either basis. Isotropy allows this channel to be commuted to the end of
+the path for calculation. The resulting basis probabilities are
+\begin{equation}
+ p_z^{\mathrm{tot}}=c+(1-2c)p_z^{\mathrm{gate}},\qquad z\in\{r,d\}.
+ \label{eq:channel}
+\end{equation}
+At fixed total QBER $Q$, the average gate contribution is $(Q-c)/(1-2c)$. Increasing $c$
+therefore reduces the basis contrast, reaching zero at $c=Q$. This control isolates noise
+composition from an increase in overall decoding difficulty.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.94\linewidth]{images/gate_exposure.pdf}
+\caption{Left: measured basis QBERs across the main holdout frames; circles indicate rectilinear and squares diagonal. Colors follow PRIMARY, A, B, and B+ as in the legend at right. Short horizontal marks give exact gate-model predictions. Wilson 95\% error bars are smaller than most markers because each point pools approximately 1.2 million bits. Right: predicted attenuation of the basis ratio when channel noise replaces gate noise at fixed 10\% total QBER.}
+\Description{Basis error probabilities agree with gate-count predictions; independent channel noise drives each diagonal-to-rectilinear ratio to one.}
+\label{fig:exposure}
+\end{figure}
+
+The error-conditioned Alice-bit proportion also follows from the same model,
+$\Pr(X=1\mid\mathrm{error},z)=q_{k_{z1}}/(q_{k_{z0}}+q_{k_{z1}})$.
+It is one in PRIMARY's rectilinear basis, approximately 0.657 in A at 10\% target QBER,
+and one half in B and B+. These are channel-characterization quantities. The decoder
+receives sampled basis probabilities, and receives no error positions or undisclosed bits.
+
+\section{Estimating Reliability and Choosing a Code}
+\label{sec:methods}
+\subsection{A common centre removes the pseudocount confound}
+Let $E_z$ errors be observed among $S_z$ disclosed bits in basis $z$, with
+$E=E_r+E_d$ and $S=S_r+S_d$. The pooled Jeffreys estimate is
+\begin{equation}
+ \widehat p=\frac{E+1/2}{S+1}.
+ \label{eq:pool}
+\end{equation}
+Applying Jeffreys smoothing independently in two bases adds a total of one pseudo-error,
+whereas \eqref{eq:pool} adds one half. A direct pooled-versus-separate comparison thus
+changes both the reliability contrast and the smoothing convention.
+
+% Centre every class on the same pooled estimate. The positive-part weight is
+% a plug-in shrinkage rule; no Bayes-optimality or universal dominance is claimed.
+We instead use a pooled-centred positive-part shrinkage rule. With
+$\widetilde p_z=E_z/S_z$, $\widetilde p=E/S$, and
+$d=\widetilde p_d-\widetilde p_r$, set
+\begin{align}
+ v&=\widehat p(1-\widehat p)(S_r^{-1}+S_d^{-1}), &
+ w&=\max\{0,1-v/d^2\}, \label{eq:weight}\\
+ \widehat p_z^{\mathrm{sh}}&=\widehat p+w(\widetilde p_z-\widetilde p).
+ &&\label{eq:shrink}
+\end{align}
+We set $w=0$ when $d=0$ or a class is absent. The sample-weighted average of the two
+estimates remains $\widehat p$. The plug-in weight suppresses a contrast that is small
+relative to its estimated variance. It is an empirical shrinkage heuristic, whose performance
+is measured below. Ablations retain separate Jeffreys estimates and the coherent unshrunk
+rule $w=1$ to distinguish centring from contrast shrinkage.
+
+Bob estimates the error vector from the public syndrome difference and basis labels, using
+$L_i=\log[(1-\widehat p_{z_i})/\widehat p_{z_i}]$.
+Probabilities are clipped to $[10^{-6},0.499]$ for numerical stability, identically for all
+decoders. Each frame has its own disjoint sample; the undisclosed frame is never used to
+select its priors.
+
+\subsection{A nested sparse family and a stronger decoder}
+We construct a column-weight-three Tanner graph by progressive-edge-growth-style
+breadth-first cycle avoidance and degree balancing~\cite{hu2005}. The initial matrix has
+150 checks on 1000 variables. Repeatedly splitting the largest check into two disjoint
+parts gives matrices with $m=150,175,\ldots,900$, preserving column weight three and
+minimum check degree two. Every previous check is an XOR of later checks, so additional
+rows add constraints within one nested family. The construction is fully specified by the
+algorithm and matrix seed; it is a finite-length test family rather than an optimized
+capacity-approaching QKD code.
+
+Layered sum-product belief propagation (BP) uses at most 300 sweeps, stopping on exact
+syndrome agreement. A stronger baseline adds full order-one ordered-statistics decoding
+(OSD)~\cite{fossorier1995}. On BP nonconvergence or failed public verification, it selects
+a least-reliable independent parity basis, re-encodes the BP hard decision, and tests each
+single free-variable flip. Candidates are scored by the channel-prior LLRs. Both pooled
+and basis-dependent methods receive the same iteration and search budgets.
+
+Independent 64-bit Toeplitz verification determines whether Bob accepts a recovered frame.
+Exact simulator correctness is recorded separately. Verification failure, rather than oracle
+knowledge of the error pattern, triggers the OSD retry. The 64 public verification bits
+are charged to the disclosure budget. Public random hash seeds contain no key information;
+authentication cost is outside this reconciliation metric.
+
+\subsection{Calibration precedes the independent evaluation}
+For each encoding and target $Q\in\{0.02,0.06,0.10\}$, we generate 500 calibration frames.
+Pooled and shrinkage BP policies each select the smallest tested $m$ for which the Wilson
+95\% upper FER bound is at most 1\% and all higher tested row counts also pass. The initial
+grids are $150{:}25{:}300$, $350{:}25{:}550$, and $500{:}25{:}800$, respectively.
+If needed, the grid extends to 900. Choices are frozen before generating 2000 independent
+holdout frames per cell. This is a conservative empirical operating-point rule; the
+holdout data provide its separate performance assessment.
+
+At each selected matrix, all four prior rules are paired on the same frames. We report both
+BP and BP+OSD. The latter uses the BP-selected matrices, so this comparison tests decoder
+strength at matched disclosure rather than optimizing an additional OSD rate policy.
+Two additional matrix seeds, 29 and 47, use the same frozen row counts on fresh 1000-frame
+cohorts at 10\% QBER. Fixed-code curves use 500 frames at each QBER from 1\% to 12\% in
+A and B+, with $m=225,450,650$. Channel-composition controls have their own calibration
+and 2000-frame holdout cohorts at $c=2.5,5,7.5,10\%$ and total $Q=10\%$.
+
+\subsection{Report failure, disclosure, and uncertainty together}
+With $I_{\mathrm{corr}}$ denoting exact recovery, we report
+\begin{align}
+ \mathrm{FER}&=1-\mathbb E[I_{\mathrm{corr}}], &
+ Y&=\frac{n-m-64}{n+S}I_{\mathrm{corr}}, \label{eq:yield}\\
+ f_{\mathrm{syn}}&=\frac{m}{n h_2(Q)}, &
+ f_{\mathrm{EC}}&=\frac{m+64}{n h_2(Q)}. \label{eq:efficiency}
+\end{align}
+Here $h_2$ is binary entropy, and $Q$ in aggregate efficiency reporting is the measured
+undisclosed-block QBER. The row count is charged conservatively even if checks are
+dependent; algebraic ranks accompany the matrices. The algebraic code rate is
+$R=1-\operatorname{rank}_{\mathrm{GF}(2)}(H)/n$; all tested matrices have full row rank.
+$Y$ is a reconciliation yield per
+sifted bit, including estimation and verification costs, before privacy amplification.
+
+Absolute FERs include failure counts and Wilson 95\% intervals~\cite{wilson1927},
+restricted to $[0,1]$ at numerical boundaries.
+Same-matrix comparisons retain rescued and harmed pairs and use exact two-sided McNemar
+tests. Holm correction is applied across the 12 main cells separately for each decoder
+and matched-code comparison family. Paired bootstrap intervals use 10,000 resamples.
+For operating-policy yield comparisons, intervals condition on the frozen calibration
+choices; they do not include variation from repeating calibration.
+
+\section{What Survives in a Low-FER Operating Regime?}
+\label{sec:results}
+\subsection{Code quality changes the relevant question}
+Figure~\ref{fig:curves} shows the fixed-code transitions. Larger check counts move useful
+operation to higher QBER, without mixing unrelated degree profiles into a rate ladder.
+The calibrated operating points in Table~\ref{tab:operating} yield observed FER below 1\%
+for both policies in all 12 main cells. Finite holdout counts still matter: a point estimate
+below the target does not imply that every 95\% upper bound is below it.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.94\linewidth]{images/fixed_code_curves.pdf}
+\caption{Fixed-code BP curves, with 500 independent frames at each QBER. Solid lines use pooled priors and dashed lines use centred shrinkage. Each color is one matrix, reused across QBER. The dotted line marks 1\% FER; the vertical axis is linear below 1\% and logarithmic above it. Zero observed failures have Wilson 95\% upper bound 0.76\%. Full counts accompany the curves.}
+\Description{FER-versus-QBER transitions for three fixed matrices in Scheme A and balanced control B+.}
+\label{fig:curves}
+\end{figure}
+
+% Operating and matched-code tables refer to the same holdout frames. Their
+% different questions are explicit, preventing nominal-QBER table collisions.
+@OPERATING_TABLE@
+
+The disclosure costs are substantial at short block length. At 10\% QBER in A, the
+selected syndrome counts are @A10_MU@ and @A10_MA@ for pooled and shrinkage BP, respectively.
+Their $f_{\mathrm{EC}}$ values are @A10_FU@ and @A10_FA@. At 2\%, conservative calibration
+can cost more than the benefit of a small basis contrast. These efficiencies place the
+results in a practical coding context and prevent a large failure ratio at an unsuitable
+rate from being interpreted as a large protocol improvement.
+
+\subsection{Separate decoding effects from selected-rate effects}
+Table~\ref{tab:matched} compares the priors on the same shrinkage-selected matrix at 10\%
+QBER, including the stronger decoder. Table~\ref{tab:operating} instead compares two
+independently calibrated policies. At the operating point in A, their BP yield difference
+is @A10_Y@ percentage points (95\% interval @A10_YCI@). The gain mainly reflects a smaller
+selected syndrome, alongside residual frame failures. It is conditional on this calibration
+realization. It should therefore be interpreted together with the same-matrix comparison,
+the matrix replications, and the balanced control.
+
+@MATCHED_TABLE@
+
+Basis labels have the clearest value when the physical contrast is large. PRIMARY provides
+the strongest contrast, while A removes its special noise-free preparation. B has only the
+receiver-induced difference, and B+ has equal class probabilities. In B+, the sample can
+still suggest an apparent contrast; shrinkage reduces its influence but cannot eliminate
+finite-sample mistakes. The operating yield difference in B+ at 10\% is @B10_Y@ percentage
+points. This control makes the estimation cost part of the result.
+
+@ABLATION_TEXT@
+The ablation counts in Appendix~\ref{app:ablation} show the size of each effect without
+crediting additional smoothing as basis information. Replication across two further
+matrices tests the persistence of the matched-rate effect at frozen disclosure; it also
+shows why one calibrated rate choice is not a general optimum.
+
+\subsection{Channel noise limits the value of the label}
+Figure~\ref{fig:operating} combines operating-policy differences with a fixed-disclosure
+channel-composition sensitivity analysis. The latter reuses the original gate-only
+shrinkage-selected matrices, avoiding the failure floor introduced by adaptive code selection
+in the channel cohorts. Its code choices therefore come from separate calibration rather
+than optimization on the channel outcomes. The physical ratio approaches one as channel
+noise replaces gate noise. At $c=10\%$, all errors come from the independent basis-symmetric link.
+At that endpoint, shrinkage has 110 versus 98 failures in PRIMARY and 33 versus 27 in A
+on the fixed codes. These losses expose the cost of fitting a contrast that has no
+physical basis. The control demonstrates why gains from a gate-only simulator
+must be interpreted through the noise composition of an intended implementation.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.94\linewidth]{images/operating_points.pdf}
+\caption{Paired BP comparisons. Left: operating-policy reconciliation-yield differences in the 12 main cells. Right: a fixed-disclosure sensitivity analysis at 10\% total QBER, retaining the gate-only calibrated shrinkage code ($m=625$ for PRIMARY and $650$ for A). The independent channel component increases on 2000 holdout frames per cell. Positive values indicate fewer shrinkage failures. Error bars are paired 95\% bootstrap intervals conditional on the selected matrices.}
+\Description{Operating-policy yield differences show both gains and losses and their dependence on channel composition.}
+\label{fig:operating}
+\end{figure}
+
+\section{Acquiring Information about Disturbance}
+\label{sec:diagnostics}
+\subsection{A target shared by all estimators}
+Eve independently intercepts a fraction $r=\pEve$ of signals, measures in a random basis,
+and resends that result. The ideal-device disturbance is $e_{\mathrm{Eve}}=r/4$. All
+diagnostic estimators target this quantity under a fixed intercept-resend model. Every
+diagnostic bit is disclosed, so these acquisitions produce no key.
+
+Let $q_0(p)$ be PRIMARY's mean QBER without Eve and $q_I(p)$ the mean conditional on
+interception, including noisy Alice--Eve and Eve--Bob paths. Then
+\begin{equation}
+ Q(p,r)=(1-r)q_0(p)+r q_I(p),\qquad
+ q_0(p)=\frac14\sum_{k=0}^{3}q_k(p).
+ \label{eq:attack}
+\end{equation}
+Appendix~\ref{app:diagnostic} gives the explicit two-hop expression. In particular,
+$Q(0,r)=r/4$. Exact density-matrix calculations validate the model at the largest
+noise parameter used in the acquisition design as well as at the nominal setting.
+
+At an overall budget of 8000 transmitted signals, four-setting extrapolation uses
+$f=(1,1.5,2,2.5)$ with 2000 signals each and scales $p$ to $fp$. Weighted linear fitting
+estimates the intercept; a gate-model fit jointly estimates $(p,r)$ using \eqref{eq:attack}.
+Estimates remain unclipped so signed bias and boundary dispersion remain visible.
+The base signal noise is $p=0.03$, with 1000 replicates at each
+$r\in\{0,0.1,0.2,0.3,0.4\}$.
+
+Independent calibrated inversion acquires an Eve-free batch and an attacked batch at the
+unscaled setting. With observed probabilities $\widehat q_{\mathrm{hw}}$ and $\widehat Q$,
+we compare
+\begin{align}
+ \widehat e_{\mathrm{BSC}}&=\frac{\widehat Q-\widehat q_{\mathrm{hw}}}{1-2\widehat q_{\mathrm{hw}}},
+ \label{eq:bsc}\\
+ \widehat e_{\mathrm{gate}}&=\frac{\widehat Q-q_0(\widehat p)}{4[q_I(\widehat p)-q_0(\widehat p)]},
+ \quad q_0(\widehat p)=\widehat q_{\mathrm{hw}}, \label{eq:calgate}\\
+ \widehat e_{\mathrm F}&=\frac{\widehat Q-\widehat q_{\mathrm{hw}}}{4(1/4-\widehat q_{\mathrm{hw}}^2)}.
+ \label{eq:fiorini}
+\end{align}
+Equation~\eqref{eq:fiorini} implements the interception-density formula in Fiorini et al.'s
+public simulator~\cite{fiorini2026}, divided by four to use the shared disturbance target.
+Its readout/channel-noise convention differs from our two-hop gate model. We additionally
+simulate its corresponding algebraic law $Q=e_{\mathrm{ch}}+r(1/4-e_{\mathrm{ch}}^2)$ to check the comparator
+under the assumptions it was designed for.
+
+\subsection{Select acquisitions before measuring performance}
+Closely spaced settings make the fitted gate noise and interception fraction strongly
+correlated. We select a wider two-setting design by minimizing the worst Fisher-predicted
+variance over $p\in\{0.02,0.03,0.04\}$ and the five attack fractions. Candidate high scales
+are $2.5,4,6,8$, and low-scale budget shares range from 0.5 to 0.9. This analytic selection
+precedes Monte Carlo evaluation. It selects $f=(1,8)$ and $(6400,1600)$ signals.
+The calibrated allocation is selected on the same grid by a delta-method calculation,
+giving 2400 Eve-free and 5600 attacked signals. Both designs pay the same total budget.
+
+At $p=0.03$, the four-setting Fisher correlation of $(p,r)$ ranges from -0.949 to -0.958;
+the two-setting design reduces its magnitude to 0.708--0.764. A correct nonlinear model
+can therefore have little structural bias yet a large finite-count error when the
+acquisition settings provide weak parameter separation. Improving the model alone does
+not repair this variance cost.
+
+@DIAGNOSTIC_TABLE@
+
+Table~\ref{tab:diagnostic} separates mean absolute error (MAE), signed bias, and within-target
+dispersion. The optimized two-setting gate fit has MAE @TWO_MAE@ percentage points, compared
+with @FOUR_MAE@ for the original four-setting gate fit and @CAL_MAE@ for calibrated gate
+inversion. The paired 95\% interval for the two-setting-minus-calibrated MAE difference is
+@DIAG_DIFFCI@ percentage points. Wide scaling is effective in this homogeneous gate model;
+its use in hardware requires a controllable range over which that model remains valid.
+
+\subsection{Drift and unscaled noise answer different questions}
+We vary the calibration-run parameter as $p_{\mathrm{cal}}=p_{\mathrm{signal}}(1+\delta)$,
+including $\delta=\pm5,\pm10,\pm20\%$ and extending to $\pm50\%$. Signal noise remains
+fixed. Figure~\ref{fig:diagnostic} shows calibrated performance against the same
+calibration-free fit. The actual sampled comparison, rather than an assumed drift
+advantage, determines whether a crossover occurs. @DRIFT_TEXT@
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.94\linewidth]{images/diagnostic_design.pdf}
+\caption{Matched-budget diagnostic accuracy. Left: MAE versus interception fraction for the original and optimized acquisition designs. Right: pooled MAE under calibration drift; shading marks the requested $\pm20\%$ range. All methods use 8000 signals per replicate. The calibration-free horizontal reference assumes stationary gate noise during its own acquisitions. Pooled uncertainty is reported in Table~\ref{tab:diagnostic}; retained replicate counts support each curve.}
+\Description{Wider settings improve gate-model extrapolation, while stale calibration increases inversion error.}
+\label{fig:diagnostic}
+\end{figure}
+
+An independent receiver-channel component $c$ that is not scaled changes the zero-gate-noise
+intercept to $c+(1-2c)r/4$. Thus an extrapolated intercept by itself cannot identify the
+Eve-only contribution in the presence of unknown unscaled disturbance. Additional
+simulations at $c=1\%$ and $3\%$ retain this confounding. This is distinct from calibration
+drift: one concerns a stale reference, while the other concerns which physical noise
+components the acquisition actually varies. Both matter when assigning meaning to an
+estimated intercept.
+
+\section{Interpretation and Scope}
+\label{sec:discussion}
+The reconciliation and diagnostic experiments expose two information costs. Public basis
+labels are free to reuse, but the probabilities attached to them have finite estimation
+error. Extra noise settings can remove the need for an Eve-free reference, but their
+precision depends on the span and allocation of measurements. Circuit accounting explains
+where the first source of information originates; experimental design determines whether
+the second can be acquired efficiently.
+
+For reconciliation, the useful result is a conditional disclosure advantage in a controlled
+short-block study. The nested family and independent holdout remove the earlier dependence
+on unrelated code profiles. The measured efficiencies also show the cost of this deliberately
+conservative family. Larger blocks, optimized degree distributions, and rate policies
+calibrated across repeated training cohorts are needed to establish a competitive practical
+advantage. BP+OSD and the matrix replications check that the comparison is not solely a
+weak-decoder effect; they do not substitute for that broader optimization.
+
+The physical model uses homogeneous independent gate noise, ideal measurements, and an
+isotropic channel. Gate-dependent errors, loss, detector imperfections, and correlations
+can change the reliability classes. Physical identities represent explicit exposure sites;
+a compiler that removes or reschedules them changes the experiment. Noise scaling likewise
+assumes the attack and unscaled link remain stationary during acquisition. The channel
+controls identify two concrete boundaries within these assumptions: attenuation of useful
+basis contrast and ambiguity of the zero-gate-noise intercept.
+
+Finally, reconciliation success and estimated disturbance have different security roles.
+An adversary can adapt to announced settings, and a noise decomposition under a fixed
+attack model is not a composable phase-error bound. A secure implementation must account
+for all public leakage, correctness verification, source and detector assumptions, and
+finite-key privacy amplification~\cite{shor2000,tomamichel2012,rennerkoenig2005}.
+The measurements here support engineering comparisons within the stated model.
+The 10\% cells are decoding stress tests: their positive reconciliation yield can be
+consumed by subsequent privacy amplification.
+
+\section{Conclusion}
+Complete-path gate counts explain the basis asymmetry in this BB84 implementation, including
+the receiver contribution that survives preparation balancing. With coherent probability
+estimation and separately calibrated sparse codes, basis information has a conditional
+disclosure benefit in a low-FER regime, alongside measurable estimation costs. Independent
+channel noise narrows that opportunity. For disturbance estimation, wide, preselected noise
+settings recover much of the precision lost by closely spaced extrapolation, while drift
+and unscaled disturbance constrain the interpretation. These results turn implementation
+details into testable conditions for when additional reliability information is useful.
+
+\section*{Data and Code Availability}
+The accompanying supplementary package contains the simulation and decoding code, all
+parity-check matrices, explicit circuit exports, calibration and paired holdout records,
+diagnostic counts, acquisition-design calculations, and scripts regenerating the tables,
+figures, and manuscript. A frozen protocol, source provenance, dependency versions, and
+file checksums document the inputs. Historical exploratory cohorts are archived separately
+and do not contribute to the paper's numerical results.
+
+\FloatBarrier
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}
+\FloatBarrier
+\input{appendix}
+\end{document}

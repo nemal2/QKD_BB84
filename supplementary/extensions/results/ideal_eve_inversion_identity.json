@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "parameter_pairs": 25,
+  "maximum_error": 5.551115123125783e-17,
+  "identity": "q_intercept(pA,pB,0) = 1/4 + q_noeve(pA,pB)/2",
+  "consequence": "Under ideal Eve and this isotropic legitimate-noise model, calibrated BSC and calibrated gate inversion are algebraically identical estimators of r/4."
+}

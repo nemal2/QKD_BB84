@@ -1,0 +1,119 @@
+{
+  "study": "basis-and-range-validation",
+  "date": "2026-10-24",
+  "status": "Design fixed before stochastic acquisitions.",
+  "seed_base": 29000000,
+  "replicates": 500,
+  "nominal": {
+    "p": [
+      0.005,
+      0.015,
+      0.03,
+      0.06
+    ],
+    "r": [
+      0,
+      0.1,
+      0.2,
+      0.4
+    ],
+    "budgets": [
+      2000,
+      8000,
+      32000
+    ]
+  },
+  "off_grid": {
+    "p": [
+      0.01,
+      0.025,
+      0.045
+    ],
+    "r": [
+      0.05,
+      0.15,
+      0.3
+    ],
+    "budgets": [
+      8000
+    ]
+  },
+  "scaling_caps": [
+    2.5,
+    4.0,
+    8.0
+  ],
+  "design": {
+    "criterion": "Minimize worst Fisher variance of residual r/4 on the 16 nominal (p,r) pairs, at T=8000, before Monte Carlo evaluation.",
+    "two_settings": "[1, maximum scale]",
+    "four_settings": "Endpoints plus any two of five equally spaced interior grid points.",
+    "allocation_units": 20,
+    "minimum_units_per_setting": 1,
+    "calibration_share": 0.3,
+    "scope": "Finite candidate optimization of setting locations and signal allocation; no claim of unrestricted optimality."
+  },
+  "methods": [
+    "basis_single",
+    "aggregate_two_cap2.5",
+    "aggregate_four_cap2.5",
+    "aggregate_two_cap4",
+    "aggregate_four_cap4",
+    "aggregate_two_cap8",
+    "aggregate_four_cap8",
+    "calibrated"
+  ],
+  "basis_sampling": "Per transmitted signal: matched rectilinear .25, matched diagonal .25, discarded .5; errors sampled conditional on the two matched counts.",
+  "other_sampling": "Each allocated setting uses Binomial(Tj,.5) sifted shots, then Binomial(Nj,Qj) errors. All allocations sum to T.",
+  "pairing": "Method acquisitions are independent within a replicate block; multiple estimators of one acquisition reuse exactly its counts.",
+  "estimation": "Weighted nonlinear least squares with Jeffreys plug-in variances, signed r in [-.5,1.5], p in [1e-8,min(.3,.999/max(f))]. Basis-only fits use p upper bound .3. An unbounded analytic basis inverse is a declared sensitivity estimator when its square root is real.",
+  "intervals": "Unclipped individual 95% local-Wald intervals, empirical coverage with Wilson Monte Carlo intervals. Fixed-grid mean MAE uncertainty uses independent cell replicate variances. No equivalence margin is prespecified.",
+  "holdout": {
+    "training_budget": 8000,
+    "validation_budget": 2000,
+    "validation_scale": 2.3,
+    "cap": 4.0,
+    "scenarios": [
+      {
+        "name": "equal",
+        "pA": 0.03,
+        "pB": 0.03,
+        "r": 0.2,
+        "curvature": 0.0
+      },
+      {
+        "name": "off_grid",
+        "pA": 0.025,
+        "pB": 0.025,
+        "r": 0.15,
+        "curvature": 0.0
+      },
+      {
+        "name": "alice_low",
+        "pA": 0.01,
+        "pB": 0.05,
+        "r": 0.2,
+        "curvature": 0.0
+      },
+      {
+        "name": "bob_low",
+        "pA": 0.05,
+        "pB": 0.01,
+        "r": 0.2,
+        "curvature": 0.0
+      },
+      {
+        "name": "curvature",
+        "pA": 0.03,
+        "pB": 0.03,
+        "r": 0.2,
+        "curvature": 0.02
+      }
+    ],
+    "models": "Equal-noise basis-single, equal-noise aggregate two/four, and independently unknown (pA,pB,r) aggregate four. Same four-setting counts for its two model fits.",
+    "prediction_check": "Compare held-out proportion with model prediction using sum of independent sampling variance and parameter delta variance; report 95% prediction coverage. Held-out counts are never fitted.",
+    "curvature_law": "f_effective = f + epsilon*f*(f-1), which preserves both the operating setting and zero-noise limit.",
+    "independent_device_fitter": "Profile pA on a fixed 129-point grid and refine every local minimum; at each pA solve the constrained quadratic problem in d=1-r/2, k=d*pB exactly, including all boundary edges."
+  },
+  "references": "Check closed-form basis and unequal-device laws by explicit density states. Independently profile one-dimensional WLS for fixed selected replicates and boundary cases; independently check three-parameter fits and analytic Jacobians.",
+  "scope": "No new reconciliation codes, pooling-rule training, or rate-policy training in this validation."
+}

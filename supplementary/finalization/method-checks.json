@@ -1,0 +1,173 @@
+{
+  "status": "passed",
+  "retained_boundary_records": [
+    {
+      "scenario": "alice_low",
+      "records": 500,
+      "lower_noise_hits": [
+        248,
+        0
+      ],
+      "upper_noise_hits": [
+        0,
+        0
+      ],
+      "target_estimate_boundary_hits": 0,
+      "target_interval_boundary_hits": 0,
+      "r_range": [
+        0.11219032223689518,
+        0.2719453231415415
+      ],
+      "interval_endpoint_range": [
+        0.0106824224232696,
+        0.08346273883944376
+      ]
+    },
+    {
+      "scenario": "bob_low",
+      "records": 500,
+      "lower_noise_hits": [
+        244,
+        0
+      ],
+      "upper_noise_hits": [
+        0,
+        0
+      ],
+      "target_estimate_boundary_hits": 0,
+      "target_interval_boundary_hits": 0,
+      "r_range": [
+        0.10202446998188165,
+        0.281540234044854
+      ],
+      "interval_endpoint_range": [
+        0.005337517929729075,
+        0.08766006116056818
+      ]
+    },
+    {
+      "scenario": "curvature",
+      "records": 500,
+      "lower_noise_hits": [
+        251,
+        1
+      ],
+      "upper_noise_hits": [
+        0,
+        0
+      ],
+      "target_estimate_boundary_hits": 0,
+      "target_interval_boundary_hits": 0,
+      "r_range": [
+        0.10663591520323472,
+        0.3135529423184246
+      ],
+      "interval_endpoint_range": [
+        0.008778582874219867,
+        0.09456991584738716
+      ]
+    },
+    {
+      "scenario": "equal",
+      "records": 500,
+      "lower_noise_hits": [
+        252,
+        0
+      ],
+      "upper_noise_hits": [
+        0,
+        0
+      ],
+      "target_estimate_boundary_hits": 0,
+      "target_interval_boundary_hits": 0,
+      "r_range": [
+        0.10437505078078513,
+        0.2915991633012946
+      ],
+      "interval_endpoint_range": [
+        0.009414860059041533,
+        0.08897801848361271
+      ]
+    },
+    {
+      "scenario": "off_grid",
+      "records": 500,
+      "lower_noise_hits": [
+        246,
+        0
+      ],
+      "upper_noise_hits": [
+        0,
+        0
+      ],
+      "target_estimate_boundary_hits": 0,
+      "target_interval_boundary_hits": 0,
+      "r_range": [
+        0.07395513843706347,
+        0.22967859020080006
+      ],
+      "interval_endpoint_range": [
+        0.0023142289021052427,
+        0.07234484368236734
+      ]
+    }
+  ],
+  "pooling_bins_reconstructed": 24,
+  "pooling_frames_reconstructed": 15000,
+  "matched_range_designs": [
+    {
+      "method": "aggregate_two_cap2.5",
+      "location_sets": 1,
+      "allocations_per_set": 19
+    },
+    {
+      "method": "aggregate_four_cap2.5",
+      "location_sets": 10,
+      "allocations_per_set": 969
+    },
+    {
+      "method": "aggregate_two_cap4",
+      "location_sets": 1,
+      "allocations_per_set": 19
+    },
+    {
+      "method": "aggregate_four_cap4",
+      "location_sets": 10,
+      "allocations_per_set": 969
+    },
+    {
+      "method": "aggregate_two_cap8",
+      "location_sets": 1,
+      "allocations_per_set": 19
+    },
+    {
+      "method": "aggregate_four_cap8",
+      "location_sets": 10,
+      "allocations_per_set": 969
+    }
+  ],
+  "rank_condition_checked": true,
+  "three_setting_counterexample": {
+    "scales": [
+      1.0,
+      3.0,
+      4.0
+    ],
+    "parameters": [
+      0.03,
+      0.05,
+      0.2
+    ],
+    "alternative_parameters": [
+      0.043604284267966927,
+      0.022760937055753133,
+      0.2000372548408821
+    ],
+    "maximum_contraction_discrepancy": 1.1102230246251565e-16,
+    "residuals": [
+      0.05,
+      0.05000931371022053
+    ]
+  },
+  "scope": "Retained-record and algebraic checks; no new stochastic experiments or relaxed-bound fitting."
+}

@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "proposition": {
+    "parameter_cases": 1018,
+    "inverse_checks": 4072,
+    "cubic_intercept_checks": 2036,
+    "maximum_inverse_error": 1.4432899320127035e-15,
+    "maximum_intercept_error": 5.773159728050814e-15,
+    "maximum_injection_composition_error": 2.220446049250313e-16,
+    "Bplus_distinct_interception_counterexample": true,
+    "unknown_readout_counterexample": true
+  },
+  "cells": 81,
+  "replicate_blocks": 40500,
+  "acquisition_streams_recreated": 162,
+  "density_cases": 648,
+  "maximum_density_error": 1.3877787807814457e-16,
+  "independent_optimizer_checks": 270,
+  "maximum_optimizer_objective_excess": 1.1368683772161603e-13,
+  "independent_profile_endpoint_checks": 78,
+  "maximum_profile_endpoint_deviance_error": 2.5886611521031e-08,
+  "retained_arrays": 3078
+}

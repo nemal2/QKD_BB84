@@ -1,0 +1,277 @@
+{
+  "study": "extensions-v3",
+  "status": "initial design fixed before new pilot; learned policies and final counts saved before confirmation",
+  "stages": [
+    "validate generators and existing evidence",
+    "75-cell partial-pooling pilot",
+    "freeze sample-only rule and development-trained rate policies",
+    "independent asymmetry confirmation and code/length transfer",
+    "physical-channel and fixed-total-budget controls",
+    "separated-device diagnostics and robustness"
+  ],
+  "pilot": {
+    "qber": [
+      0.02,
+      0.06,
+      0.1
+    ],
+    "asymmetry": [
+      0,
+      0.1,
+      0.25,
+      0.5,
+      0.75
+    ],
+    "sample": [
+      50,
+      100,
+      200,
+      500,
+      1000
+    ],
+    "n": 1000,
+    "frames": 200,
+    "lambda": [
+      0,
+      0.25,
+      0.5,
+      0.75,
+      1
+    ],
+    "reference_family": "existing nested PEG, seed11, row count independently calibrated at symmetric channels for FER closest to 10%"
+  },
+  "confirmation": {
+    "all_75_cells": 500,
+    "reference_matrix_seed": 29,
+    "methods": [
+      "pooled estimated",
+      "coherent separate estimated",
+      "positive-part shrinkage",
+      "development-selected partial pooling",
+      "pooled oracle",
+      "basis oracle"
+    ]
+  },
+  "automatic_rule": {
+    "inputs": [
+      "sample size",
+      "pooled sample QBER",
+      "sample basis difference / estimated standard error"
+    ],
+    "sample_bins": [
+      100
+    ],
+    "qber_bins": [
+      0.04,
+      0.08
+    ],
+    "z2_bins": [
+      1,
+      4,
+      9
+    ],
+    "selection": "maximize paired development success gain over lambda=0 after subtracting 1.96 paired standard errors; require positive lower bound; deterministic ties choose smaller lambda; empty bins use zero",
+    "forbidden_inputs": [
+      "true asymmetry",
+      "true probabilities",
+      "test correctness",
+      "undisclosed bits"
+    ]
+  },
+  "codes": {
+    "families": [
+      "Gallager balanced partitions, column weight3; exactly regular where divisibility permits",
+      "published BSC-optimized irregular variable-degree profiles with bounded-search PEG realization"
+    ],
+    "optimized_profile_source": "Elkouss et al. arXiv:0901.2140 Table I; edge-to-node conversion explicitly recorded",
+    "lengths": [
+      1000,
+      4000,
+      16000
+    ],
+    "development_seeds": [
+      101,
+      103
+    ],
+    "test_seeds": [
+      211,
+      223,
+      227,
+      229,
+      233
+    ],
+    "bp_sweeps": 100,
+    "verification_bits": 64,
+    "storage": "CSR edges, no silent padding; row counts charged conservatively"
+  },
+  "pipeline_development": {
+    "qber": [
+      0.02,
+      0.06,
+      0.1
+    ],
+    "asymmetry": [
+      0,
+      0.5
+    ],
+    "sample": [
+      50,
+      200,
+      1000
+    ],
+    "frames_per_condition_and_code_seed": 100,
+    "candidate_margins": [
+      1.1,
+      1.35,
+      1.6,
+      1.9
+    ],
+    "rate_pool": [
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8
+    ],
+    "policy": "ridge logistic FER prediction from observable sample features, row fraction and block length; same features, code pool, tuning budget and learning procedure for pooled and selected-prior decoders; maximize predicted verified reconciliation yield; never select on test outcomes"
+  },
+  "transfer": {
+    "qber": 0.06,
+    "conditions": [
+      {
+        "a": 0,
+        "s": 50
+      },
+      {
+        "a": 0.25,
+        "s": 200
+      },
+      {
+        "a": 0.75,
+        "s": 1000
+      }
+    ],
+    "frames_per_matrix": "pilot variance calculation for 0.5 percentage-point yield effect, 80% nominal conditional power; round to100, floor500, cap2000; code-to-code uncertainty reported separately"
+  },
+  "fixed_total": {
+    "N": 2000,
+    "qber": 0.06,
+    "asymmetry": 0.5,
+    "sample": [
+      50,
+      100,
+      200,
+      500,
+      1000
+    ],
+    "frames_per_matrix": 500,
+    "n": "N-s; generate matrices at exact length, no padded bits"
+  },
+  "physical": {
+    "encoding": "B+",
+    "models": [
+      "homogeneous depolarization",
+      "gate-dependent depolarization",
+      "Pauli link",
+      "thermal relaxation",
+      "asymmetric readout"
+    ],
+    "comparisons": [
+      "fixed physical parameters",
+      "matched overall QBER .06"
+    ],
+    "frames_per_matrix": 500,
+    "n": 1000,
+    "s": 200,
+    "methods": [
+      "pooled",
+      "coherent basis",
+      "positive-part shrinkage",
+      "selected partial pooling",
+      "estimated transition-aware"
+    ],
+    "transition_prior": "Jeffreys-smoothed P(B|A,basis), converted to P(error|Bob bit,basis) with uniform Alice prior",
+    "entropy": "use actual H(A|B,Z) and H(A|B) for bit-asymmetric channels"
+  },
+  "diagnostics": {
+    "p_legitimate": [
+      0.005,
+      0.015,
+      0.03,
+      0.06
+    ],
+    "attack": [
+      0,
+      0.1,
+      0.2,
+      0.4
+    ],
+    "budgets": [
+      2000,
+      8000,
+      32000
+    ],
+    "replicates": 500,
+    "device_cases": [
+      "ideal Eve, legitimate operations scaled",
+      "fixed noisy Eve, legitimate operations scaled",
+      "all devices scaled (historical special case)"
+    ],
+    "main_robustness_case": "ideal Eve; fixed noisy Eve and all-scaled mechanisms and selected-cell controls separately",
+    "target": "residual QBER at zero controllable legitimate noise; report ideal r/4 separately where unequal",
+    "metrics": [
+      "MAE",
+      "RMSE",
+      "bias",
+      "individual 95% interval coverage",
+      "individual interval width"
+    ],
+    "stress_cell": {
+      "p": 0.03,
+      "r": 0.2,
+      "budget": 8000
+    },
+    "stress": [
+      "calibration offsets +/-10%, +/-20%",
+      "scaling curvature epsilon +/- .02",
+      "unscaled receiver noise .01,.03",
+      "10% legitimate-noise ramp during acquisitions",
+      "50% attack-fraction ramp during acquisitions, failure-mode only"
+    ],
+    "reliability_map": "MAE <=1pp and empirical coverage >=90%; descriptive operational thresholds, not a universal guarantee"
+  },
+  "statistics": {
+    "pairing": "same raw frame, sample and matrix; policies chosen before decode",
+    "primary_practical_effect_yield": 0.005,
+    "matrix_unit": "five independent libraries per family/length; t4 intervals on paired matrix means and within-matrix intervals separately",
+    "main_75_cells": "paired counts, Wilson FER, bootstrap paired yield; Holm exact McNemar across75 cells per method",
+    "report_all_cells": true
+  },
+  "seed_bases": {
+    "calibrate": 21000000,
+    "pilot": 22000000,
+    "confirm": 23000000,
+    "development": 24000000,
+    "transfer": 25000000,
+    "fixed_total": 26000000,
+    "physical": 27000000,
+    "diagnostic": 28000000
+  },
+  "reproducibility": {
+    "triple_check": [
+      "independent mathematical and implementation references",
+      "retained-record audit plus independent rerun",
+      "manuscript/figures/package consistency and PDF visual inspection"
+    ],
+    "runtime": "amortized wall time, warmed JIT, reported separately from deterministic science arrays"
+  }
+}
