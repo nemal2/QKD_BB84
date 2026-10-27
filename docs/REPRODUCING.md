@@ -23,7 +23,7 @@ Each output directory must be new; failed runs retain their logs for inspection.
 python supplementary/reproduce_final.py --mode build --compile --output work/manuscript-build
 ```
 
-This verifies all five component manifests, fills 18 generated tables, redraws
+This verifies all five component manifests, fills 19 generated tables, redraws
 figures, checks the complete 24-table/8-figure manuscript and compiles the source.
 The result is `work/manuscript-build/output/pdf/manuscript.pdf` and its
 `verification.json`. Without `--compile`, tables, figures and source still build.

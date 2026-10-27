@@ -115,13 +115,13 @@
       "path": "supplementary/finalization/audit_manuscript.py",
       "executable_syntax_unchanged": false,
       "role": "presentation and anonymous metadata checks",
-      "sha256": "d1e6560f6f258b7db0c67095f3d8bc789c95620b6d2812bfc414e39ba43a7bde"
+      "sha256": "c99b8d8c9356b79cfcdddaed7febf10ea454f6bccb72f84f3b5015138bace625"
     },
     {
       "path": "supplementary/finalization/build_artifacts.py",
       "executable_syntax_unchanged": true,
       "role": "scientific/reproduction implementation",
-      "sha256": "104f03a4ad3399cffc280e681e3062a1ca45edc283cf189b12dea7f41105c231"
+      "sha256": "b267529429a4e6c16a9444e04ad738ff0f890b8bb80b4d9848a6b81b2795255a"
     },
     {
       "path": "supplementary/finalization/channel_information.py",
@@ -133,7 +133,7 @@
       "path": "supplementary/finalization/method_checks.py",
       "executable_syntax_unchanged": true,
       "role": "scientific/reproduction implementation",
-      "sha256": "91b63175e06795f86716e581856658531b873b611145ce3fc31649f338bd775b"
+      "sha256": "725fc39fdae2646b26feb458645c21cb38fc9a8df890cae97e4ee0cdd7b72b60"
     },
     {
       "path": "supplementary/finalization/review_analysis.py",

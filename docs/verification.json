@@ -1,30 +1,35 @@
 {
   "status": "passed",
-  "date": "2026-10-26",
+  "date": "2026-10-27",
   "checks": {
-    "all_five_retained_data_analyses_rerun": true,
-    "independent_reference_checks_rerun": true,
     "new_stochastic_experiments_run": false,
     "scientific_executable_syntax_preserved": true,
     "experimental_protocol_parameters_preserved": true,
     "all_3893_numeric_npz_csv_qasm_files_preserved": true,
     "latest_methodological_checks_recomputed": true,
     "anonymous_manuscript_compiled": true,
-    "all_40_pages_rendered_and_visually_checked": true,
-    "latex_warnings_and_unresolved_references": 0
+    "latex_warnings_and_unresolved_references": 0,
+    "previous_five_analysis_reports_retained": true,
+    "all_five_component_manifests_verified": true,
+    "rank_and_target_identification_checks_recomputed": true,
+    "all_41_pages_rendered_and_visually_checked": true
   },
   "manuscript": {
-    "pages": 40,
-    "main_pages_including_references": 24,
-    "appendix_pages": 16,
-    "figures": 8,
-    "tables": 24,
+    "pdf_sha256": "b4c8e5c0eca45fcc5dc74cb88679c620ac3dbd74fdd3f0e587d8dada32a70a22",
+    "pages": 41,
+    "main_pages_including_references": 20,
+    "appendix_pages": 21,
+    "appendix_first_page": 21,
+    "figures": 9,
+    "tables": 26,
+    "main_tables": 4,
+    "appendix_tables": 22,
     "source_sha256": {
-      "main.tex": "d615b3dff2a6e7c2e0675ab6d8fc6836d80b17b93056d476f8e3a9edfee965de",
-      "appendix.tex": "c06046b29474a17fa8488cfb7a46c1aa58eda9c5842134f4afb14b717a0d2a8f",
+      "main.tex": "5df3982892f81decd6b5d53c3851669032d65e81825164dfb42c98d16ae62afe",
+      "appendix.tex": "93dc5e19fcd2a3aeafdf2679403a5938693cfdb680c258e9ea00e8ef5f449149",
       "references.bib": "b2febb26abc6317da3fc581ba1b5529ca015776c22a2a0b3e2c622bda6ed4633"
     },
-    "layout": "No clipping, overlap, missing glyphs, detached headings or broken tables."
+    "layout": "No clipping, overlap, missing glyphs, detached headings or broken tables; declarations, bibliography and appendix pages inspected."
   },
   "content_scan": {
     "passed": true,
@@ -11708,5 +11713,6 @@
   },
   "integrated_audit": "docs/analysis-verification.json",
   "code_equivalence": "docs/code-integrity.json",
-  "numeric_preservation": "docs/data-preservation.json"
+  "numeric_preservation": "docs/data-preservation.json",
+  "retained_data_analysis_date": "2026-10-26"
 }

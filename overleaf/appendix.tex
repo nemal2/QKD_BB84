@@ -34,6 +34,37 @@ Budget/interception validation & Varied $T,r$ & Precision contrasts & 40,500 \\
 % END GENERATED COHORT_TABLE
 \FloatBarrier
 
+\subsection{Uncertainty and computational checks}
+Absolute FERs include failure counts and Wilson 95\% intervals~\cite{wilson1927}.
+Exact two-sided McNemar tests use paired rescued/harmed frames. Holm correction covers
+12 circuit cells separately for each decoder, and 75 confirmation cells separately for
+each comparator. Paired bootstrap yield intervals (10,000 resamples) condition on each frozen matrix and
+calibration choice; they do not include retraining uncertainty.
+
+For transfer and physical/sample controls, the five matrix libraries are the units for
+generalization. We report $t_4$ intervals on their paired mean yield differences, with
+within-matrix frame uncertainty supplied separately. These exploratory intervals are
+not adjusted across conditions. Zero observed discordance can collapse a bootstrap
+interval at zero; it does not exclude rare harms. Grid means weight design cells equally
+and are not population averages for a deployment.
+
+Protocol-derived inventories count reused input frames only once. Independent
+density-state calculations, decoder references, and retained-record checks verify
+the implementation. Reproduction checks match all 1504 retained circuit-study arrays;
+decoder audits cover every confirmation and transfer/control holdout and selected
+development records. Diagnostic checks cover retained counts and budgets, density-state
+responses, and independent reference fits. Fresh full runs match all 6670 retained range-validation arrays, all 1090
+full-observation arrays, and all 3078 precision-grid arrays exactly. The full-observation study checks cross-circuit response
+laws, analytic inverses, likelihood optima, and profile endpoints against
+independent numerical references. The supplement specifies the
+random-number generators, seeds, and exact verification scopes; cohort totals appear
+in Appendix~\ref{app:rule}. Information benchmarks and yield decompositions are
+descriptive calculations on the fixed evaluation records, not inputs used to tune
+the selected rules. Entropies are checked both from joint probabilities and from
+binary-transition formulas; the yield identity is checked for every paired frame.
+
+
+\FloatBarrier
 \section{Circuit Operating Points and Robustness}
 \label{app:circuit}
 \label{app:ablation}
@@ -46,6 +77,70 @@ Table~\ref{tab:operating} reports every calibrated operating point. The observed
 below that threshold. The efficiencies describe this conservative finite-length
 family and do not establish competitiveness with optimized QKD codes.
 
+\subsection{Codes, calibration and circuit controls}
+The circuit study uses a nested column-weight-three, progressive-edge-growth-style
+family~\cite{hu2005}. Starting at 150 checks on 1000 variables, splitting a check into
+two disjoint parts preserves nesting and gives $m=150,175,\ldots,900$. All 93 stored
+matrices have full row rank. Layered sum-product belief propagation (BP) runs for at most 300 sweeps.
+A stronger comparator adds full order-one ordered-statistics decoding (OSD)
+\cite{fossorier1995} on nonconvergence or failed public verification, with the same search
+budget for both priors. Simulator correctness never triggers the retry.
+
+For each encoding and $Q\in\{0.02,0.06,0.10\}$, 500 calibration frames select the
+smallest tested row count whose Wilson 95\% upper FER bound is at most 1\%, provided
+all higher tested counts also pass. Pooled and shrinkage policies select separately.
+Their choices are frozen before 2000 holdout frames per cell, giving 24,000 main
+holdout frames. Fixed-code comparisons use the same shrinkage-selected matrix for
+both priors; operating-policy comparisons allow their selected row counts to differ.
+Two further matrix seeds, fixed-code curves, and link-noise controls complete the
+68,000-frame circuit study.
+A post hoc fixed-code sensitivity analysis replaces gate noise with isotropic link
+noise at constant total QBER. It uses the gate-calibrated matrices to avoid the
+near-zero failure floor of adaptive channel policies; channel outcomes do not
+determine the selected matrices.
+
+
+\begin{equation}
+ f_{\mathrm{syn}}=\frac{m}{nh_2(Q)},\qquad
+ f_{\mathrm{EC}}=\frac{m+64}{nh_2(Q)}.
+ \label{eq:efficiency}
+\end{equation}
+Here $h_2(x)=-x\log_2x-(1-x)\log_2(1-x)$ is binary entropy, with $0\log_2 0=0$.
+These disclosure efficiencies use the measured retained-block QBER in the
+circuit study. Every transmitted syndrome row is charged, including dependent
+rows. Authentication and privacy amplification are outside $Y$.
+\subsection{Matched-code and operating comparisons}
+\begin{table}[htbp]
+\centering
+\small\setlength{\tabcolsep}{3.2pt}
+\caption{Matched-code comparisons at 10\% target QBER. Both priors use the shrinkage-selected matrix and the same 2000 frames. P/S denote pooled/shrinkage priors. Counts accompany absolute FER; R/H are rescued/harmed pairs. Ratios include paired bootstrap 95\% intervals when at least five pooled failures support estimation; a dash indicates an undefined or too-sparse ratio interval. Holm correction covers the 12 main cells separately for BP and BP+OSD.}
+\label{tab:matched}
+\begin{tabular}{@{}llcllccc@{}}
+\toprule
+Encoding & Decoder & $m$ & FER P (\%) & FER S (\%) & R/H & Ratio [95\% CI] & $p_{\rm Holm}$ \\
+\midrule
+Standard & BP & 625 & 112: 5.60 [4.67, 6.70] & 11: 0.55 [0.31, 0.98] & 102/1 & 0.098 [0.05, 0.16] & 2.5e-28 \\
+Standard & BP+OSD & 625 & 88: 4.40 [3.59, 5.39] & 8: 0.40 [0.20, 0.79] & 81/1 & 0.091 [0.03, 0.16] & 4.1e-22 \\
+A & BP & 650 & 33: 1.65 [1.18, 2.31] & 19: 0.95 [0.61, 1.48] & 16/2 & 0.576 [0.38, 0.78] & 0.014 \\
+A & BP+OSD & 650 & 28: 1.40 [0.97, 2.02] & 13: 0.65 [0.38, 1.11] & 17/2 & 0.464 [0.26, 0.69] & 0.008 \\
+B & BP & 675 & 3: 0.15 [0.05, 0.44] & 4: 0.20 [0.08, 0.51] & 0/1 & 1.333 [--] & 1 \\
+B & BP+OSD & 675 & 1: 0.05 [0.01, 0.28] & 2: 0.10 [0.03, 0.36] & 0/1 & 2.000 [--] & 1 \\
+B+ & BP & 700 & 0: 0.00 [0.00, 0.19] & 1: 0.05 [0.01, 0.28] & 0/1 & -- [--] & 1 \\
+B+ & BP+OSD & 700 & 0: 0.00 [0.00, 0.19] & 1: 0.05 [0.01, 0.28] & 0/1 & -- [--] & 1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+Operating-policy gains answer a different question because the selected syndrome lengths
+can differ. In Scheme~A at 10\% QBER, pooled and shrinkage BP select 700 and 650
+rows, respectively; their yield difference is +3.94 percentage points (pp), with paired
+95\% interval [+3.83, +4.04]. The smaller syndrome comes with 19 failures versus
+zero: shrinkage FER is 0.95\%, with Wilson interval [0.61\%,1.48\%]. Although
+the point estimate is below 1\%, its upper bound exceeds the calibration criterion,
+so the holdout does not establish the targeted reliability. The gain is largely a
+disclosure effect conditional on that calibration. At 2\% QBER the same procedure loses 4.09 pp, and balanced B+ loses
+2.00 pp at 10\%. Table~\ref{tab:operating} reports every operating cell, including
+absolute FER and disclosure efficiency. These losses motivate a rule that can return
+to pooling when the sample is uninformative.
 
 \begin{table}[htbp]
 \centering
@@ -56,9 +151,9 @@ family and do not establish competitiveness with optimized QKD codes.
 \toprule
 Encoding & $Q$ (\%) & $m$ P/S & $f_{\mathrm{EC}}$ P/S & FER P (\%) & FER S (\%) & $\Delta Y$ (pp) \\
 \midrule
-PRIMARY & 2 & 400/400 & 3.29/3.29 & 0: 0.00 [0.00, 0.19] & 0: 0.00 [0.00, 0.19] & +0.00 [+0.00, +0.00] \\
-PRIMARY & 6 & 550/525 & 1.88/1.80 & 0: 0.00 [0.00, 0.19] & 1: 0.05 [0.01, 0.28] & +2.07 [+2.03, +2.08] \\
-PRIMARY & 10 & 700/625 & 1.63/1.47 & 1: 0.05 [0.01, 0.28] & 11: 0.55 [0.31, 0.98] & +6.12 [+6.03, +6.19] \\
+Standard & 2 & 400/400 & 3.29/3.29 & 0: 0.00 [0.00, 0.19] & 0: 0.00 [0.00, 0.19] & +0.00 [+0.00, +0.00] \\
+Standard & 6 & 550/525 & 1.88/1.80 & 0: 0.00 [0.00, 0.19] & 1: 0.05 [0.01, 0.28] & +2.07 [+2.03, +2.08] \\
+Standard & 10 & 700/625 & 1.63/1.47 & 1: 0.05 [0.01, 0.28] & 11: 0.55 [0.31, 0.98] & +6.12 [+6.03, +6.19] \\
 A & 2 & 300/350 & 2.57/2.92 & 4: 0.20 [0.08, 0.51] & 1: 0.05 [0.01, 0.28] & -4.09 [-4.16, -3.98] \\
 A & 6 & 550/525 & 1.87/1.80 & 3: 0.15 [0.05, 0.44] & 5: 0.25 [0.11, 0.58] & +2.05 [+1.96, +2.13] \\
 A & 10 & 700/650 & 1.63/1.52 & 0: 0.00 [0.00, 0.19] & 19: 0.95 [0.61, 1.48] & +3.94 [+3.83, +4.04] \\
@@ -81,7 +176,7 @@ maximize a single failure ratio.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.94\linewidth]{images/gate_exposure.pdf}
-\caption{Left: measured basis QBERs across the main holdout frames; circles indicate rectilinear and squares diagonal. Colors follow PRIMARY, A, B, and B+ as in the legend at right. Short horizontal marks give exact gate-model predictions. Wilson 95\% error bars are smaller than most markers because each point pools approximately 1.2 million bits. Right: predicted attenuation of the basis ratio when channel noise replaces gate noise at fixed 10\% total QBER.}
+\caption{Left: measured basis QBERs across the main holdout frames; circles indicate rectilinear and squares diagonal. Colors follow Standard, A, B, and B+ as in the legend at right. Short horizontal marks give exact gate-model predictions. Wilson 95\% error bars are smaller than most markers because each point pools approximately 1.2 million bits. Right: predicted attenuation of the basis ratio when channel noise replaces gate noise at fixed 10\% total QBER.}
 \Description{Basis error probabilities agree with gate-count predictions; independent channel noise drives each diagonal-to-rectilinear ratio to one.}
 \label{fig:exposure}
 \end{figure}
@@ -107,8 +202,8 @@ or matrix variation without using the evaluation frame to retune the rate.
 \toprule
 Encoding & Decoder & $m$ & P & J & C & S \\
 \midrule
-PRIMARY & BP & 625 & 112 & 10 & 10 & 11 \\
-PRIMARY & BP+OSD & 625 & 88 & 6 & 8 & 8 \\
+Standard & BP & 625 & 112 & 10 & 10 & 11 \\
+Standard & BP+OSD & 625 & 88 & 6 & 8 & 8 \\
 A & BP & 650 & 33 & 13 & 12 & 19 \\
 A & BP+OSD & 650 & 28 & 13 & 10 & 13 \\
 B & BP & 675 & 3 & 5 & 6 & 4 \\
@@ -128,10 +223,10 @@ B+ & BP+OSD & 700 & 0 & 2 & 2 & 1 \\
 \toprule
 Seed & Encoding & $m$ & BP P (\%) & BP S (\%) & OSD P (\%) & OSD S (\%) \\
 \midrule
-29 & PRIMARY & 625 & 62: 6.20 [4.87, 7.87] & 5: 0.50 [0.21, 1.17] & 57: 5.70 [4.43, 7.31] & 4: 0.40 [0.16, 1.02] \\
+29 & Standard & 625 & 62: 6.20 [4.87, 7.87] & 5: 0.50 [0.21, 1.17] & 57: 5.70 [4.43, 7.31] & 4: 0.40 [0.16, 1.02] \\
 29 & A & 650 & 17: 1.70 [1.06, 2.71] & 13: 1.30 [0.76, 2.21] & 13: 1.30 [0.76, 2.21] & 11: 1.10 [0.62, 1.96] \\
 29 & B+ & 700 & 0: 0.00 [0.00, 0.38] & 1: 0.10 [0.02, 0.56] & 0: 0.00 [0.00, 0.38] & 1: 0.10 [0.02, 0.56] \\
-47 & PRIMARY & 625 & 43: 4.30 [3.21, 5.74] & 7: 0.70 [0.34, 1.44] & 36: 3.60 [2.61, 4.94] & 7: 0.70 [0.34, 1.44] \\
+47 & Standard & 625 & 43: 4.30 [3.21, 5.74] & 7: 0.70 [0.34, 1.44] & 36: 3.60 [2.61, 4.94] & 7: 0.70 [0.34, 1.44] \\
 47 & A & 650 & 19: 1.90 [1.22, 2.95] & 8: 0.80 [0.41, 1.57] & 12: 1.20 [0.69, 2.09] & 7: 0.70 [0.34, 1.44] \\
 47 & B+ & 700 & 0: 0.00 [0.00, 0.38] & 1: 0.10 [0.02, 0.56] & 0: 0.00 [0.00, 0.38] & 1: 0.10 [0.02, 0.56] \\
 \bottomrule
@@ -146,6 +241,24 @@ isotropic channel replaces gate noise at fixed total QBER. The zero-channel row 
 main holdout frames. The adaptive channel-policy analysis and paired uncertainty are
 provided in the computational supplement.
 
+\subsection{A basis-independent channel attenuates the signal}
+We insert an independent depolarizing link between preparation and reception, with bit-error
+probability $c$ in either basis. Isotropy allows this channel to be commuted to the end of
+the path for calculation. The resulting basis probabilities are
+\begin{equation}
+ p_z^{\mathrm{tot}}=c+(1-2c)p_z^{\mathrm{gate}},\qquad z\in\{r,d\}.
+ \label{eq:channel}
+\end{equation}
+At fixed total QBER $Q$, the average gate contribution is $(Q-c)/(1-2c)$. Increasing $c$
+therefore reduces the basis contrast, reaching zero at $c=Q$. This control isolates noise
+composition from an increase in overall decoding difficulty.
+
+The link-noise control also narrows the mechanism. At fixed 10\% total QBER and
+fixed disclosure, replacing gate noise with isotropic channel noise removes the basis
+contrast. At the pure-channel endpoint, the shrinkage and pooled decoders fail on 110 and 98 frames, respectively,
+in Standard, and on 33 and 27 in A (Table~\ref{tab:channel}). This fixed-code sensitivity analysis demonstrates
+why an estimate of basis contrast can become a liability when that contrast disappears.
+
 \begin{table}[!htbp]
 \centering
 \small\setlength{\tabcolsep}{3.2pt}
@@ -155,11 +268,11 @@ provided in the computational supplement.
 \toprule
 Encoding & $c$ (\%) & $m$ & FER P (\%) & FER S (\%) \\
 \midrule
-PRIMARY & 0.0 & 625 & 112: 5.60 [4.67, 6.70] & 11: 0.55 [0.31, 0.98] \\
-PRIMARY & 2.5 & 625 & 98: 4.90 [4.04, 5.94] & 31: 1.55 [1.09, 2.19] \\
-PRIMARY & 5.0 & 625 & 105: 5.25 [4.36, 6.32] & 86: 4.30 [3.50, 5.28] \\
-PRIMARY & 7.5 & 625 & 94: 4.70 [3.86, 5.72] & 93: 4.65 [3.81, 5.66] \\
-PRIMARY & 10.0 & 625 & 98: 4.90 [4.04, 5.94] & 110: 5.50 [4.58, 6.59] \\
+Standard & 0.0 & 625 & 112: 5.60 [4.67, 6.70] & 11: 0.55 [0.31, 0.98] \\
+Standard & 2.5 & 625 & 98: 4.90 [4.04, 5.94] & 31: 1.55 [1.09, 2.19] \\
+Standard & 5.0 & 625 & 105: 5.25 [4.36, 6.32] & 86: 4.30 [3.50, 5.28] \\
+Standard & 7.5 & 625 & 94: 4.70 [3.86, 5.72] & 93: 4.65 [3.81, 5.66] \\
+Standard & 10.0 & 625 & 98: 4.90 [4.04, 5.94] & 110: 5.50 [4.58, 6.59] \\
 A & 0.0 & 650 & 33: 1.65 [1.18, 2.31] & 19: 0.95 [0.61, 1.48] \\
 A & 2.5 & 650 & 26: 1.30 [0.89, 1.90] & 24: 1.20 [0.81, 1.78] \\
 A & 5.0 & 650 & 23: 1.15 [0.77, 1.72] & 24: 1.20 [0.81, 1.78] \\
@@ -169,8 +282,166 @@ A & 10.0 & 650 & 27: 1.35 [0.93, 1.96] & 33: 1.65 [1.18, 2.31] \\
 \end{tabular}
 \end{table}
 % The lookup rule and rate policies are fixed before evaluation.
-\section{Frozen Pooling Rule and Rate Policies}
+\section{Conditional Information, Pooling and Transfer}
 \label{app:rule}
+\subsection{Information benchmarks}\label{app:information}
+For asymptotically reliable one-way reconciliation with known channel probabilities,
+conditional entropy supplies the classical benchmark~\cite{slepian1973,elkouss2011}.
+The information made available by retaining the basis is
+\begin{equation}
+ G=H(A\mid B)-H(A\mid B,Z)=I(A;Z\mid B)\geq0.
+ \label{eq:information}
+\end{equation}
+For basis-conditioned binary symmetric channels (BSCs),
+\begin{equation}
+ H(A\mid B,Z)=\sum_z P(Z=z)h_2(p_z),\qquad
+ G=h_2(Q)-\sum_z P(Z=z)h_2(p_z).
+ \label{eq:mixtureentropy}
+\end{equation}
+These are established information identities, not predictions of finite-length BP
+performance. The BSC reduction is inappropriate when error probabilities depend
+on Alice's bit; then we compute both entropies from the full transition law.
+
+There is also a distinction between knowing the basis and using the full channel.
+For error bit $U=A\oplus B$, a basis-only Bernoulli prior has ideal expected
+log loss $H(U\mid Z)$, whereas a transition-aware prior can attain
+$H(U\mid B,Z)=H(A\mid B,Z)$. Their difference
+$D_B=I(U;B\mid Z)$ measures the additional information in Bob's local bit after
+conditioning on basis. It is distinct from $G$, whose comparator already uses $B$.
+In an asymmetric channel, observing $B=0$ or $B=1$ can change the probability
+that a position is erroneous even at fixed $Z$. Thus asymmetric readout can
+have $D_B>0$ while $G=0$; thermal relaxation can provide both kinds of information.
+These are population log-loss opportunities, not guaranteed finite-sample yield gains.
+Neither quantity establishes what an eavesdropper learns.
+
+% BEGIN GENERATED INFORMATION_TABLE
+\begin{table}[!htbp]
+\centering
+\small\setlength{\tabcolsep}{4pt}
+\caption{Channel information for the five B+ controls matched to $Q=6\%$. Values are bits per retained bit, computed from the stored transition probabilities with uniform input bits and bases. $G=I(A;Z\mid B)$ is the basis benefit relative to a decoder already using $B$; $D_B=I(U;B\mid Z)$ is the extra ideal error-prior log-loss reduction from Bob\textquotesingle s bit after conditioning on basis. These are distinct quantities and are not added together.}
+\label{tab:information}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Mechanism & $H(A\mid B)$ & $H(A\mid B,Z)$ & $G$ & $D_B$ \\
+\midrule
+Homogeneous & 0.32744 & 0.32744 & 0.00000 & 0.00000 \\
+Gate-dependent & 0.32705 & 0.30538 & 0.02166 & 0.00088 \\
+Pauli link & 0.32744 & 0.30977 & 0.01768 & 0.00000 \\
+Thermal & 0.29886 & 0.29257 & 0.00629 & 0.03274 \\
+Readout & 0.29758 & 0.29758 & 0.00000 & 0.02986 \\
+\bottomrule
+\end{tabular}
+\end{table}
+% END GENERATED INFORMATION_TABLE
+
+
+The matched physical controls distinguish basis information from local-bit
+information at fixed QBER. Gate-dependent and Pauli noise provide a basis
+benefit; readout supplies local-bit information even when the basis benefit
+vanishes. Thermal relaxation supplies both. The transition-aware priors in
+Appendix~\ref{app:physical} test these differences using finite disclosed samples.
+
+\subsection{Prior estimation and a sample-only pooling rule}
+\label{app:reconmethods}
+\label{sec:methods}
+Let $E_z$ errors be observed among $S_z$ disclosed bits in basis $z$, with
+$E=E_r+E_d$ and $S=S_r+S_d$. Define
+\begin{equation}
+ \widehat p=\frac{E+1/2}{S+1},\qquad
+ \widetilde p=\frac ES,\qquad
+ \widetilde p_z=\frac{E_z}{S_z}.
+ \label{eq:pool}
+\end{equation}
+Separate Jeffreys estimates introduce a total of one pseudo-error across two classes,
+whereas the pooled estimate introduces one half. To avoid crediting extra smoothing to
+basis information, our main family retains one common centre:
+\begin{equation}
+ \widehat p_z(\lambda)=\widehat p+\lambda(\widetilde p_z-\widetilde p),
+ \qquad 0\leq\lambda\leq1.
+ \label{eq:shrink}
+\end{equation}
+Its sample-weighted mean is $\widehat p$ before clipping. We call $\lambda=0$ pooled
+and $\lambda=1$ coherent separate estimation. An absent class takes the pooled raw
+proportion. The positive-part shrinkage comparator uses
+\begin{equation}
+ d=\widetilde p_d-\widetilde p_r,\quad
+ v=\widehat p(1-\widehat p)(S_r^{-1}+S_d^{-1}),\quad
+ \lambda_{\mathrm{sh}}=\max\{0,1-v/d^2\},
+ \label{eq:weight}
+\end{equation}
+with weight zero when $d=0$ or a class is absent. This is a plug-in heuristic, not a
+dominance guarantee. Separate-Jeffreys and coherent-separate ablations in the circuit
+study distinguish centring from shrinkage.
+
+The distinct \emph{selected pooling rule} learns a 24-entry lookup table
+from development frames. It chooses $\lambda\in\{0,0.25,0.5,0.75,1\}$ from
+sample-only features $S,\widehat p,d^2/v$, maximizing a conservative paired-yield
+score. The rule is frozen before confirmation. The rule specification below gives
+the bins, score, tie handling, and every selected weight. This is a training
+heuristic, not a post-selection confidence guarantee.
+
+Bob's error-vector prior is $L_i=\log[(1-\widehat p_{z_i})/\widehat p_{z_i}]$.
+The decoder clips probabilities to $[10^{-6},0.499]$. The lower limit avoids infinite
+log odds; the upper limit additionally assumes that a bit is more likely correct
+than flipped. This is a model restriction, not a numerical necessity. A retained-record
+check finds that neither limit is active for any of the 37,500 confirmation frames
+or 25,000 distinct physical-control frames, including transition-aware estimates
+whose largest raw probability is 0.2572. These results therefore do not test channels
+that require negative error-prior log odds. Each frame's sample is disjoint from its decoded bits. Population asymmetry and true error
+probabilities are forbidden inputs to the deployed rule. Oracle pooled and oracle
+basis priors are reported only as benchmarks for the cost of learning probabilities.
+
+\subsection{Confirmation design}
+To vary sample size independently of a circuit-specific contrast, the confirmation study uses
+basis-conditioned BSCs with $p_r=Q(1-a)$ and $p_d=Q(1+a)$. Its 75 cells cross
+$Q\in\{0.02,0.06,0.10\}$, $a\in\{0,0.1,0.25,0.5,0.75\}$, and
+$S\in\{50,100,200,500,1000\}$ at $n=1000$. Independent symmetric reference
+calibration uses 450 frames to select $m=250,475,600$ at the three QBERs, respectively,
+near a 10\% FER transition. A 15,000-frame pilot learns the pooling table on matrix
+seed 11. Confirmation uses 37,500 new frames and unseen matrix seed 29, with 500
+frames per cell, but retains the pilot's entire $(Q,a,S)$ grid and the same $m$
+values. It therefore tests replication within the development design, not generalization
+to new conditions or code families. The transfer experiment in
+Section~\ref{sec:transfer} supplies that distinct test. These sensitivity conditions
+also differ from the circuit study's low-FER operating points.
+
+\subsection{Unseen codes, longer blocks, and fixed resources}
+Transfer uses a three-partition Gallager construction and an irregular construction with
+the variable-degree fractions of Elkouss et al.~\cite{elkouss2009}, converted from edge
+to node fractions. A bounded local-cycle search and degree-balanced checks realize the
+latter. Its check distribution differs from the published ensemble, and row fractions
+above 0.50 reuse the 0.50 variable-degree profile. No published asymptotic threshold or
+state-of-the-art efficiency is attributed to these realizations.
+
+Development libraries use seeds 101 and 103 at $n=1000,4000,16000$; five unseen
+libraries use seeds 211, 223, 227, 229, and 233. All confirmation and transfer/control
+decoders use layered sum-product BP with 100 sweeps and the same verification rule.
+OSD is evaluated only in the circuit study. The selected prior and the transfer policies
+are not claimed to retain their effects under an OSD retry.
+
+Two complementary comparisons are retained. A fixed-code comparison uses one common
+matrix and disclosure, chosen to maximize pooled-decoder yield on independent 6\%-QBER
+development data spanning $a=0,0.5$ and $S=50,200,1000$. A pipeline comparison lets
+each method choose its syndrome length from the same row-fraction pool, 0.15 to 0.80
+in steps of 0.05. Both use the same sample features, ridge-logistic training procedure,
+and development budget to predict FER and maximize expected $Y$ before decoding.
+Development evaluates entropy-margin subsets of this pool; predictions for some
+feature/rate combinations therefore extrapolate beyond training support. The policies
+are comparable learned selectors, not globally optimal rate adaptation.
+
+At $Q=0.06$, transfer crosses the three block lengths with
+$(a,S)=(0,50),(0.25,200),(0.75,1000)$. Asymmetry and sample size vary together,
+so this transfer design does not estimate their separate effects or test unseen QBERs. A pilot-based precision calculation selects
+500 paired frames per matrix and condition. A separate fixed-total experiment keeps
+$n+S=2000$, $Q=0.06$, and $a=0.5$, transfers the policies without retuning, and
+constructs matrices at the exact retained length $n=2000-S$. No padded bits are
+counted as data. Physical controls use B+ at $n=1000,S=200$ with five noise
+mechanisms, both at fixed parameters and after matching the overall QBER to 6\%.
+Their transition laws and the Bob-bit-conditioned prior are specified in
+Appendix~\ref{app:physical}.
+
+\subsection{Frozen pooling rule}
+
 Table~\ref{tab:rule} gives every weight in the frozen lookup rule. The lower sample bin
 includes $S=100$; a QBER or squared-contrast value exactly at a cut point enters the
 upper bin. All bin inputs come from the current frame's disclosed sample. Weights were
@@ -238,6 +509,73 @@ add 31,000 blocks. Full-observation validation adds 6500 blocks; its target-prof
 analysis reuses 2500 fitting records from held-out validation. Acquisition counts
 and reuse rules are specified in Appendix~\ref{app:diagnostic}.
 
+\subsection{Complete confirmation results}
+\label{app:confirmation}
+The table and heatmap retain all 75 confirmation conditions and every comparator.
+The selected rule's worst cell, at $Q=2\%,a=0.1,S=200$, has nine harmed
+and no rescued frames: a -1.029 pp yield difference with Holm-adjusted
+$p=0.180$. Its equal-cell mean gain is 0.813 pp, compared with 1.804 pp
+for the oracle basis prior. Both quantities condition on the repeated
+development grid and the unseen confirmation matrix.
+% BEGIN GENERATED ASYMMETRY_TABLE
+\begin{table}[!htbp]
+\centering
+\small\setlength{\tabcolsep}{4pt}
+\caption{Confirmation against estimated pooling. Supported gains and harms pass a two-sided exact McNemar test with Holm correction across 75 cells separately for each method. All cells have 500 paired frames. Means weight cells equally; the equal-basis column uses the 15 cells with $a=0$. Yield differences are in percentage points.}
+\label{tab:asymmetry}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Prior & Gains /75 & Harms /75 & Mean $\Delta Y$ & $a=0$ mean \\
+\midrule
+Coherent separate & 21 & 23 & -0.509 & -2.297 \\
+Positive-part shrinkage & 23 & 5 & +0.669 & -0.444 \\
+Selected pooling & 25 & 0 & +0.813 & -0.056 \\
+Oracle pooled & 6 & 0 & +0.413 & +0.376 \\
+Oracle basis & 41 & 0 & +1.804 & +0.376 \\
+\bottomrule
+\end{tabular}
+\end{table}
+% END GENERATED ASYMMETRY_TABLE
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\linewidth]{images/asymmetry_map.pdf}
+\caption{Confirmation yield changes relative to estimated pooling, in percentage points.
+Rows compare coherent separate estimation, positive-part shrinkage, and the frozen
+selected rule; columns give target QBER. Each panel includes all five asymmetries and
+sample sizes, with 500 paired frames per cell. A dot marks a two-sided McNemar result
+passing Holm correction over 75 cells for that comparator. Colour shows direction and
+magnitude, not a confidence bound. Each QBER uses one fixed unseen matrix.}
+\Description{Nine heatmaps show that separate estimates can harm weak-contrast cells,
+while the selected pooling rule retains many gains and reduces these harms.}
+\label{fig:asymmetry}
+\end{figure}
+\subsection{Transfer accounting and absolute outcomes}
+The information benchmark puts these gains in context. At~\mbox{$Q=6\%,a=0.75$},
+the pooled and basis-conditioned BSC entropies are 0.32744 and 0.29850 bits per
+retained bit, so $G=0.02894$. Neither learned policy approaches those ideal floors:
+the selected mean row fractions at $n=16000$ are 0.49330 for Gallager and 0.42520
+for the irregular construction. A gain between two finite implementations is
+therefore not a direct measure of the fraction of $G$ recovered.
+
+To separate the recorded yield contributions, write $V_j=(n-m_j-64)/(n+S)$ and
+$L_j=V_j(1-I_j)$ for each paired method $j\in\{\mathrm P,\mathrm S\}$. Then
+\begin{equation}
+ Y_{\mathrm S}-Y_{\mathrm P}
+ =\underbrace{\frac{m_{\mathrm P}-m_{\mathrm S}}{n+S}}_{D}
+ +\underbrace{L_{\mathrm P}-L_{\mathrm S}}_{R}.
+ \label{eq:yielddecomposition}
+\end{equation}
+Here $D$ accounts for fewer syndrome rows and $R$ for the change in yield lost to
+failed recovery. This is an exact accounting identity, not a causal attribution to
+the prior: the fitted FER model, training variation, extrapolation, and tolerated
+failure can all change the selected rows. The strong-asymmetry Gallager gain comprises +0.736 pp from
+syndrome length and +0.337 pp from recovery; for the irregular construction these
+terms are +4.316 and -0.163 pp (Table~\ref{tab:yieldaccounting}). The latter disclosure gain exceeds the 2.724 pp
+difference between ideal entropy-limited yields at this sample fraction because
+the implementations have different excess disclosure above their respective floors.
+It does not imply an information-theoretic gain larger than the channel provides.
+
+
 Table~\ref{tab:yieldaccounting} decomposes the longest-block, strong-asymmetry
 comparison at the frame level. If $c_{\rm P}=\overline m_{\rm P}/n$ and
 $c_{\rm S}=\overline m_{\rm S}/n$, define excess row fractions relative to the BSC
@@ -247,6 +585,8 @@ $c_{\rm P}-c_{\rm S}=G+\epsilon_{\rm P}-\epsilon_{\rm S}$ separates the differen
 of ideal floors from the difference in implementation overhead. The excess includes
 code construction, finite samples, rate selection, and tolerated failure; it is not
 an independently isolated coding penalty.
+
+
 
 % BEGIN GENERATED YIELD_ACCOUNTING_TABLE
 \begin{table}[!htbp]
@@ -427,7 +767,7 @@ summary.
 % The target depends on which devices are scaled during acquisition.
 \section{Separated-Device Response and Fitting}
 \label{app:diagnostic}
-For PRIMARY basis $b\in\{0,1\}$ and bit $x\in\{0,1\}$, define
+For Standard basis $b\in\{0,1\}$ and bit $x\in\{0,1\}$, define
 \begin{align}
  a_{bx}&=\frac{1-(1-p_A)^{x+b}(1-p_B)^b}{2}, &
  q_0(p_A,p_B)&=\frac14\sum_{b,x}a_{bx},\\
@@ -467,6 +807,12 @@ all diagnostic Monte Carlo acquisitions.
 
 \subsection{Acquisition records and basis/range validation}
 \label{app:range}
+Held-out prediction is a check on an additional response setting, not directly
+on the extrapolated residual. In the unequal-noise case $(p_A,p_B,r)=(0.01,0.05,0.2)$,
+the basis fit covers the held-out response in 92.8\% of replicates while its
+residual interval covers in 87.8\%. This contrast motivates the target-specific
+profile analysis below.
+
 The observation hierarchy is aggregate QBER, two basis rates, and four
 bit-and-basis transition rates. The full operating acquisition draws stratum
 counts from $\mathrm{Multinomial}(T;1/8,1/8,1/8,1/8,1/2)$, with the final category
@@ -475,14 +821,21 @@ Eq.~\eqref{eq:attack}. Scaling instead draws a sifted count
 $N_j\sim\mathrm{Binomial}(T_j,1/2)$ and aggregate errors at each setting.
 Different acquisition strategies use independent records; estimators of a given
 operating acquisition reuse its exact counts. The cross-circuit study has 6500
-replicate blocks: nine circuit/device cells, three PRIMARY readout cells, and
-one PRIMARY zero-interception cell, each with 500 replicates and two fully
+replicate blocks: nine circuit/device cells, three Standard readout cells, and
+one Standard zero-interception cell, each with 500 replicates and two fully
 budgeted acquisitions. No observations used for inference are key producing.
+At unscaled readout probability $c=0.01$, the full Standard estimator's
+coverage is 93.8--94.8\% for the combined residual $e_c$, but only
+74.2--74.6\% for the interception-only target. These readout cells use the
+same three device pairs as the main cross-circuit comparison. The changed
+coverage illustrates target confounding rather than loss of identification
+of the combined disturbance.
+
 
 
 For a single basis-resolved acquisition, the two matched counts and the discarded
 count follow a multinomial law with probabilities $(1/4,1/4,1/2)$. Conditional
-error counts are binomial with rates from Eq.~\eqref{eq:basisdiagnostic}. The
+error counts are binomial with rates from Eq.~\eqref{eq:basis}. The
 constrained basis fit profiles the affine interception parameter; the direct
 inverse uses the same observed proportions without projecting its parameter
 estimates. An inverse is marked unavailable if a basis count is zero,
@@ -627,6 +980,19 @@ Curvature & Four, separate noise & 0.628 & 100.0 & 73.97 & 99.8 & 53.6 \\
 \end{table}
 % END GENERATED HOLDOUT_TABLE
 
+\subsection{Interpreting target and device uncertainty}
+Weak identification of device noise need not imply weak identification of the
+residual. We refit the five retained four-setting cohorts with binomial likelihood
+and profile $e_0$, $p_A$, and $p_B$ separately. The residual intervals have median
+widths 2.81--3.40 pp and 95.4--96.6\% coverage, compared with median widths
+15.40--17.80 pp and upper-quantile widths above 200 pp for the signed-WLS Wald
+intervals. Device intervals remain broad: median widths are 5.20--7.34 pp for
+$p_A$ and 9.76--13.44 pp for $p_B$, against generating noise probabilities of
+1--5\%. The likelihood information matrices are poorly conditioned, and about
+half the noise estimates reach a boundary.
+The comparison changes the fitting loss and bounds as well as interval construction.
+The following method and boundary audit specify how these target intervals are obtained.
+
 \subsection{Physical likelihood and target profiles}
 \label{app:profiles}
 For error/total counts $(E_j,N_j)$ and modeled probabilities $q_j(\theta)$,
@@ -649,7 +1015,7 @@ profile $r$ over 41 points with continuous refinement and likelihood-ratio root
 searches. Independent global searches explicitly inspect boundary modes.
 For B+ at one setting, the likelihood only identifies a single contraction;
 we report its residual set and no arbitrary point-estimator MAE. At $r=0$ in
-PRIMARY, the gate-free subset and full estimator both have zero error in all
+Standard, the gate-free subset and full estimator both have zero error in all
 500 replicates, with 100\% interval coverage. This boundary result is not evidence
 of exact 95\% calibration throughout parameter space.
 
@@ -820,11 +1186,11 @@ precision; an operating point estimate is deliberately absent because its target
 is not identified. Coverage, width quantiles, biases, and boundary fractions for
 all 135 fitted method/cells accompany the tables in the numerical records.
 
-% BEGIN GENERATED PRECISION_PRIMARY_TABLE
+% BEGIN GENERATED PRECISION_Standard_TABLE
 \begin{table}[!htbp]
 \centering
 \small\setlength{\tabcolsep}{4pt}
-\caption{PRIMARY precision grid, with 500 fresh replicates per cell and strategy. All errors and differences are in pp. $\Delta$ is full-data minus scaling MAE; positive favors scaling. Pointwise 95\% Monte Carlo intervals use independent acquisition variances; simultaneous intervals apply Bonferroni correction across all 54 PRIMARY/A comparisons. The design and fitter are fixed.}
+\caption{Standard precision grid, with 500 fresh replicates per cell and strategy. All errors and differences are in pp. $\Delta$ is full-data minus scaling MAE; positive favors scaling. Pointwise 95\% Monte Carlo intervals use independent acquisition variances; simultaneous intervals apply Bonferroni correction across all 54 Standard/A comparisons. The design and fitter are fixed.}
 \label{tab:precisionprimary}
 \begin{tabular}{@{}rrlrrll@{}}
 \toprule
@@ -860,12 +1226,12 @@ $T$ & $r$ & $(p_A,p_B)$ & Full & Scaling & $\Delta$ [pointwise] & Simultaneous \
 \bottomrule
 \end{tabular}
 \end{table}
-% END GENERATED PRECISION_PRIMARY_TABLE
+% END GENERATED PRECISION_Standard_TABLE
 % BEGIN GENERATED PRECISION_A_TABLE
 \begin{table}[!htbp]
 \centering
 \small\setlength{\tabcolsep}{4pt}
-\caption{Scheme A precision grid, with 500 fresh replicates per cell and strategy. All errors and differences are in pp. $\Delta$ is full-data minus scaling MAE; positive favors scaling. Pointwise 95\% Monte Carlo intervals use independent acquisition variances; simultaneous intervals apply Bonferroni correction across all 54 PRIMARY/A comparisons. The design and fitter are fixed.}
+\caption{Scheme A precision grid, with 500 fresh replicates per cell and strategy. All errors and differences are in pp. $\Delta$ is full-data minus scaling MAE; positive favors scaling. Pointwise 95\% Monte Carlo intervals use independent acquisition variances; simultaneous intervals apply Bonferroni correction across all 54 Standard/A comparisons. The design and fitter are fixed.}
 \label{tab:precisiona}
 \begin{tabular}{@{}rrlrrll@{}}
 \toprule

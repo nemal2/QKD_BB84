@@ -243,20 +243,26 @@ def tables():
             for method in ['subset','basis','full','scaled']:
                 rr=[r for r in observation['cross_circuit'] if r['circuit']==circuit and
                     r['scenario']==scenario and r['method']==method and r['readout']==0]
-                if not rr:row.append('--')
-                elif not rr[0]['point_identified']:row.append('set / 100')
-                else:row.append(f"{rr[0]['MAE_pp']:.3f} / {rr[0]['coverage_pct']:.1f}")
+                if not rr:row.extend(['--','--'])
+                elif not rr[0]['point_identified']:
+                    row.extend([r'\shortstack{Not\\identified}',f"{rr[0]['coverage_pct']:.1f}"])
+                else:row.extend([f"{rr[0]['MAE_pp']:.3f}",f"{rr[0]['coverage_pct']:.1f}"])
             rows.append(row)
     result['CROSS_CIRCUIT_TABLE']=table('crosscircuit',
         r'Cross-circuit diagnostics: 8000 transmitted signals, $r=0.2$, and 500 '
-        r'replicates per cell. Entries are residual MAE in percentage points (pp) / interval coverage (\%). '
+        r'replicates per cell. Each estimator has separate columns for residual MAE '
+        r'in percentage points (pp) and interval coverage (\%). '
         r'The first three estimators share one operating acquisition; scaling uses '
         r'an independent, equally budgeted four-setting acquisition. Basis assumes '
         r'equal device noise; full and scaling fit the devices independently. '
-        r'\textit{Set} denotes nonidentification, so no point-estimator MAE is reported. '
+        r'For nonidentified operating fits, coverage concerns the residual set; '
+        r'no point-estimator MAE is reported. '
         r'Subset applies only to PRIMARY. Coverage has Monte Carlo uncertainty; '
         r'cell-level intervals accompany the records.',
-        'llllll',r'Circuit & $(p_A,p_B)$ & Subset & Basis & Full & Scaling',rows)
+        'llrrrrlrrr',r'& & \multicolumn{2}{c}{Subset} & \multicolumn{2}{c}{Basis} & '
+        r'\multicolumn{2}{c}{Full} & \multicolumn{2}{c}{Scaling} \\'+'\n'+
+        r'Circuit & $(p_A,p_B)$ & MAE & Cover. & MAE & Cover. & MAE & Cover. & MAE & Cover.',rows
+        ).replace(r'\small\setlength{\tabcolsep}{4pt}',r'\small\setlength{\tabcolsep}{3pt}')
     rows=[]
     names={'equal':'Equal','off_grid':'Interior','alice_low':'Alice lower','bob_low':'Bob lower','curvature':'Curved'}
     import math
@@ -308,7 +314,31 @@ def tables():
         r'the residual is not identified at a single setting. Coverage has Monte '
         r'Carlo uncertainty; Wilson intervals accompany the complete records.',
         'rrlrrl',r'$T$ & $r$ & $(p_A,p_B)$ & MAE & Coverage & Profile width',rows)
-    return result
+    # The compact main-text synthesis is calculated from the same complete records.
+    study=json.loads((SUP/'study/results/summary.json').read_text())
+    matched=next(r for r in study['main'] if r['scheme']=='A' and r['target_qber']==.1
+        and r['decoder']=='BP+OSD' and r['comparison']=='same_aware_code')
+    selected=next(r for r in asym if r['method']=='selected')
+    rows=[('A, matched code',
+           f"{matched['failures_pooled']} $\\to$ {matched['failures_aware']} failures /2000",
+           r'$m=650$; both zero at $m=700$'),
+          ('Frozen pooling',f"{selected['significant_gains']} gains; {selected['significant_harms']} harms /75",
+           r'Holm-supported; repeated grid')]
+    for family in ['gallager','irregular']:
+        take=lambda method:next(r for r in trans if r['family']==family and r['n']==16000
+            and r['condition']==2 and r['method']==method)
+        rows.extend([(family.capitalize()+', fixed',ci(take('selected')),r'Common code and disclosure'),
+                     (family.capitalize()+', policy',ci(take('adaptive_pipeline')),r'Prior and rate selector together')])
+    result['RECOVERY_OVERVIEW_TABLE']=table('recoveryoverview',
+        r'Recovery evidence at three levels. A uses matched-code BP+OSD at 10\% QBER. '
+        r'Frozen pooling uses 75 confirmation conditions, 500 paired frames each, with '
+        r'Holm correction across those conditions. Long-block transfer rows use '
+        r'$n=16000,Q=6\%,a=0.75,S=1000$; entries are paired yield differences '
+        r'in percentage points (pp), with exploratory 95\% $t_4$ intervals across '
+        r'five unseen matrix libraries. The appendices retain all operating points.',
+        'lll',r'Comparison & Result & Interpretation',rows)
+    # Display names are independent of stable identifiers in the numerical records.
+    return {key:value.replace('PRIMARY','Standard') for key,value in result.items()}
 
 
 def fill(source, check=False):
@@ -423,7 +453,7 @@ def plots(source):
     cases=[(example['attacked_p'],example['attack_fraction'],'#007d80',
             r'Device noise $p=0.015$, interception $r=0.10$'),
            (example['noise_only_p'],0.,'#b45a6a',
-            f"Device noise $p={example['noise_only_p']:.5f}$, no interception")]
+            f"Device noise $p={example['noise_only_p']:.3f}$, no interception")]
     for p,r,color,label in cases:
         axes[0].plot([0,1],100*basis_response(p,r),'o-',color=color,label=label,lw=1.7,ms=5)
         f=np.linspace(1,8,200);axes[1].plot(f,100*ideal_response(f,p,r),color=color,lw=1.7)
@@ -461,11 +491,61 @@ def plots(source):
             ax.set_xticks(range(3),['2,000','8,000','32,000']);ax.set_xlim(-.24,2.24)
             if i==0:ax.set_title(f'$(p_A,p_B)=({pA:.2f},{pB:.2f})$')
             else:ax.set_xlabel('Transmitted signals T')
-            if j==0:ax.set_ylabel(circuit+'\nMAE difference (pp)')
+            if j==0:
+                ax.set_ylabel(('Standard' if circuit=='PRIMARY' else 'A')+'\nFull − scaling MAE (pp)')
+            if j==2:
+                ax.text(.97,.95,'↑ favors scaling',transform=ax.transAxes,ha='right',va='top',fontsize=8)
+                ax.text(.97,.05,'↓ favors full',transform=ax.transAxes,ha='right',va='bottom',fontsize=8)
     handles=[Line2D([0],[0],marker=markers[k],color=colors[k],lw=.8,
         label=f'Interception r={r:.2f}') for k,r in enumerate([.02,.1,.2])]
     fig.legend(handles=handles,loc='outside lower center',ncol=3,frameon=False)
     save(fig,'precision_grid')
+
+    # A visual guide links the questions without implying a joint experimental pipeline.
+    from matplotlib.patches import FancyBboxPatch
+    fig,ax=plt.subplots(figsize=(7.6,6.1));ax.set_axis_off();ax.set_xlim(0,1);ax.set_ylim(0,1)
+    def box(x,y,w,h,color):
+        ax.add_patch(FancyBboxPatch((x,y),w,h,boxstyle='round,pad=.008,rounding_size=.012',
+            facecolor=color,edgecolor='#cbd5e1',lw=.8))
+    box(.01,.86,.98,.12,'#eaf1f5')
+    ax.text(.5,.935,'Disclosed BB84 observations',ha='center',va='center',fontsize=15,weight='bold')
+    ax.text(.5,.89,'Bits, basis labels and outcomes contain more than aggregate QBER.',ha='center',fontsize=10)
+    cards=[('1  IDENTIFY','#e6f2f0','What do the observations\ndetermine?',
+        'Gate-path counts\nExact response laws\nRank and row-space tests',
+        'Standard and A identify\nthe residual at one setting.\nB and B+ do not.',
+        'Additional observations\ncan restore identification.'),
+        ('2  ESTIMATE','#f0edf7','How precisely can it\nbe learned?',
+        'Matched scaling ranges\nFull operating observations\n81-condition precision grid',
+        'Full data favor Standard.\nScaling usually favors A.\nBudget and attack level matter.',
+        'Compare complete acquisitions\nat the same signal budget.'),
+        ('3  USE','#faf1e3','Does estimated structure\nimprove recovery?',
+        'Circuit and pooling controls\nNew matrix libraries\nFixed-code vs. rate policies',
+        'Pooling limits estimation loss.\nLong-block gains arise mainly\nthrough rate selection.',
+        'Charge estimation, disclosure\nand frame-loss costs.')]
+    for i,(title,color,question,design,finding,lesson) in enumerate(cards):
+        x=.01+i*.335;box(x,.15,.31,.65,color);cx=x+.155
+        ax.text(cx,.755,title,ha='center',fontsize=11,weight='bold')
+        ax.text(cx,.685,question,ha='center',va='center',fontsize=10,weight='bold',linespacing=1.4)
+        ax.text(cx,.57,design,ha='center',va='center',fontsize=9.5,linespacing=1.55)
+        ax.plot([x+.025,x+.285],[.48,.48],color='#cbd5e1',lw=.8)
+        ax.text(cx,.405,finding,ha='center',va='center',fontsize=9.5,linespacing=1.55)
+        ax.text(cx,.245,lesson,ha='center',va='center',fontsize=9.5,weight='bold',linespacing=1.5)
+    ax.text(.5,.075,'Retain the labels  →  establish identification  →  measure precision  →  test utility',
+        ha='center',fontsize=10,weight='bold')
+    fig.subplots_adjust(left=.01,right=.99,bottom=.01,top=.99);save(fig,'study_overview')
+    # Recreate the inherited circuit figures with reader-facing display names.
+    import importlib.util
+    import sys
+    from matplotlib.text import Text
+    sys.path.insert(0,str(SUP/'study'))
+    spec=importlib.util.spec_from_file_location('inherited_circuit_plots',SUP/'study/plot_v2.py')
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    def circuit_save(fig,name):
+        for item in fig.findobj(match=Text):
+            item.set_text(item.get_text().replace('PRIMARY','Standard'))
+        save(fig,Path(name).stem)
+    module.save=circuit_save
+    module.circuits();module.exposure();module.curves()
 
 
 def main():

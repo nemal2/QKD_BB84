@@ -1,8 +1,7 @@
 # BB84 diagnostics and reconciliation: reproducible research
 
 Code, fixed protocols, retained observations and anonymised manuscript sources for
-**Beyond Aggregate QBER in Gate-Based BB84: Noise-Scaling Diagnostics and
-Basis-Aware Reconciliation**.
+**Beyond Aggregate QBER: The Value of Disclosed Channel Structure in Gate-Based BB84**.
 
 This repository covers all five studies and the final information, pooling-score,
 finite-design-search, boundary and identification checks. Start with the complete
@@ -52,7 +51,7 @@ outputs and the distinction between analysis and simulation are in
 
 | Path | Contents |
 | --- | --- |
-| `overleaf/` | Current anonymous ACM manuscript, bibliography and eight vector figures |
+| `overleaf/` | Current anonymous ACM manuscript, bibliography and nine vector figures |
 | `supplementary/study/` | Circuit paths, nested codes, BP/OSD, diagnostics and 68,000-frame circuit study |
 | `supplementary/extensions/` | Frozen pooling, confirmation, rate-policy transfer, physical mechanisms and stress controls |
 | `supplementary/diagnostic_validation/` | Basis baseline, matched scaling ranges and held-out validation |

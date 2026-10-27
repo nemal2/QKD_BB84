@@ -74,10 +74,10 @@ def audit(source, baseline=None):
     cited={k.strip() for x in re.findall(r'\\cite\{([^}]+)\}',text) for k in x.split(',')}
     assert cited<=set(keys),cited-set(keys)
     figures=re.findall(r'\\includegraphics(?:\[[^\]]*\])?\{([^}]+)\}',text)
-    assert len(figures)==8 and all((source/f).is_file() for f in figures)
+    assert len(figures)==9 and all((source/f).is_file() for f in figures)
     assert text.count(r'\Description{')==len(figures)
-    assert main.count(r'\begin{table}')==5 and appendix.count(r'\begin{table}')==19
-    assert len(re.findall(r'% BEGIN GENERATED ',text))==18
+    assert main.count(r'\begin{table}')==4 and appendix.count(r'\begin{table}')==22
+    assert len(re.findall(r'% BEGIN GENERATED ',text))==19
     assert not re.search(r'@@[A-Z_]+@@|TODO|TBD|XXXXXXX',text)
     assert not re.search(r'(?<!\\)\b(?:ef|abel)\{(?:tab|eq|fig|sec|app):',text)
     assert not any(ord(c)<32 and c not in '\n\t' for c in text)
@@ -88,29 +88,29 @@ def audit(source, baseline=None):
     assert r'\documentclass[manuscript,screen,review,anonymous]{acmart}' in main
     assert not re.search(r'\\(?:author|email|affiliation|orcid)\{', main)
     assert r'\acmJournal{TQC}' in main and r'\acmDOI{}' in main
-    assert 'necessary diagnostic baseline' not in main
-    assert 'interpolation validation' in main and 'physical bounds' in main
-    assert 'three values do not determine a general cubic' in main
+    assert 'interior conditions' in main and 'Physical bounds' in main
+    assert 'Three values do not' in main and 'determine a general cubic' in main
     assert r'\label{eq:poolingscore}' in appendix
     assert 'exact ties choose the smallest weight' in plain
     assert '969 for each of the ten' in plain
     assert 'remains usable' not in main
-    assert 'observation-based identification criterion' not in main
-    assert 'post hoc fixed-code sensitivity analysis' in main
-    assert "retains the pilot's entire $(Q,a,S)$ grid and the same $m$" in plain
-    assert 'One development' in main and 'coupled transfer' in main
-    assert 'Reconciliation Mechanism: Estimation and Experimental Design' in main
+    assert 'post hoc fixed-code sensitivity analysis' in appendix
+    assert "QBER, asymmetry, sample-size grid and syndrome lengths are repeated" in plain
+    assert 'One development' in main and 'couple sample' in main
     assert r'\label{eq:subset}' in main and r'\label{eq:basisinverse}' in main
-    assert 'even full transitions and scaling cannot separate $c$ and $r$' in plain
-    # Every substantive part of the comprehensive study must remain visible.
-    required_labels = ['tab:assumptions','prop:identification','fig:precisiongrid','sec:precisiongrid','tab:information','tab:crosscircuit',
-        'tab:matched','tab:asymmetry','fig:circuits','fig:ambiguity','fig:asymmetry',
-        'fig:transfer','eq:yielddecomposition','eq:separatedresponse','eq:channel']
+    assert 'Different pairs $(c,r)$ can give the' in main
+    assert 'row space of $M$' in main and r'\label{cor:circuits}' in main
+    # Preserve every experiment while placing full recovery methods with their records.
+    required_labels = ['tab:observations','fig:overview','tab:assumptions','prop:identification',
+        'fig:precisiongrid','sec:precisiongrid','tab:crosscircuit','tab:recoveryoverview',
+        'fig:circuits','fig:ambiguity','fig:transfer','eq:separatedresponse','sec:limits']
     assert all(r'\label{'+label+'}' in main for label in required_labels)
-    supporting_labels = ['tab:cohorts','tab:validation','tab:precisionprimary','tab:precisiona','tab:precisionbplus','tab:operating','tab:ablation','tab:replication','tab:channel',
-        'tab:rule','tab:yieldaccounting','tab:absolutetransfer','tab:transferall',
-        'tab:sample','tab:physical','tab:holdout','tab:profiles','tab:diagnostic',
-        'tab:stress','fig:exposure','fig:curves']
+    supporting_labels = ['tab:information','tab:matched','tab:asymmetry','fig:asymmetry',
+        'eq:yielddecomposition','eq:channel','app:reconmethods','app:confirmation',
+        'tab:cohorts','tab:validation','tab:precisionprimary','tab:precisiona','tab:precisionbplus',
+        'tab:operating','tab:ablation','tab:replication','tab:channel','tab:rule','tab:yieldaccounting',
+        'tab:absolutetransfer','tab:transferall','tab:sample','tab:physical','tab:holdout',
+        'tab:profiles','tab:diagnostic','tab:stress','fig:exposure','fig:curves']
     assert all(r'\label{'+label+'}' in appendix for label in supporting_labels)
     manifests={}
     for folder in [build.SUP,build.SUP/'extensions',build.SUP/'diagnostic_validation',build.SUP/'observation_validation',build.SUP/'precision_validation']:
@@ -133,11 +133,6 @@ def audit(source, baseline=None):
     for circuit,method in [('PRIMARY','full'),('PRIMARY','scaled'),('A','full'),('A','scaled')]:
         row=select(obs['cross_circuit'],circuit=circuit,scenario='equal',method=method,readout=0.)
         record(f'{circuit} {method} equal-device MAE','observation_validation/results/summary.json',f"{row['MAE_pp']:.3f}")
-    for method,circuit,field,fmt in [('full','PRIMARY','MAE_pp','.3f'),('full','PRIMARY','coverage_pct','.1f'),
-        ('scaled','PRIMARY','MAE_pp','.3f'),('scaled','B+','MAE_pp','.3f'),('scaled','B+','coverage_pct','.1f')]:
-        vals=[r[field] for r in obs['cross_circuit'] if r['circuit']==circuit and r['method']==method and
-              r['readout']==0 and r['scenario']!='no_interception']
-        record(f'{circuit} {method} {field} range','observation_validation/results/summary.json',f'{min(vals):{fmt}}--{max(vals):{fmt}}')
     for field in ['width_median_pp','coverage_pct']:
         vals=[r[field] for r in obs['retained_profiles']];fmt='.2f' if field=='width_median_pp' else '.1f'
         record('Retained profile '+field,'observation_validation/results/summary.json',f'{min(vals):{fmt}}--{max(vals):{fmt}}')
@@ -161,24 +156,24 @@ def audit(source, baseline=None):
     assert lower==[1241,1]
     record('Lower nuisance boundary count','method-checks.json','1241 reach the lower Alice-noise bound and one reaches the lower Bob-noise bound;')
     widths=[r['width_median_pp'] for r in precision['outcomes'] if r['circuit']=='B+' and r['r']==.02 and r['budget']==2000]
-    record('Weak-interception B+ interval widths','precision_validation/results/summary.json',f'{min(widths):.2f}--{max(widths):.2f} pp')
+    record('Weak-interception B+ minimum median width','precision_validation/results/summary.json',f'{min(widths):.2f}')
+    record('Weak-interception B+ maximum median width','precision_validation/results/summary.json',f'{max(widths):.2f}')
     ps=select(precision['circuit_summary'],circuit='PRIMARY')
     aa=select(precision['circuit_summary'],circuit='A')
     assert (ps['negative'],ps['simultaneous_full_better'])==(27,26)
     assert (aa['positive'],aa['simultaneous_scaling_better'],aa['simultaneous_full_better'])==(25,19,2)
-    record('PRIMARY grid direction','precision_validation/results/summary.json','PRIMARY has lower full-data MAE in all 27 point comparisons; 26 simultaneous')
-    record('A grid direction','precision_validation/results/summary.json','Scheme A favors scaling in 25 of 27 point comparisons, with 19')
+    record('PRIMARY grid direction','precision_validation/results/summary.json','Full data have lower MAE in all 27 Standard comparisons, with 26 simultaneous')
+    record('A grid direction','precision_validation/results/summary.json','A favors scaling in 25 of 27 point comparisons')
     for cell in [28,47]:
         row=select(precision['comparisons'],cell=cell)
         assert row['simultaneous95_pp'][1]<0
         record('A weak-interception reversal '+str(cell),'precision_validation/results/summary.json',f"{row['delta_MAE_pp']:.3f}")
-        record('A reversal interval '+str(cell),'precision_validation/results/summary.json',f"[{row['mc95_pp'][0]:.3f},{row['mc95_pp'][1]:.3f}]")
+        record('A reversal interval '+str(cell),'precision_validation/results/summary.json',f"[{row['mc95_pp'][0]:+.3f}, {row['mc95_pp'][1]:+.3f}]")
     study=json.loads((build.SUP/'study/results/summary.json').read_text())
     a=select(study['main'],scheme='A',target_qber=.1,decoder='BP+OSD',comparison='same_aware_code')
     assert (a['failures_pooled'],a['failures_aware'],a['frames'])==(28,13,2000)
     record('Matched-code failures','study/results/summary.json','failures from 28 to 13 out of 2000')
-    record('Matched-code ratio','study/results/summary.json',f"ratio {a['ratio']:.3f}")
-    record('Matched-code paired interval','study/results/summary.json',f"[{a['ratio_ci'][0]:.3f},{a['ratio_ci'][1]:.3f}]")
+    record('Matched-code ratio','study/results/summary.json',f"{a['ratio']:.3f} [{a['ratio_ci'][0]:.2f}, {a['ratio_ci'][1]:.2f}]")
     for decoder in ['BP','BP+OSD']:
         row=select(study['main'],scheme='A',target_qber=.1,decoder=decoder,comparison='same_pooled_code')
         assert (row['m_pooled'],row['failures_pooled'],row['failures_aware'])==(700,0,0)
@@ -186,14 +181,14 @@ def audit(source, baseline=None):
     assert (operating['failures_aware'],operating['failures_pooled'])==(19,0)
     record('Operating upper FER bound','study/results/summary.json',f"Wilson interval [{100*operating['fer_aware_ci'][0]:.2f}\\%,{100*operating['fer_aware_ci'][1]:.2f}\\%]")
     selected=select(build.load('asymmetry_summary.json')['method_summaries'],method='selected')
-    record('Corrected confirmation gains','extensions/results/asymmetry_summary.json',f"{selected['significant_gains']} gains")
+    record('Corrected confirmation gains','extensions/results/asymmetry_summary.json',f"{selected['significant_gains']} Holm-supported gains")
     assert selected['significant_harms']==0
     record('Confirmation mean','extensions/results/asymmetry_summary.json',f"mean gain is {100*selected['mean_delta_yield']:.3f} pp")
     record('Confirmation harm','extensions/results/asymmetry_summary.json',f"{100*selected['worst_cell']['delta_yield']:.3f} pp")
     transfer=build.load('transfer_summary.json')
     for family in ['gallager','irregular']:
         row=select(transfer,family=family,n=16000,condition=2,method='adaptive_pipeline')
-        record(family+' pipeline gain','extensions/results/transfer_summary.json',f"{100*row['mean']:+.2f} pp")
+        record(family+' pipeline gain','extensions/results/transfer_summary.json',f"{100*row['mean']:+.2f} [{100*row['ci'][0]:+.2f}, {100*row['ci'][1]:+.2f}]")
     information=channel_information.analyse()
     assert information==json.loads((build.HERE/'channel-information.json').read_text())
     review=review_analysis.analyse()
@@ -208,9 +203,9 @@ def audit(source, baseline=None):
             table=next(t for t in re.findall(r'\\begin\{table\}.*?\\end\{table\}',document,re.S) if r'\label{'+label+'}' in t)
             return table.split(r'\midrule')[1].split(r'\bottomrule')[0].strip()
         for label in ['tab:matched','tab:operating','tab:ablation','tab:replication','tab:channel']:
-            assert rows(text,label)==rows(old,label),label;inherited.append(label)
-    return dict(status='passed',abstract_words=len(abstract.split()),anonymous=True,figure_count=8,table_count=24,
-        main_tables=5,appendix_tables=19,generated_tables_checked=18,citation_count=len(cited),unresolved_references=0,
+            assert rows(text,label)==rows(old,label).replace('PRIMARY','Standard'),label;inherited.append(label)
+    return dict(status='passed',abstract_words=len(abstract.split()),anonymous=True,figure_count=9,table_count=26,
+        main_tables=4,appendix_tables=22,generated_tables_checked=19,citation_count=len(cited),unresolved_references=0,
         comprehensive_main_labels=required_labels,comprehensive_supporting_labels=supporting_labels,
         anonymous_front_matter=True,scientific_manifests_verified=manifests,
         channel_information_analysis_verified=True,retained_record_reporting_verified=True,

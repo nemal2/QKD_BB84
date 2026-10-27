@@ -147,6 +147,134 @@
     }
   ],
   "rank_condition_checked": true,
+  "path_identification": [
+    {
+      "circuit": "Standard",
+      "paths": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "rank": 3,
+      "residual_identified": true
+    },
+    {
+      "circuit": "A",
+      "paths": [
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          3,
+          1
+        ]
+      ],
+      "rank": 3,
+      "residual_identified": true
+    },
+    {
+      "circuit": "B",
+      "paths": [
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "rank": 2,
+      "residual_identified": false
+    },
+    {
+      "circuit": "B+",
+      "paths": [
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "rank": 1,
+      "residual_identified": false
+    },
+    {
+      "circuit": "Residual-only example",
+      "paths": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "rank": 2,
+      "residual_identified": true
+    },
+    {
+      "circuit": "Distinct dependent monomials",
+      "paths": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          2,
+          2
+        ]
+      ],
+      "rank": 2,
+      "residual_identified": true
+    }
+  ],
   "three_setting_counterexample": {
     "scales": [
       1.0,

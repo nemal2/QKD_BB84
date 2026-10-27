@@ -1,32 +1,38 @@
 {
   "status": "passed",
-  "abstract_words": 192,
+  "abstract_words": 178,
   "anonymous": true,
-  "figure_count": 8,
-  "table_count": 24,
-  "main_tables": 5,
-  "appendix_tables": 19,
-  "generated_tables_checked": 18,
+  "figure_count": 9,
+  "table_count": 26,
+  "main_tables": 4,
+  "appendix_tables": 22,
+  "generated_tables_checked": 19,
   "citation_count": 30,
   "unresolved_references": 0,
   "comprehensive_main_labels": [
+    "tab:observations",
+    "fig:overview",
     "tab:assumptions",
     "prop:identification",
     "fig:precisiongrid",
     "sec:precisiongrid",
-    "tab:information",
     "tab:crosscircuit",
-    "tab:matched",
-    "tab:asymmetry",
+    "tab:recoveryoverview",
     "fig:circuits",
     "fig:ambiguity",
-    "fig:asymmetry",
     "fig:transfer",
-    "eq:yielddecomposition",
     "eq:separatedresponse",
-    "eq:channel"
+    "sec:limits"
   ],
   "comprehensive_supporting_labels": [
+    "tab:information",
+    "tab:matched",
+    "tab:asymmetry",
+    "fig:asymmetry",
+    "eq:yielddecomposition",
+    "eq:channel",
+    "app:reconmethods",
+    "app:confirmation",
     "tab:cohorts",
     "tab:validation",
     "tab:precisionprimary",
@@ -247,6 +253,134 @@
       }
     ],
     "rank_condition_checked": true,
+    "path_identification": [
+      {
+        "circuit": "Standard",
+        "paths": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "rank": 3,
+        "residual_identified": true
+      },
+      {
+        "circuit": "A",
+        "paths": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            3,
+            1
+          ]
+        ],
+        "rank": 3,
+        "residual_identified": true
+      },
+      {
+        "circuit": "B",
+        "paths": [
+          [
+            2,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "rank": 2,
+        "residual_identified": false
+      },
+      {
+        "circuit": "B+",
+        "paths": [
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "rank": 1,
+        "residual_identified": false
+      },
+      {
+        "circuit": "Residual-only example",
+        "paths": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "rank": 2,
+        "residual_identified": true
+      },
+      {
+        "circuit": "Distinct dependent monomials",
+        "paths": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "rank": 2,
+        "residual_identified": true
+      }
+    ],
     "three_setting_counterexample": {
       "scales": [
         1.0,
@@ -302,13 +436,7 @@
       ]
     }
   },
-  "inherited_circuit_tables_checked": [
-    "tab:matched",
-    "tab:operating",
-    "tab:ablation",
-    "tab:replication",
-    "tab:channel"
-  ],
+  "inherited_circuit_tables_checked": [],
   "headline_claims": [
     {
       "claim": "PRIMARY full equal-device MAE",
@@ -329,31 +457,6 @@
       "claim": "A scaled equal-device MAE",
       "evidence": "observation_validation/results/summary.json",
       "manuscript_text": "0.708"
-    },
-    {
-      "claim": "PRIMARY full MAE_pp range",
-      "evidence": "observation_validation/results/summary.json",
-      "manuscript_text": "0.444--0.504"
-    },
-    {
-      "claim": "PRIMARY full coverage_pct range",
-      "evidence": "observation_validation/results/summary.json",
-      "manuscript_text": "94.6--95.8"
-    },
-    {
-      "claim": "PRIMARY scaled MAE_pp range",
-      "evidence": "observation_validation/results/summary.json",
-      "manuscript_text": "0.575--0.628"
-    },
-    {
-      "claim": "B+ scaled MAE_pp range",
-      "evidence": "observation_validation/results/summary.json",
-      "manuscript_text": "0.676--0.849"
-    },
-    {
-      "claim": "B+ scaled coverage_pct range",
-      "evidence": "observation_validation/results/summary.json",
-      "manuscript_text": "96.6--97.0"
     },
     {
       "claim": "Retained profile width_median_pp",
@@ -406,19 +509,24 @@
       "manuscript_text": "1241 reach the lower Alice-noise bound and one reaches the lower Bob-noise bound;"
     },
     {
-      "claim": "Weak-interception B+ interval widths",
+      "claim": "Weak-interception B+ minimum median width",
       "evidence": "precision_validation/results/summary.json",
-      "manuscript_text": "3.20--4.15 pp"
+      "manuscript_text": "3.20"
+    },
+    {
+      "claim": "Weak-interception B+ maximum median width",
+      "evidence": "precision_validation/results/summary.json",
+      "manuscript_text": "4.15"
     },
     {
       "claim": "PRIMARY grid direction",
       "evidence": "precision_validation/results/summary.json",
-      "manuscript_text": "PRIMARY has lower full-data MAE in all 27 point comparisons; 26 simultaneous"
+      "manuscript_text": "Full data have lower MAE in all 27 Standard comparisons, with 26 simultaneous"
     },
     {
       "claim": "A grid direction",
       "evidence": "precision_validation/results/summary.json",
-      "manuscript_text": "Scheme A favors scaling in 25 of 27 point comparisons, with 19"
+      "manuscript_text": "A favors scaling in 25 of 27 point comparisons"
     },
     {
       "claim": "A weak-interception reversal 28",
@@ -428,7 +536,7 @@
     {
       "claim": "A reversal interval 28",
       "evidence": "precision_validation/results/summary.json",
-      "manuscript_text": "[-0.154,-0.046]"
+      "manuscript_text": "[-0.154, -0.046]"
     },
     {
       "claim": "A weak-interception reversal 47",
@@ -438,7 +546,7 @@
     {
       "claim": "A reversal interval 47",
       "evidence": "precision_validation/results/summary.json",
-      "manuscript_text": "[-0.114,-0.039]"
+      "manuscript_text": "[-0.114, -0.039]"
     },
     {
       "claim": "Matched-code failures",
@@ -448,12 +556,7 @@
     {
       "claim": "Matched-code ratio",
       "evidence": "study/results/summary.json",
-      "manuscript_text": "ratio 0.464"
-    },
-    {
-      "claim": "Matched-code paired interval",
-      "evidence": "study/results/summary.json",
-      "manuscript_text": "[0.263,0.692]"
+      "manuscript_text": "0.464 [0.26, 0.69]"
     },
     {
       "claim": "Operating upper FER bound",
@@ -463,7 +566,7 @@
     {
       "claim": "Corrected confirmation gains",
       "evidence": "extensions/results/asymmetry_summary.json",
-      "manuscript_text": "25 gains"
+      "manuscript_text": "25 Holm-supported gains"
     },
     {
       "claim": "Confirmation mean",
@@ -478,12 +581,12 @@
     {
       "claim": "gallager pipeline gain",
       "evidence": "extensions/results/transfer_summary.json",
-      "manuscript_text": "+1.07 pp"
+      "manuscript_text": "+1.07 [+0.91, +1.24]"
     },
     {
       "claim": "irregular pipeline gain",
       "evidence": "extensions/results/transfer_summary.json",
-      "manuscript_text": "+4.15 pp"
+      "manuscript_text": "+4.15 [+3.94, +4.37]"
     },
     {
       "claim": "gallager disclosure_pp",
@@ -507,12 +610,12 @@
     }
   ],
   "source_sha256": {
-    "main.tex": "d615b3dff2a6e7c2e0675ab6d8fc6836d80b17b93056d476f8e3a9edfee965de",
-    "appendix.tex": "c06046b29474a17fa8488cfb7a46c1aa58eda9c5842134f4afb14b717a0d2a8f",
+    "main.tex": "5df3982892f81decd6b5d53c3851669032d65e81825164dfb42c98d16ae62afe",
+    "appendix.tex": "93dc5e19fcd2a3aeafdf2679403a5938693cfdb680c258e9ea00e8ef5f449149",
     "references.bib": "b2febb26abc6317da3fc581ba1b5529ca015776c22a2a0b3e2c622bda6ed4633"
   },
-  "mode": "analysis",
-  "analysis_regenerated": true,
+  "mode": "build",
+  "analysis_regenerated": false,
   "raw_experiments_rerun": false,
   "working_copy": false,
   "final_manifest_verified": true,

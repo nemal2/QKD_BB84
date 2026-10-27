@@ -10,13 +10,12 @@ SUP=HERE.parent
 
 
 def analyse():
-    """Return independently reconstructed boundary, pooling, design and rank checks.
+    """Reconstruct boundary, pooling, finite-design and path-identification checks.
 
-    Counts are read from the five study directories. No observations are generated
-    and no retained fit is changed; failed assertions identify a documentation or
-    numerical mismatch. The returned dictionary is checked by audit_manuscript.py.
+    The checks use retained records and exact response laws. They generate no new
+    observations and leave every retained fit intact; mismatches fail explicitly.
     """
-    # Boundary flags are checked against the stored parameter values and endpoints.
+    # Compare nuisance and target boundary flags with the stored fits and intervals.
     rows=[]
     for path in sorted((SUP/'observation_validation/results').glob('retained_*_profile.npz')):
         with np.load(path) as z:
@@ -77,8 +76,31 @@ def analyse():
             design_report.append(dict(method=name,location_sets=len(designs),allocations_per_set=len(w)))
     # Distinct monomials alone are insufficient: augmented exponent rank matters.
     assert np.linalg.matrix_rank([[1,0,0],[1,1,1],[1,2,2]])==2
-    for paths in [[(0,0),(1,0),(1,1),(2,1)],[(1,0),(2,0),(2,1),(3,1)]]:
-        assert np.linalg.matrix_rank([[1,*p] for p in paths])==3
+    path_report=[]
+    for name,paths,expected_rank,expected_target in [
+        ('Standard',[(0,0),(1,0),(1,1),(2,1)],3,True),
+        ('A',[(1,0),(2,0),(2,1),(3,1)],3,True),
+        ('B',[(2,0),(2,0),(2,1),(2,1)],2,False),
+        ('B+',[(2,1)]*4,1,False),
+        ('Residual-only example',[(0,0),(1,0)],2,True),
+        ('Distinct dependent monomials',[(0,0),(1,1),(2,2)],2,True)]:
+        matrix=np.array([[1,*p] for p in paths],dtype=float)
+        rank=int(np.linalg.matrix_rank(matrix))
+        target=bool(np.linalg.matrix_rank(np.vstack([matrix,[1,0,0]]))==rank)
+        assert (rank,target)==(expected_rank,expected_target)
+        # The log-linear observation equals the directly multiplied contraction.
+        eta=np.log([.9,.97,.95]);s=np.exp(matrix@eta)
+        assert np.allclose(s,[.9*.97**a*.95**b for a,b in paths],rtol=0,atol=2e-16)
+        if target:
+            weights=np.linalg.lstsq(matrix.T,[1.,0.,0.],rcond=None)[0]
+            assert abs(np.prod(s**weights)-.9)<2e-15
+        else:
+            _,singular,vh=np.linalg.svd(matrix,full_matrices=True)
+            direction=next(v for v in vh[rank:] if abs(v[0])>1e-8)
+            altered=eta+.001*direction
+            assert np.allclose(np.exp(matrix@altered),s,rtol=0,atol=2e-15)
+            assert abs(np.exp(altered[0])-.9)>1e-6
+        path_report.append(dict(circuit=name,paths=[list(p) for p in paths],rank=rank,residual_identified=target))
     # Three positive settings also need not identify the restricted B+ model globally.
     f=np.array([1.,3.,4.]);truth=np.array([.03,.05,.2])
     contraction=lambda p:(1-p[2]/2)*(1-f*p[0])**2*(1-f*p[1])
@@ -89,7 +111,7 @@ def analyse():
     assert abs(other[2]-truth[2])>1e-5
     return dict(status='passed',retained_boundary_records=rows,pooling_bins_reconstructed=24,
         pooling_frames_reconstructed=sum(len(v) for v in bins.values()),matched_range_designs=design_report,
-        rank_condition_checked=True,three_setting_counterexample=dict(scales=f.tolist(),
+        rank_condition_checked=True,path_identification=path_report,three_setting_counterexample=dict(scales=f.tolist(),
             parameters=truth.tolist(),alternative_parameters=other.tolist(),
             maximum_contraction_discrepancy=error,residuals=[float(truth[2]/4),float(other[2]/4)]),
         scope='Retained-record and algebraic checks; no new stochastic experiments or relaxed-bound fitting.')
